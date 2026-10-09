@@ -6,18 +6,24 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { cc, set, toast, useCC } from '../store.js';
 import {
   heroHTML, aboutHTML, coursesHTML, admissionsHTML, eventsHTML, contactHTML,
-  websiteHTML, deptListHTML, esc, portalProxyId, collegeById,
+  websiteHTML, deptListHTML, counselHTML, feesHTML, mapHTML, faqHTML,
+  esc, portalProxyId, collegeById,
 } from '../core.js';
-import SiteViewer from './SiteViewer.jsx';
+import { api } from '../api.js';
 
 export default function CollegeBody({ college, studentMode, onBack }) {
   useCC();
   const c = college;
-  const [viewer, setViewer] = useState({ open: false, url: '', cid: '', label: '' });
   const [level, setLevel] = useState('All');
   const [query, setQuery] = useState('');
   const [eventTag, setEventTag] = useState('All');
   const wrap = useRef(null);
+  const ids = ['sec-about', 'sec-courses', 'sec-admissions', 'sec-fees', 'sec-events', 'sec-location', 'sec-contact', 'sec-website'];
+  const labels = {
+    'sec-about': 'Overview', 'sec-courses': 'Branches & seats', 'sec-admissions': 'Admission & counselling',
+    'sec-fees': 'Quota & fees', 'sec-events': 'Events', 'sec-location': 'Location & map',
+    'sec-contact': 'Help & contact', 'sec-website': 'Official website',
+  };
 
   useEffect(() => { set({ courseLevel: level, courseQuery: query, eventTag }); }, [level, query, eventTag]);
   useEffect(() => { set({ collegeId: c.id }); }, [c.id]);
@@ -26,9 +32,11 @@ export default function CollegeBody({ college, studentMode, onBack }) {
     hero: heroHTML(c),
     about: aboutHTML(c),
     courses: coursesHTML(c),
-    admissions: admissionsHTML(c),
+    admissions: admissionsHTML(c) + counselHTML(c),
+    fees: feesHTML(c),
     events: eventsHTML(c),
-    contact: contactHTML(c),
+    location: mapHTML(c),
+    contact: contactHTML(c) + faqHTML(c),
     website: websiteHTML(c),
   }), [c, level, query, eventTag]);
 
@@ -36,17 +44,13 @@ export default function CollegeBody({ college, studentMode, onBack }) {
   function onClick(e) {
     const site = e.target.closest('[data-site]');
     if (site) {
+      /* official website: open live in a new tab — works from any browser */
       e.preventDefault();
       const href = site.getAttribute('href') || '';
       const cid = site.getAttribute('data-cid') || c.id;
       const label = site.getAttribute('data-label') || (c.shortName + ' official website');
-      if (/google\.[a-z.]+\/maps/i.test(href)) { window.open(href, '_blank', 'noopener'); return; }
-      if (c.id === 'psg' && href === 'https://www.psgtech.edu') {
-        window.open('https://www.psgtech.edu/', '_blank', 'noopener,noreferrer');
-        return;
-      }
-      setViewer({ open: true, url: href, cid, label });
-      set({ proxyOk: { ...cc.proxyOk, [cid]: true } });
+      if (href) window.open(href, '_blank', 'noopener,noreferrer');
+      api.track('website_click', cid, label);
       return;
     }
     const copy = e.target.closest('[data-copy]');
@@ -58,18 +62,40 @@ export default function CollegeBody({ college, studentMode, onBack }) {
       return;
     }
     const lv = e.target.closest('[data-level]');
-    if (lv) { setLevel(lv.getAttribute('data-level')); return; }
+    if (lv) {
+      /* store first (the memo reads cc), then state so the sections rebuild */
+      const v = lv.getAttribute('data-level');
+      set({ courseLevel: v });
+      setLevel(v);
+      return;
+    }
+    const et = e.target.closest('[data-tag]');
+    if (et) {
+      const v = et.getAttribute('data-tag');
+      set({ eventTag: v });
+      setEventTag(v);
+      return;
+    }
+  }
+
+  /* the course search box lives inside rendered HTML — listen by delegation */
+  function onInput(e) {
+    if (e.target && e.target.id === 'courseSearch') {
+      const v = e.target.value;
+      set({ courseQuery: v });
+      setQuery(v);
+    }
   }
 
   /* scroll-spy for the side navigation */
   useEffect(() => {
     const root = wrap.current;
     if (!root || typeof IntersectionObserver === 'undefined') return;
-    const ids = ['sec-about', 'sec-courses', 'sec-admissions', 'sec-events', 'sec-contact', 'sec-website'];
+    const ids = ['sec-about', 'sec-courses', 'sec-admissions', 'sec-fees', 'sec-events', 'sec-location', 'sec-contact', 'sec-website'];
     const obs = new IntersectionObserver((entries) => {
       entries.forEach((en) => {
         if (!en.isIntersecting) return;
-        root.querySelectorAll('.sidenav a').forEach((a) =>
+        root.querySelectorAll('.sidenav a, .secnav a').forEach((a) =>
           a.classList.toggle('active', a.getAttribute('href') === '#' + en.target.id));
       });
     }, { rootMargin: '-20% 0px -70% 0px' });
@@ -78,7 +104,7 @@ export default function CollegeBody({ college, studentMode, onBack }) {
   }, [c.id, sections]);
 
   return (
-    <div ref={wrap} onClick={onClick}>
+    <div ref={wrap} onClick={onClick} onInput={onInput}>
       {studentMode && (
         <div className="wrap" style={{ paddingTop: 18 }}>
           <button className="btn btn--ghost btn--sm" onClick={onBack}>← All colleges</button>
@@ -87,18 +113,21 @@ export default function CollegeBody({ college, studentMode, onBack }) {
 
       <div className="wrap col" id="collegeContent">
         <div dangerouslySetInnerHTML={{ __html: sections.hero }} />
+        <div className={"secnav" + (studentMode ? "" : " secnav--app")} role="navigation" aria-label="Profile sections">
+          {ids.map((id) => (
+            <a key={id} href={'#' + id}>{labels[id]}</a>
+          ))}
+        </div>
         <div id="sec-about" dangerouslySetInnerHTML={{ __html: sections.about }} />
         <div dangerouslySetInnerHTML={{ __html: sections.courses }} />
         <div dangerouslySetInnerHTML={{ __html: sections.admissions }} />
+        <div dangerouslySetInnerHTML={{ __html: sections.fees }} />
         <div dangerouslySetInnerHTML={{ __html: sections.events }} />
+        <div dangerouslySetInnerHTML={{ __html: sections.location }} />
         <div dangerouslySetInnerHTML={{ __html: sections.contact }} />
         <div dangerouslySetInnerHTML={{ __html: sections.website }} />
       </div>
 
-      <SiteViewer
-        open={viewer.open} url={viewer.url} cid={viewer.cid} label={viewer.label}
-        onClose={() => setViewer({ open: false, url: '', cid: '', label: '' })}
-      />
     </div>
   );
 }

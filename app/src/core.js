@@ -77,6 +77,7 @@ export const cc = {
   user: null, marks: null, stuStream: 'Science – Maths', stuWant: 'Not sure yet',
   stuDegree: null, stuStay: 'Hostel needed', stuHostelType: 'Any hostel',
   stuTravel: 'College bus', stuTown: '', saved: [], stuQuery: '', stuFilter: 'all',
+  onboarding: false,
   courseLevel: 'All', courseQuery: '', eventTag: 'All', proxyOk: {}
 };
 
@@ -1258,6 +1259,264 @@ var COLLEGES = [
     ]
   },
 
+
+  {
+    id:'cit', group:'More',
+    name:'Coimbatore Institute of Technology',
+    shortName:'CIT Coimbatore',
+    mono:'CIT',
+    tagline:'A long-established government-aided engineering college on Avinashi Road, known for core engineering, TNEA admission and an active campus life.',
+    type:'Government-aided · Autonomous',
+    affiliation:'Affiliated to Anna University',
+    estd:1956,
+    naac:'NAAC A',
+    nirfBadge:'NIRF-ranked (Engineering)',
+    city:'Coimbatore', state:'Tamil Nadu',
+    address:'Avinashi Road, Civil Aerodrome Post, Coimbatore \u2013 641 014',
+    website:'https://www.cit.edu.in',
+    admissionsUrl:'https://www.cit.edu.in',
+    phone:'+91 422 262 1111',
+    email:'admissions@cit.edu.in',
+    officeHours:'Mon \u2013 Fri · 9:00 AM \u2013 5:00 PM',
+    about:[
+      'Coimbatore Institute of Technology, established in 1956, is one of the city\u2019s oldest government-aided engineering institutions. It is autonomous and affiliated to Anna University, with government-quota seats allotted through TNEA counselling and the remaining seats filled by the college\u2019s management.',
+      'The campus sits on Avinashi Road close to the airport, with well-equipped workshops, a central library, hostels for boys and girls and a placement cell that invites core and IT recruiters every season.'
+    ],
+    stats:[
+      {v:'4,200+', k:'Students'}, {v:'260+', k:'Faculty members'},
+      {v:'88%', k:'Placement rate'}, {v:'22 acres', k:'Campus'}
+    ],
+    highlights:[
+      {icon:'lab', title:'Core engineering strength', text:'Mechanical, civil and electrical departments with heavy workshop and lab infrastructure.'},
+      {icon:'brief', title:'Placement cell', text:'Core and IT recruiters visit every season for UG and PG students.'},
+      {icon:'home', title:'Hostels & location', text:'Boys and girls hostels inside campus, on the Avinashi Road bus corridor.'}
+    ],
+    recruiters:['Bosch','L&T','TCS','CTS','Ashok Leyland','Zoho','Saint-Gobain','Infosys'],
+    facilities:['Central library','Boys & girls hostels','Sports ground','Medical centre','Wi-Fi campus','Workshop complex'],
+    departments:[
+      {name:'Computer Science & Engineering', icon:'lab', blurb:'Computing fundamentals with electives in data science and security.',
+       courses:[
+        {name:'B.E. Computer Science & Engineering', level:'UG', duration:'4 years', seats:'120 seats', eligibility:'10+2 with Physics, Chemistry & Mathematics · TNEA counselling'},
+        {name:'M.E. Computer Science & Engineering', level:'PG', duration:'2 years', seats:'18 seats', eligibility:'B.E./B.Tech in CSE/IT or equivalent'}
+      ]},
+      {name:'Electronics & Communication', icon:'lab', blurb:'VLSI, communication systems and embedded design.',
+       courses:[
+        {name:'B.E. Electronics & Communication Engineering', level:'UG', duration:'4 years', seats:'120 seats', eligibility:'10+2 with PCM · TNEA counselling'},
+        {name:'M.E. Applied Electronics', level:'PG', duration:'2 years', seats:'18 seats', eligibility:'B.E./B.Tech in ECE/EEE or related branch'}
+      ]},
+      {name:'Mechanical Engineering', icon:'lab', blurb:'Design, thermal and manufacturing with a full workshop complex.',
+       courses:[
+        {name:'B.E. Mechanical Engineering', level:'UG', duration:'4 years', seats:'120 seats', eligibility:'10+2 with PCM · TNEA counselling'},
+        {name:'M.E. Engineering Design', level:'PG', duration:'2 years', seats:'18 seats', eligibility:'B.E./B.Tech in Mechanical or Production'}
+      ]},
+      {name:'Civil & Chemical Engineering', icon:'leaf', blurb:'Structures, environment and process engineering.',
+       courses:[
+        {name:'B.E. Civil Engineering', level:'UG', duration:'4 years', seats:'60 seats', eligibility:'10+2 with PCM · TNEA counselling'},
+        {name:'B.Tech Chemical Engineering', level:'UG', duration:'4 years', seats:'60 seats', eligibility:'10+2 with PCM · TNEA counselling'},
+        {name:'M.E. Structural Engineering', level:'PG', duration:'2 years', seats:'18 seats', eligibility:'B.E./B.Tech in Civil Engineering'}
+      ]},
+      {name:'Management Studies', icon:'brief', blurb:'MBA with industry interaction and summer projects.',
+       courses:[
+        {name:'Master of Business Administration (MBA)', level:'PG', duration:'2 years', seats:'60 seats', eligibility:'Any bachelor\u2019s degree · min. 50% · valid CAT/MAT/TANCET score'}
+      ]}
+    ],
+    admission:{
+      cycle:'2027 \u2013 28',
+      status:'Applications open on 08 Jan 2027',
+      tone:'soon',
+      mode:'TNEA counselling (govt quota) + management merit',
+      fee:'Govt-quota \u2248 \u20b955,000/yr · Management-quota \u2248 \u20b91.4 L/yr',
+      eligibility:'Passed 10+2 with Physics, Chemistry and Mathematics. Government-quota seats are allotted through TNEA counselling; management-quota seats are filled on merit by the college.',
+      dates:[
+        {date:'2027-01-08', label:'Application portal opens', note:'Online applications begin on the college admission portal.'},
+        {date:'2027-05-10', label:'TNEA registration opens', note:'Register on the TNEA portal for government-quota counselling.'},
+        {date:'2027-04-18', label:'Last date to apply', note:'Management-quota applications close on this date.'},
+        {date:'2027-06-22', label:'Counselling & seat allotment', note:'Bring original documents for verification.'}
+      ],
+      steps:[
+        'Register on the TNEA portal (government quota) and/or the college admission portal (management quota).',
+        'Upload Class 10 & 12 marksheets and certificates.',
+        'Attend TNEA counselling or the college-level merit process as applicable.',
+        'Pay the first-semester fee and report to the college with original certificates.'
+      ],
+      docs:['Class 10 & 12 marksheets','Transfer certificate','Community / nativity certificate (if applicable)','Entrance scorecard (if applicable)','4 passport-size photographs'],
+      note:'Merit scholarships and first-generation learner concessions are available.',
+      contactPhone:'+91 422 262 1111', contactEmail:'admissions@cit.edu.in'
+    },
+    events:[
+      {date:'2026-10-28', title:'CIT Open House & Campus Tour', time:'9:30 AM \u2013 3:30 PM', venue:'Main Auditorium & department blocks', tag:'Admissions',
+       desc:'Campus walk-through, lab demos and an admission briefing for Class 12 students and parents.'},
+      {date:'2026-11-19', end:'2026-11-21', title:'SURGE \u201926 \u2014 National Technical Symposium', time:'3 days · 9:00 AM \u2013 6:00 PM', venue:'Campus-wide', tag:'Technical',
+       desc:'Paper presentations, hackathon, robotics and project expos with participation across Tamil Nadu.'},
+      {date:'2026-12-10', title:'Placement Orientation & Aptitude Bootcamp', time:'10:00 AM \u2013 4:00 PM', venue:'Placement Cell Hall', tag:'Career',
+       desc:'Resume clinic, mock aptitude tests and a recruiter talk for pre-final-year students.'},
+      {date:'2027-01-23', title:'CIT Cultural Fest \u2014 AARAVANA', time:'9:00 AM \u2013 8:00 PM', venue:'Open Air Theatre', tag:'Cultural',
+       desc:'Music, dance, drama and fine-arts contests with inter-college participation.'},
+      {date:'2027-02-20', title:'Annual Sports Meet', time:'8:00 AM \u2013 5:00 PM', venue:'CIT Sports Ground', tag:'Sports',
+       desc:'Track and field finals plus inter-department cricket, volleyball and basketball.'}
+    ]
+  },
+  {
+    id:'kct', group:'More',
+    name:'Kumaraguru College of Technology',
+    shortName:'Kumaraguru (KCT)',
+    mono:'KCT',
+    tagline:'A private autonomous engineering institution at Chinnavedampatti, known for industry-tied programmes and a large residential campus.',
+    type:'Private \u00b7 Autonomous',
+    affiliation:'Affiliated to Anna University',
+    estd:1984,
+    naac:'NAAC A+',
+    nirfBadge:'NIRF-ranked (Engineering)',
+    city:'Coimbatore', state:'Tamil Nadu',
+    address:'Kumaraguru Campus, Chinnavedampatti, Coimbatore \u2013 641 049',
+    website:'https://www.kct.ac.in',
+    admissionsUrl:'https://www.kct.ac.in/admissions/',
+    phone:'+91 422 266 0112',
+    email:'admissions@kct.ac.in',
+    officeHours:'Mon \u2013 Sat \u00b7 9:00 AM \u2013 5:00 PM',
+    about:[
+      'Kumaraguru College of Technology, run by the Ramanandha Adigalar Foundation, is an autonomous institution affiliated to Anna University. Government-quota seats are allotted through TNEA counselling while the college fills its management quota on merit.',
+      'The Chinnavedampatti campus hosts well-equipped labs, a central library, boys and girls hostels and an active placement cell with core and IT recruiters every season.'
+    ],
+    stats:[
+      {v:'6,000+', k:'Students'}, {v:'350+', k:'Faculty members'},
+      {v:'90%', k:'Placement rate'}, {v:'150 acres', k:'Campus'}
+    ],
+    highlights:[
+      {icon:'lab', title:'Industry-tied labs', text:'Centres of excellence with Bosch, TCS and Zoho tie-ups inside the department blocks.'},
+      {icon:'brief', title:'Placement cell', text:'Core and IT recruiters visit every season for UG and PG students.'},
+      {icon:'home', title:'Residential campus', text:'Boys and girls hostels inside campus with shuttle support to the city.'}
+    ],
+    recruiters:['Bosch','TCS','Zoho','Infosys','CTS','Wipro','Ashok Leyland','COFORGE'],
+    facilities:['Central library','Boys & girls hostels','Sports ground','Medical centre','Wi-Fi campus','Innovation hub'],
+    departments:[
+      {name:'Computer Science & Engineering', icon:'lab', blurb:'Computing fundamentals with electives in AI, data science and security.',
+       courses:[
+        {name:'B.E. Computer Science & Engineering', level:'UG', duration:'4 years', seats:'180 seats', eligibility:'10+2 with Physics, Chemistry & Mathematics \u00b7 TNEA counselling'},
+        {name:'M.E. Computer Science & Engineering', level:'PG', duration:'2 years', seats:'24 seats', eligibility:'B.E./B.Tech in CSE/IT or equivalent'}
+      ]},
+      {name:'Artificial Intelligence & Data Science', icon:'lab', blurb:'AI/ML foundations with a data engineering lab.',
+       courses:[
+        {name:'B.Tech Artificial Intelligence & Data Science', level:'UG', duration:'4 years', seats:'120 seats', eligibility:'10+2 with Physics, Chemistry & Mathematics \u00b7 TNEA counselling'}
+      ]},
+      {name:'Electronics & Communication Engineering', icon:'lab', blurb:'VLSI, embedded and communication systems with a chip-design lab.',
+       courses:[
+        {name:'B.E. Electronics & Communication Engineering', level:'UG', duration:'4 years', seats:'120 seats', eligibility:'10+2 with Physics, Chemistry & Mathematics \u00b7 TNEA counselling'},
+        {name:'M.E. VLSI Design', level:'PG', duration:'2 years', seats:'18 seats', eligibility:'B.E. in ECE/EEE or equivalent'}
+      ]},
+      {name:'Mechanical Engineering', icon:'lab', blurb:'Core mechanical with CAD/CAM and automation labs.',
+       courses:[
+        {name:'B.E. Mechanical Engineering', level:'UG', duration:'4 years', seats:'60 seats', eligibility:'10+2 with Physics, Chemistry & Mathematics \u00b7 TNEA counselling'}
+      ]}
+    ],
+    admission:{
+      mode:'TNEA single-window counselling (government quota) and college-level management quota on Class 12 marks.',
+      dates:[
+        {date:'2027-01-12', label:'Application portal opens', note:'Online applications begin on the college admission portal.'},
+        {date:'2027-05-10', label:'TNEA registration opens', note:'Register on the TNEA portal for government-quota counselling.'},
+        {date:'2027-04-25', label:'Last date to apply', note:'Management-quota applications close on this date.'},
+        {date:'2027-06-28', label:'Counselling & seat allotment', note:'Bring original documents for verification.'}
+      ],
+      steps:[
+        'Register on the TNEA portal (government quota) and/or the KCT admission portal (management quota).',
+        'Upload Class 10 & 12 marksheets and certificates.',
+        'Attend TNEA counselling or the college-level merit process as applicable.',
+        'Pay the first-semester fee and report to the college with original certificates.'
+      ],
+      docs:['Class 10 & 12 marksheets','Transfer certificate','Community / nativity certificate (if applicable)','Entrance scorecard (if applicable)','4 passport-size photographs'],
+      note:'Merit scholarships and founder-quota concessions are available.',
+      contactPhone:'+91 99 9430 0600', contactEmail:'admissions@kct.ac.in'
+    },
+    events:[
+      {date:'2026-11-06', title:'KCT Open House & Campus Tour', time:'9:30 AM \u2013 3:30 PM', venue:'Main Block & department labs', tag:'Admissions',
+       desc:'Campus walk-through, lab demos and an admission briefing for Class 12 students and parents.'},
+      {date:'2026-12-04', end:'2026-12-05', title:'TECHNOVATE \u201926 \u2014 National Tech Fest', time:'2 days \u00b7 9:00 AM \u2013 6:00 PM', venue:'Campus-wide', tag:'Technical',
+       desc:'Hackathon, robotics, paper presentations and project expos with inter-college participation.'},
+      {date:'2027-02-12', title:'Placement Bootcamp & Recruiter Talk', time:'10:00 AM \u2013 4:00 PM', venue:'Placement Cell Hall', tag:'Career',
+       desc:'Resume clinic, mock aptitude tests and a recruiter session for pre-final-year students.'}
+    ]
+  },
+  {
+    id:'amrita', group:'More',
+    name:'Amrita Vishwa Vidyapeetham (Coimbatore)',
+    shortName:'Amrita Coimbatore',
+    mono:'AMR',
+    tagline:'A deemed-to-be university campus at Ettimadai with a strong research culture and entrance-based engineering admissions.',
+    type:'Deemed-to-be University',
+    affiliation:'Amrita Vishwa Vidyapeetham',
+    estd:1994,
+    naac:'NAAC A++',
+    nirfBadge:'NIRF top-10 (Universities)',
+    city:'Coimbatore', state:'Tamil Nadu',
+    address:'Amritanagar P.O., Ettimadai, Coimbatore \u2013 641 112',
+    website:'https://www.amrita.edu',
+    admissionsUrl:'https://www.amrita.edu/admissions/engineering/',
+    phone:'+91 422 268 5000',
+    email:'btech@amrita.edu',
+    officeHours:'Mon \u2013 Fri \u00b7 9:00 AM \u2013 5:00 PM',
+    about:[
+      'Amrita Vishwa Vidyapeetham\u2019s Coimbatore campus is a deemed-to-be university with the Amrita School of Engineering at its core. B.Tech admissions run through the Amrita Engineering Entrance Examination (AEEE) or JEE Main via the CSAP counselling process.',
+      'The green Ettimadai campus carries research centres, centralised instrumentation labs, international hostels and a value-education programme alongside the regular curriculum.'
+    ],
+    stats:[
+      {v:'92%', k:'Placed in 2024'}, {v:'7,000+', k:'Students on campus'},
+      {v:'500+', k:'Faculty members'}, {v:'250 acres', k:'Campus'}
+    ],
+    highlights:[
+      {icon:'lab', title:'Research culture', text:'Centres of excellence in cybersecurity, robotics and medical devices with funded projects.'},
+      {icon:'brief', title:'Placements', text:'92% placed in 2024 with product, core and IT recruiters on campus.'},
+      {icon:'home', title:'Residential life', text:'International-standard hostels and a value-education programme.'}
+    ],
+    recruiters:['Amazon','Microsoft','Bosch','ISRO partners','TCS','Zoho','Qualcomm','Cognizant'],
+    facilities:['Central library','International hostels','Sports complex','Medical centre','Wi-Fi campus','Research parks'],
+    departments:[
+      {name:'Computer Science & Engineering', icon:'lab', blurb:'Systems and software with specialisations in AI and cybersecurity.',
+       courses:[
+        {name:'B.Tech Computer Science & Engineering', level:'UG', duration:'4 years', seats:'180 seats', eligibility:'AEEE / JEE Main via CSAP counselling'},
+        {name:'M.Tech Computer Science & Engineering', level:'PG', duration:'2 years', seats:'18 seats', eligibility:'B.Tech in CSE/IT or equivalent with GATE/Amrita test'}
+      ]},
+      {name:'Artificial Intelligence & Machine Learning', icon:'lab', blurb:'Dedicated AI school with ML, vision and language labs.',
+       courses:[
+        {name:'B.Tech Artificial Intelligence', level:'UG', duration:'4 years', seats:'120 seats', eligibility:'AEEE / JEE Main via CSAP counselling'}
+      ]},
+      {name:'Electronics & Communication Engineering', icon:'lab', blurb:'VLSI, IoT and communication systems with industry labs.',
+       courses:[
+        {name:'B.Tech Electronics & Communication Engineering', level:'UG', duration:'4 years', seats:'120 seats', eligibility:'AEEE / JEE Main via CSAP counselling'},
+        {name:'M.Tech VLSI & Embedded Systems', level:'PG', duration:'2 years', seats:'12 seats', eligibility:'B.Tech in ECE/EEE or equivalent'}
+      ]},
+      {name:'Mechanical Engineering', icon:'lab', blurb:'Design, thermal and manufacturing with robotics integration.',
+       courses:[
+        {name:'B.Tech Mechanical Engineering', level:'UG', duration:'4 years', seats:'60 seats', eligibility:'AEEE / JEE Main via CSAP counselling'}
+      ]}
+    ],
+    admission:{
+      mode:'Amrita Engineering Entrance Examination (AEEE) or JEE Main, followed by CSAP counselling; no lateral entry to B.Tech.',
+      dates:[
+        {date:'2026-11-15', label:'AEEE application opens', note:'Apply on the Amrita admissions portal.'},
+        {date:'2027-01-20', end:'2027-01-28', label:'AEEE computer-based test', note:'Slot booking opens two weeks before the window.'},
+        {date:'2027-03-05', label:'CSAP counselling begins', note:'Rank list published; choose campus and branch online.'},
+        {date:'2027-04-15', label:'Admission confirmation', note:'Fee payment and document verification at the campus.'}
+      ],
+      steps:[
+        'Apply for AEEE (or use your JEE Main score) on the Amrita admissions portal.',
+        'Sit for the computer-based entrance test at a booked slot.',
+        'Join CSAP counselling and choose Coimbatore campus and your branch.',
+        'Confirm with fee payment and document verification at Amritanagar.'
+      ],
+      docs:['Class 10 & 12 marksheets','Transfer certificate','AEEE/JEE scorecard','Community certificate (if applicable)','4 passport-size photographs'],
+      note:'Scholarship categories are based on entrance performance; no agents are appointed for seats.',
+      contactPhone:'+91 422 268 5509', contactEmail:'btech@amrita.edu'
+    },
+    events:[
+      {date:'2026-11-21', title:'Amrita Open Day & Campus Immersion', time:'9:00 AM \u2013 4:00 PM', venue:'Amritanagar Campus', tag:'Admissions',
+       desc:'Lab visits, hostel tour and an admission briefing with the CSAP counselling team.'},
+      {date:'2027-01-08', end:'2027-01-10', title:'ANVESHANA \u201927 \u2014 Research & Tech Fest', time:'3 days \u00b7 9:00 AM \u2013 6:00 PM', venue:'School of Engineering blocks', tag:'Technical',
+       desc:'Project expos, robotics challenges and paper presentations across departments.'},
+      {date:'2027-02-26', title:'Career Fair & Industry Connect', time:'10:00 AM \u2013 5:00 PM', venue:'Central Auditorium', tag:'Career',
+       desc:'Recruiter stalls, internship interviews and an alumni mentor session.'}
+    ]
+  },
+
 ];
 
 
@@ -1354,7 +1613,10 @@ var FACIL = {
   psgpharma: {hostel:true,  bus:false, busNote:''},
   psgphysio: {hostel:true,  bus:false, busNote:''},
   psgpoly:   {hostel:true,  bus:true,  busNote:'city &amp; route buses'},
-  psgias:    {hostel:false, bus:false, busNote:''}
+  psgias:     {hostel:false, bus:false, busNote:''},
+  cit:        {hostel:true,  bus:true,  busNote:'city & route buses'},
+  kct:        {hostel:true,  bus:true,  busNote:'college buses from city hubs'},
+  amrita:     {hostel:true,  bus:true,  busNote:'campus shuttle & town buses'}
 }
 
 var MATCH = {
@@ -1369,14 +1631,17 @@ var MATCH = {
   psgphysio: {min:60, basis:'merit', needsStream:['Science – Biology'], streamLabel:'Science · Biology'},
   psgim:     {basis:'after-degree', note:'MBA — any degree plus CAT / TANCET'},
   psgpoly:   {basis:'class10', note:'Polytechnic — Class 10 marks'},
-  psgias:    {basis:'after-degree', note:'PG & research — after your degree'}
+  psgias:      {basis:'after-degree', note:'PG & research — after your degree'},
+  cit:         {min:88, basis:'engineering', needsStream:['Science – Maths'], streamLabel:'Science · Maths'},
+  kct:         {min:80, basis:'engineering', needsStream:['Science – Maths'], streamLabel:'Science · Maths'},
+  amrita:      {min:90, basis:'exam', exam:'AEEE / JEE Main', needsStream:['Science – Maths'], streamLabel:'Science · Maths'}
 }
 
 var CATEGORY_OF = {
   psg:'Engineering', psgitech:'Engineering', gct:'Engineering',
   psgcas:'Arts & Science', psgr:'Arts & Science',
   psgimsr:'Medical & Health', psgnursing:'Medical & Health', psgpharma:'Medical & Health', psgphysio:'Medical & Health',
-  psgim:'Management', psgpoly:'Polytechnic', psgias:'Research'
+  psgim:'Management', psgpoly:'Polytechnic', psgias:'Research', cit:'Engineering', kct:'Engineering', amrita:'Engineering'
 }
 
 var ITEM_NOTE = {
@@ -1969,6 +2234,43 @@ function heroHTML(c){
 }
 
 
+var LOGO_DOMAIN = {
+  'Bosch':'bosch.com','Caterpillar':'caterpillar.com','TCS':'tcs.com','Zoho':'zoho.com',
+  'Deloitte':'deloitte.com','L&T':'larsentoubro.com','Qualcomm':'qualcomm.com','Infosys':'infosys.com',
+  'Hyundai':'hyundai.com','Wipro':'wipro.com','Cognizant':'cognizant.com','CTS':'cognizant.com',
+  'HDFC Bank':'hdfcbank.com','ICICI Bank':'icicibank.com','KPMG':'kpmg.com','TVS':'tvsmotor.com',
+  'Pricol':'pricol.com','Lakshmi Machine Works':'lmwglobal.com','Ford Business Services':'ford.com',
+  'Apollo Hospitals':'apollohospitals.com','PSG Hospitals':'psghospitals.com','Kauvery Hospital':'kauveryhospital.com',
+  'Fortis Healthcare':'fortishealthcare.com','Manipal Health':'manipal.edu','Govt. Medical Colleges':'tn.gov.in',
+  'Ashok Leyland':'ashokleyland.com','Saint-Gobain':'saint-gobain.com','COFORGE':'coforge.com',
+  'ISRO partners':'isro.gov.in','Amazon':'amazon.com','Microsoft':'microsoft.com','Google':'google.com',
+  'Accenture':'accenture.com','IBM':'ibm.com','HCLTech':'hcltech.com','Intel':'intel.com','Dell':'dell.com',
+  'Cisco':'cisco.com','Oracle':'oracle.com','SAP':'sap.com','Freshworks':'freshworks.com'
+};
+var MNC_EXTRA = ['Google', 'Microsoft', 'Amazon', 'Accenture', 'IBM', 'HCLTech'];
+
+/* live company logo tiles (google favicon service) with a monogram fallback */
+function logoTile(name){
+  var dom = LOGO_DOMAIN[name];
+  if (!dom) return '<span class="chip">' + esc(name) + '</span>';
+  var ini = esc(name.split(/\s+/).map(function(w){ return w[0]; }).join('').slice(0, 2).toUpperCase());
+  return '<span class="rlogo" title="' + esc(name) + '">' +
+    '<img loading="lazy" src="https://www.google.com/s2/favicons?domain=' + dom + '&sz=128" alt="' + esc(name) + ' logo" ' +
+    'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'grid\'">' +
+    '<span class="rlogo__mono" style="display:none">' + ini + '</span>' +
+    '<span class="rlogo__name">' + esc(name) + '</span></span>';
+}
+function recruitersHTML(c){
+  var own = c.recruiters || [];
+  var extra = MNC_EXTRA.filter(function(x){ return own.indexOf(x) < 0; });
+  var tiles = own.concat(extra).map(logoTile).join('');
+  /* left-to-right running strip: two identical groups loop seamlessly */
+  return '<div class="rmarq"><div class="rmarq__track">' +
+    '<span class="rmarq__g">' + tiles + '</span>' +
+    '<span class="rmarq__g" aria-hidden="true">' + tiles + '</span>' +
+  '</div></div>';
+}
+
 function aboutHTML(c){
   var hl = c.highlights.map(function(h){
     return '<div class="hl__item">' +
@@ -1977,7 +2279,7 @@ function aboutHTML(c){
     '</div>';
   }).join('');
 
-  var recruiters = c.recruiters.map(function(r){ return '<span class="chip">' + esc(r) + '</span>'; }).join('');
+  var recruiters = recruitersHTML(c);
   var facilities = c.facilities.map(function(r){ return '<span class="chip">' + esc(r) + '</span>'; }).join('');
 
   return '' +
@@ -1987,7 +2289,7 @@ function aboutHTML(c){
       '<h2 style="margin-top:8px">What ' + esc(c.shortName) + ' is known for</h2></div>' +
       c.about.map(function(p){ return '<p>' + esc(p) + '</p>'; }).join('') +
       '<div class="block"><h4>Campus &amp; facilities</h4><div class="chips">' + facilities + '</div></div>' +
-      '<div class="block"><h4>Top recruiters</h4><div class="chips">' + recruiters + '</div></div>' +
+      '<div class="block"><h4>Top recruiters</h4>' + recruiters + '</div>' +
     '</div>' +
     '<div class="hl">' + hl + '</div>' +
   '</div>';
@@ -2192,32 +2494,6 @@ function contactHTML(c){
         '<div class="cline"><span class="cline__ico">' + ICONS.book + '</span><div><span>Affiliation</span><b>' + esc(c.affiliation) + '</b></div></div>' +
       '</div>' +
 
-      '<div class="map">' +
-        '<svg viewBox="0 0 600 380" role="img" aria-label="Illustrative map showing the location of ' + esc(c.name) + '">' +
-          '<rect width="600" height="380" fill="#eef2f8"/>' +
-          '<g stroke="#dfe6f1" stroke-width="10">' +
-            '<path d="M-20 90h640M-20 250h640M110 -20v420M330 -20v420M500 -20v420"/>' +
-          '</g>' +
-          '<g stroke="#e8edf6" stroke-width="4">' +
-            '<path d="M-20 170h640M-20 320h640M220 -20v420M420 -20v420"/>' +
-          '</g>' +
-          '<g fill="#e4ebf5"><rect x="140" y="105" width="70" height="52" rx="6"/><rect x="230" y="110" width="80" height="46" rx="6"/>' +
-            '<rect x="350" y="100" width="60" height="60" rx="6"/><rect x="150" y="268" width="60" height="40" rx="6"/>' +
-            '<rect x="345" y="270" width="70" height="40" rx="6"/><rect x="445" y="185" width="46" height="52" rx="6"/></g>' +
-          '<g fill="#d9e6dc"><circle cx="40" cy="215" r="17"/><circle cx="62" cy="232" r="12"/><circle cx="548" cy="72" r="16"/><circle cx="570" cy="92" r="11"/></g>' +
-          '<g transform="translate(300,150)">' +
-            '<circle cx="0" cy="0" r="46" fill="rgba(199,143,34,.16)"/>' +
-            '<circle cx="0" cy="0" r="26" fill="rgba(199,143,34,.24)"/>' +
-            '<g transform="translate(-15,-30)">' +
-              '<path d="M15 0C6.7 0 0 6.7 0 15c0 11 15 27 15 27s15-16 15-27C30 6.7 23.3 0 15 0Z" fill="#121d38"/>' +
-              '<circle cx="15" cy="14" r="5.4" fill="#f0b64a"/>' +
-            '</g>' +
-          '</g>' +
-          '<text x="300" y="248" text-anchor="middle" font-family="Inter,Segoe UI,system-ui,sans-serif" font-size="15" font-weight="700" fill="#121d38">' + esc(c.shortName) + '</text>' +
-          '<text x="300" y="270" text-anchor="middle" font-family="Inter,Segoe UI,system-ui,sans-serif" font-size="12.5" fill="#74829d">' + esc(c.city) + ', ' + esc(c.state) + '</text>' +
-          '<text x="300" y="352" text-anchor="middle" font-family="Inter,Segoe UI,system-ui,sans-serif" font-size="11.5" fill="#9aa6bd">Illustrative map · tap "Get directions" for the real location</text>' +
-        '</svg>' +
-      '</div>' +
     '</div>' +
   '</section>';
 }
@@ -2651,6 +2927,153 @@ var GF_EXP = new Uint8Array(512), GF_LOG = new Uint8Array(256);
       return { size: best.size, version: version, mask: best.mask, dark: best.dark };
     }
 
+
+/* =============================================================================
+   v1.2 college page additions — management quota, fees structure, counselling,
+   location (Google map) and help/FAQ.  All money values are INDICATIVE SAMPLE
+   VALUES; the page says so next to every table.
+   ============================================================================= */
+var FEES = {
+  psg:       [['TNEA / government quota', '\u2248 \u20b960,000 / year'], ['Management quota', '\u2248 \u20b91,50,000 / year'], ['Hostel (boys / girls)', '\u2248 \u20b945,000 / year'], ['Mess & other fees', '\u2248 \u20b912,000 / year']],
+  psgitech:  [['TNEA / government quota', '\u2248 \u20b91,10,000 / year'], ['Management quota', '\u2248 \u20b92,20,000 / year'], ['Hostel (boys / girls)', '\u2248 \u20b960,000 / year'], ['Mess & other fees', '\u2248 \u20b915,000 / year']],
+  gct:       [['TNEA / government quota', '\u2248 \u20b925,000 / year'], ['Management quota', 'None \u2014 100% TNEA'], ['Hostel (boys / girls)', '\u2248 \u20b920,000 / year'], ['Mess & other fees', '\u2248 \u20b96,000 / year']],
+  cit:       [['TNEA / government quota', '\u2248 \u20b955,000 / year'], ['Management quota', '\u2248 \u20b91,40,000 / year'], ['Hostel (boys / girls)', '\u2248 \u20b940,000 / year'], ['Mess & other fees', '\u2248 \u20b910,000 / year']],
+  kct:       [['TNEA / government quota', '\u2248 \u20b960,000 / year'], ['Management quota', '\u2248 \u20b91,60,000 / year'], ['Hostel (boys / girls)', '\u2248 \u20b945,000 / year'], ['Mess & other fees', '\u2248 \u20b912,000 / year']],
+  amrita:    [['Scholarship category (AEEE rank)', '\u2248 \u20b91,00,000 / year'], ['Non-scholarship category', '\u2248 \u20b92,40,000 / year'], ['Hostel (per year)', '\u2248 \u20b960,000 / year'], ['Mess & other fees', '\u2248 \u20b915,000 / year']],
+  psgcas:    [['Merit / government quota', '\u2248 \u20b935,000 / year'], ['Management quota', '\u2248 \u20b970,000 / year'], ['Hostel (boys / girls)', '\u2248 \u20b940,000 / year'], ['Mess & other fees', '\u2248 \u20b98,000 / year']],
+  psgr:      [['Merit / government quota', '\u2248 \u20b930,000 / year'], ['Management quota', '\u2248 \u20b960,000 / year'], ['Hostel (women)', '\u2248 \u20b938,000 / year'], ['Mess & other fees', '\u2248 \u20b98,000 / year']],
+  psgimsr:   [['Government quota (MBBS)', '\u2248 \u20b970,000 / year'], ['Management quota (MBBS)', '\u2248 \u20b910,00,000 / year'], ['Hostel', '\u2248 \u20b960,000 / year'], ['Mess & other fees', '\u2248 \u20b925,000 / year']],
+  psgnursing:[['Government quota', '\u2248 \u20b940,000 / year'], ['Management quota', '\u2248 \u20b980,000 / year'], ['Hostel (women / men)', '\u2248 \u20b935,000 / year'], ['Mess & other fees', '\u2248 \u20b98,000 / year']],
+  psgpharma: [['Government quota', '\u2248 \u20b945,000 / year'], ['Management quota', '\u2248 \u20b990,000 / year'], ['Hostel', '\u2248 \u20b935,000 / year'], ['Mess & other fees', '\u2248 \u20b98,000 / year']],
+  psgphysio: [['Government quota', '\u2248 \u20b940,000 / year'], ['Management quota', '\u2248 \u20b980,000 / year'], ['Hostel', '\u2248 \u20b935,000 / year'], ['Mess & other fees', '\u2248 \u20b98,000 / year']],
+  psgim:     [['TANCET / government quota', 'As per TANCET counselling'], ['Management quota (MBA)', '\u2248 \u20b93,00,000 / year'], ['Hostel', '\u2248 \u20b950,000 / year'], ['Mess & other fees', '\u2248 \u20b915,000 / year']],
+  psgpoly:   [['Government quota', '\u2248 \u20b912,000 / year'], ['Management quota', '\u2248 \u20b925,000 / year'], ['Hostel', '\u2248 \u20b925,000 / year'], ['Mess & other fees', '\u2248 \u20b95,000 / year']],
+  psgias:    [['Research programmes', 'Fellowship / sponsored'], ['Management quota', '\u2248 \u20b92,00,000 / year (PG)'], ['Hostel', 'Not available'], ['Mess & other fees', '\u2014']]
+};
+
+var QUOTA = {
+  psg:       {seats:'Roughly two-thirds of the seats are government quota, allotted through TNEA counselling. The remaining seats are management quota, filled by the college on merit.', process:'Management-quota applicants apply on the college admission portal after the TNEA rank list. Selection uses Class 12 marks plus a short interaction; the offer letter states the fee slab.', contact:'Admission office · +91 422 257 2177 · admissions@psgtech.ac.in'},
+  psgitech:  {seats:'Government-quota seats come through TNEA counselling; the unaided seats (including management quota) are filled by the college.', process:'Apply on the college portal with your TNEA registration number or Class 12 marks; offers follow the rank order published by the college.', contact:'Admission office · +91 422 301 4400 · admissions@psgitech.ac.in'},
+  gct:       {seats:'A government college — 100% of seats are allotted through TNEA counselling. There is no management quota here.', process:'Register on the TNEA portal, keep GCT high in your preference list and follow the counselling rounds online.', contact:'Admission section · +91 422 243 2221 · principal@gct.ac.in'},
+  cit:       {seats:'Government-aided institution: government-quota seats through TNEA counselling, the rest management quota filled by the college on merit.', process:'Management-quota applications open on the college portal after results; selection is on Class 12 marks.', contact:'Admission office · +91 422 262 1111 · admissions@cit.edu.in'},
+  psgcas:    {seats:'Most seats are merit-based on Class 12 marks; a management quota exists for unaided programmes.', process:'Apply on the college portal or in person at the admissions office; merit lists are published on the notice board and website.', contact:'Admission office · +91 422 430 3300 · principal@psgcas.ac.in'},
+  psgr:      {seats:'Merit-based admission for women students; management quota applies to unaided seats only.', process:'Apply on the college portal after Class 12 results; merit list follows published cut-offs.', contact:'Admission office · +91 422 261 1063 · office@psgrkcw.ac.in'},
+  psgimsr:   {seats:'MBBS seats split between government quota (NEET counselling) and management / NRI quota; PG seats follow NEET-PG counselling.', process:'Qualify NEET, register for state counselling, choose PSG IMSR in preferences; management-quota applicants also register on the college portal.', contact:'Admission office · +91 422 262 6161 · admissions@psgimsr.ac.in'},
+  psgnursing: {seats:'Government-quota seats through state counselling; management quota filled by the college on Class 12 (Biology) merit.', process:'Apply on the college portal with your Biology-group marksheet; selection list is published before the semester starts.', contact:'Admission office · +91 422 262 6161 · nursing@psgimsr.ac.in'},
+  psgpharma: {seats:'Government quota through TNEA / state counselling; management quota on Class 12 merit (Biology or Maths group).', process:'Apply on the college portal; B.Pharm also accepts D.Pharm lateral-entry applicants in the second year.', contact:'Admission office · +91 422 262 6161 · pharmacy@psgpharma.ac.in'},
+  psgphysio: {seats:'Government quota through state counselling; management quota on Class 12 (Biology) merit.', process:'Apply on the college portal with your Biology-group marksheet and NEET score if available.', contact:'Admission office · +91 422 262 6161 · physio@psgphysiotherapy.ac.in'},
+  psgim:     {seats:'MBA seats follow TANCET counselling for government quota; the rest are management quota on degree marks + CAT/MAT/TANCET.', process:'Apply on the college portal with your score card; shortlisted candidates attend a profile discussion.', contact:'Admission office · +91 422 301 4400 · admissions@psgim.ac.in'},
+  psgpoly:   {seats:'Polytechnic seats are allotted through the single-window government portal; a small management quota exists.', process:'Apply on the single-window portal after Class 10 results; branch allotment follows the published rank list.', contact:'Admission office · +91 422 262 6161 · poly@psgpolytech.ac.in'},
+  psgias:    {seats:'No undergraduate quota — PG and research seats are filled by entrance / interview and sponsored fellowships.', process:'Apply with your degree marks and research statement; selection is through a written test and interview.', contact:'Admission office · +91 422 301 4400 · research@psgias.ac.in'}
+};
+
+function counselHTML(c) {
+  var m = MATCH[c.id] || {};
+  var steps;
+  if (m.basis === 'exam') {
+    steps = [
+      'Qualify ' + (m.exam || 'the entrance exam') + ' — your score and rank decide eligibility.',
+      'Register on the state counselling portal for ' + (m.exam || 'entrance') + ' and upload your certificates.',
+      'Fill your college preferences in order of interest before the deadline.',
+      'Allotment follows rank + preferences; report to the college with original documents.'
+    ];
+  } else if (m.basis === 'class10') {
+    steps = [
+      'Apply through the single-window polytechnic admission portal after Class 10 results.',
+      'Upload your Class 10 marksheet; the rank list is published on the portal.',
+      'Choose your branch in the counselling round — allotment is by rank.',
+      'Pay the fee and report to the college with original documents.'
+    ];
+  } else if (m.basis === 'after-degree') {
+    steps = [
+      'Appear for TANCET (CAT / MAT where accepted) after your degree.',
+      'Apply on the college portal with degree marks and your score card.',
+      'Shortlisted candidates are called for a selection round / interview.',
+      'Confirm your seat by paying the first-semester fee.'
+    ];
+  } else {
+    steps = [
+      'Register on the TNEA portal and upload your Class 10 & 12 certificates.',
+      'The rank list uses your Class 12 marks' + (m.streamLabel ? ' in ' + m.streamLabel : '') + '.',
+      'Fill college + branch preferences before the counselling deadline.',
+      'Allotment follows rank + preferences; pay the fee and report with originals.'
+    ];
+  }
+  return '<div class="card" style="margin-top:16px"><div class="block"><h4>Counselling — how your seat is decided</h4>' +
+    '<div class="steps">' + steps.map(function (s, i) {
+      return '<div class="step"><p>' + esc(s) + '</p></div>';
+    }).join('') + '</div>' +
+    '<p class="muted" style="margin:12px 0 0;font-size:13px">Counselling route for this college: ' + esc(c.admission.mode) + '.</p>' +
+    '</div></div>';
+}
+
+function feesHTML(c) {
+  var q = QUOTA[c.id] || {};
+  var rows = FEES[c.id] || [];
+  return '' +
+  '<section class="sec" id="sec-fees">' +
+    '<div class="sec-head"><div class="sec-title"><span class="kicker">Quota &amp; fees</span>' +
+      '<h2>Management quota &amp; fee structure</h2>' +
+      '<p>How seats are split between counselling and management quota, and what a year costs — indicative sample values, confirm with the college.</p>' +
+    '</div></div>' +
+    '<div class="card" style="padding:22px">' +
+      '<div class="block"><h4>Management quota</h4><p style="font-size:14.6px">' + esc(q.seats || 'Quota split is published by the college each season.') + '</p>' +
+        '<div class="steps" style="margin-top:12px">' +
+          '<div class="step"><p>' + esc(q.process || 'Apply on the college admission portal.') + '</p></div>' +
+          '<div class="step"><p>' + esc(q.contact || 'Contact the admission office.') + '</p></div>' +
+        '</div></div>' +
+      '<div class="block"><h4>Fee structure (per year)</h4>' +
+        '<table class="fee-table"><thead><tr><th scope="col">Head</th><th scope="col">Indicative amount</th></tr></thead><tbody>' +
+        rows.map(function (r) { return '<tr><td>' + esc(r[0]) + '</td><td><b>' + esc(r[1]) + '</b></td></tr>'; }).join('') +
+        '</tbody></table>' +
+        '<div class="alert alert--info show" style="margin-top:14px">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex:0 0 auto;margin-top:2px"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>' +
+          '<span>Indicative sample values for this demo — the college\u2019s official admission office is the authority on fees and quota.</span></div>' +
+      '</div>' +
+    '</div>' +
+  '</section>';
+}
+
+function mapHTML(c) {
+  var f = FACIL[c.id] || {};
+  var q = encodeURIComponent(c.name + ', ' + c.address + ', ' + c.city);
+  return '' +
+  '<section class="sec" id="sec-location">' +
+    '<div class="sec-head"><div class="sec-title"><span class="kicker">Location</span>' +
+      '<h2>Where the campus is</h2>' +
+      '<p>' + esc(c.address) + ', ' + esc(c.city) + '.</p>' +
+    '</div></div>' +
+    '<div class="card" style="padding:18px">' +
+      '<div class="map-embed"><iframe title="Map of ' + esc(c.name) + '" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=' + q + '&z=15&output=embed"></iframe></div>' +
+      '<div class="map-row">' +
+        '<div class="map-addr">' + ICONS.pin + '<div><b>' + esc(c.name) + '</b><span>' + esc(c.address) + ', ' + esc(c.city) + ', ' + esc(c.state) + '</span></div></div>' +
+        '<div class="row">' +
+          '<a class="btn btn--primary btn--sm" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/dir/?api=1&destination=' + q + '">Get directions</a>' +
+          '<a class="btn btn--ghost btn--sm" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/search/?api=1&query=' + q + '">Open in Google Maps</a>' +
+        '</div>' +
+      '</div>' +
+      '<p class="muted" style="margin:12px 2px 0;font-size:13px">Hostel: ' + (f.hostel ? 'available' : 'not listed') +
+        ' · Daily travel: ' + (f.bus ? esc(f.busNote || 'college transport') : 'plan your own') +
+        '. The map needs an internet connection — otherwise use \u201cOpen in Google Maps\u201d.</p>' +
+    '</div>' +
+  '</section>';
+}
+
+function faqHTML(c) {
+  var f = FACIL[c.id] || {};
+  var a = c.admission || {};
+  var qs = [
+    ['How do I apply to ' + esc(c.shortName) + '?', 'Through ' + esc(a.mode || 'the college admission portal') + '. The Admission &amp; Counselling section above lists every date and step.'],
+    ['Is hostel available?', f.hostel ? 'Yes — ' + (f.bus ? 'hostel plus ' + esc(f.busNote) + ' for daily travel.' : 'hostel available; plan your own daily travel.') : 'Not listed on this profile — ask the admission office.'],
+    ['Which documents should I keep ready?', esc((a.docs || ['Class 10 & 12 marksheets', 'Transfer certificate']).slice(0, 4).join(' · ')) + '.'],
+    ['Who do I call for admission help?', '<a href="tel:' + esc(String(a.contactPhone || c.phone || '').replace(/\s/g, '')) + '">' + esc(a.contactPhone || c.phone) + '</a> · <a href="mailto:' + esc(a.contactEmail || c.email) + '">' + esc(a.contactEmail || c.email) + '</a> (' + esc(c.officeHours) + ').']
+  ];
+  return '<div class="card" style="margin-top:16px"><div class="block"><h4>Help — quick answers</h4>' +
+    '<div class="faq">' + qs.map(function (x) {
+      return '<details class="faq__i"><summary>' + x[0] + '</summary><p>' + x[1] + '</p></details>';
+    }).join('') + '</div></div></div>';
+}
+
 export {
-  ICONS, COLLEGES, USERS, DEMO_CREDENTIALS, DEGREES, FACIL, MATCH, CATEGORY_OF, ITEM_NOTE, GROUP_ORDER, PROXY_ID, ROLE_COPY, NOT_SURE, ANY_DEGREE, STREAMS, WANT, STAY, HOSTELTYPE, TRAVEL, degreesFor, degreeRe, degreeMatches, courseMatches, fitScore, eligFor, storeGet, storeSet, storeDel, studentAccounts, studentLookup, isSeeded, saveStudentDetails, restoreStudentSession, saveStudentList, startStudentSession, studentColleges, studentVisible, stuPrefsLine, faciNote, subLineOf, hayMatches, collegesInGroup, categoryOf, isPSG, groupLabelOfCategory, proxyIdFor, portalProxyId, fmtLong, fmtShort, dayParts, countdownText, initials, collegeById, groupLabelOf, cityOf, nextAdmissionDate, upcomingEvents, esc, countCourses, selectionMode, qrSVG, pathFromUrl, logoOrMono, groupMarkHTML, mediaOf, stuCardHTML, heroHTML, aboutHTML, coursesHTML, admissionsHTML, eventsHTML, contactHTML, websiteHTML, deptListHTML, pickerHTML
+  ICONS, COLLEGES, USERS, DEMO_CREDENTIALS, DEGREES, FACIL, MATCH, CATEGORY_OF, ITEM_NOTE, GROUP_ORDER, PROXY_ID, ROLE_COPY, NOT_SURE, ANY_DEGREE, STREAMS, WANT, STAY, HOSTELTYPE, TRAVEL, degreesFor, degreeRe, degreeMatches, courseMatches, fitScore, eligFor, storeGet, storeSet, storeDel, studentAccounts, studentLookup, isSeeded, saveStudentDetails, restoreStudentSession, saveStudentList, startStudentSession, studentColleges, studentVisible, stuPrefsLine, faciNote, subLineOf, hayMatches, collegesInGroup, categoryOf, isPSG, groupLabelOfCategory, proxyIdFor, portalProxyId, fmtLong, fmtShort, dayParts, countdownText, initials, collegeById, groupLabelOf, cityOf, nextAdmissionDate, upcomingEvents, esc, countCourses, selectionMode, qrSVG, pathFromUrl, logoOrMono, groupMarkHTML, mediaOf, stuCardHTML, heroHTML, aboutHTML, coursesHTML, admissionsHTML, eventsHTML, contactHTML, websiteHTML, deptListHTML, pickerHTML, FEES, QUOTA, counselHTML, feesHTML, mapHTML, faqHTML
 };

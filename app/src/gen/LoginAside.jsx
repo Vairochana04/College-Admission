@@ -21,6 +21,7 @@ export default function LoginAside(){
             <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 13 4 4L19 7" /></svg><span>Admission timelines with every important date in one view</span></li>
             <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 13 4 4L19 7" /></svg><span>Upcoming campus events, open houses and fests with dates</span></li>
             <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 13 4 4L19 7" /></svg><span>Direct link to each college's official website & admission portal</span></li>
+            <li><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m5 13 4 4L19 7" /></svg><span>Admin dashboard — student leads, college-wise interest & CSV exports</span></li>
           </ul>
           <div className="auth__psg">
             <img id="psgGroupLogo" alt="PSG &amp; Sons' Charities logo" />
@@ -28,12 +29,12 @@ export default function LoginAside(){
           </div>
           <div className="auth__stat">
             <div><b>12</b><span>Demo colleges</span></div>
-            <div><b>3</b><span>Login roles</span></div>
+            <div><b>2</b><span>Login roles</span></div>
             <div><b>1</b><span>Simple profile view</span></div>
           </div>
         </div>
 
-        <div className="auth__foot">Demo build v0.10 · Student accounts with marks, course, degree, hostel & bus matching · Sample data for illustration</div>
+        <div className="auth__foot">Demo build v1.1 · Student accounts (name, email, mobile, marks, course, hostel & bus) stored on the server · Admin dashboard with college-wise leads · Sample data for illustration</div>
       </div>
     </aside>
     </>
