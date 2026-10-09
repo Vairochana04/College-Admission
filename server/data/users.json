@@ -1,0 +1,14 @@
+{
+ "college@demo.edu": {
+  "password": "college123",
+  "role": "college",
+  "name": "Dr. R. Meenakshi",
+  "title": "Admissions Officer",
+  "collegeId": "psg"
+ },
+ "student@demo.edu": {
+  "password": "student123",
+  "role": "student",
+  "name": "Aarav S."
+ }
+}

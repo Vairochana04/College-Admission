@@ -1,0 +1,41 @@
+CampusConnect — Java backend + React frontend
+=============================================
+
+!! Python ILLA. Node/npm theva illa (run panna). Java mattum pothum.
+
+RUN PANNA (Windows)
+-------------------
+  1) JDK install (once):   winget install Microsoft.OpenJDK.21
+       (illa https://adoptium.net -> "Temurin 21 (JDK)")
+  2) CampusConnect_JavaReact_v1.0\START-WINDOWS.bat  -> double-click
+     (adhu server-a start pannum + browser-la http://localhost:8080 thana open aagum)
+
+  Manually venum-na:
+       cd server
+       java Server.java            <- JDK 11+ (single-file launch, build step illa)
+       browser:  http://localhost:8080
+
+MAC / LINUX
+   ./START-MAC-LINUX.sh      illa      cd server && java Server.java
+
+React-a EDIT pannanum-na (dev mode, hot reload)
+   terminal 1:  cd server && java Server.java
+   terminal 2:  cd app && npm install && npm run dev    ->  http://localhost:5173
+   (Vite "/api" + "/site" requests-a Java 8080-ku proxy pannum)
+   Production rebuild:  cd app && npm run build   (app/dist/ update aagum)
+
+ENNA IRUKKU
+   app/       React (Vite) frontend  — src/components/ (Login, StudentView, CollegeView,
+              CollegeBody, SiteViewer), src/core.js (data + matching), src/styles.css
+              app/dist/ = ready-made build (Java adha serve pannum, so npm theva illa)
+   server/    Server.java (JDK-only backend: static serve + /api/* + /site/* proxy)
+              data/colleges.json, users.json, demo-credentials.json
+   screenshots/  real Chromium la edutha 5 screenshots (r1...r5)
+   legacy/    munnadi irundha single-file v0.10 app + adhu-da python server (reference)
+
+VERIFY PANNITTEN
+   Student create -> dashboard, profile 6 sections, official website in-app (iframe /site/...),
+   College login (Java /api/login) + 12-college switcher, Java proxy 13/13 sites,
+   browser console errors 0.  Screenshots paarunga -> screenshots/ folder.
+
+DETAIL-A: README.md paarunga.
