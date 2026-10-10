@@ -995,3 +995,13 @@ button.stu__pic-edit:hover{transform:scale(1.12)}
 .rail__i.on{background:var(--navy); color:#fff}
 #view-student, #view-drill, .viewfade{margin-left:58px}
 @media (max-width:720px){ .rail{width:48px; padding:8px 5px} #view-student, #view-drill, .viewfade{margin-left:48px} }
+
+/* ---------- v2.1 · floating action buttons (right-bottom corner) ---------- */
+.fabs{position:fixed; right:16px; bottom:16px; display:flex; flex-direction:column; gap:10px; z-index:75}
+.fab{width:48px; height:48px; border-radius:50%; border:1px solid var(--line); background:#fff;
+  color:var(--head); display:grid; place-items:center; cursor:pointer; font-size:17px; line-height:1;
+  box-shadow:0 12px 26px -14px rgba(13,22,38,.45); transition:.15s ease; text-decoration:none}
+.fab:hover{transform:translateY(-2px); border-color:#cfd7e6}
+.fab--save.on{background:var(--navy); border-color:var(--navy); color:#fff}
+.hasfab{padding-bottom:26px}
+@media (max-width:720px){ .fabs{right:12px; bottom:12px} .fab{width:44px; height:44px} }

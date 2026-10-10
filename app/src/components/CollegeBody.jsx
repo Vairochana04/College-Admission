@@ -128,7 +128,7 @@ export default function CollegeBody({ college, studentMode, onBack }) {
   }, [c.id, sections]);
 
   return (
-    <div ref={wrap} onClick={onClick} onInput={onInput} className={studentMode ? 'hasbar' : ''}>
+    <div ref={wrap} onClick={onClick} onInput={onInput} className={studentMode ? 'hasfab' : ''}>
       {studentMode && (
         <div className="wrap" style={{ paddingTop: 18 }}>
           <button className="btn btn--ghost btn--sm" onClick={onBack}>← All colleges</button>
@@ -155,12 +155,15 @@ export default function CollegeBody({ college, studentMode, onBack }) {
 
       <CcFoot />
       {studentMode && (
-        <div className="actionbar">
-          <button type="button" className={"btn btn--sm " + (saved ? 'btn--gold' : 'btn--primary')} onClick={saveToggle}>
-            {saved ? '✓ Saved' : '♥ Save college'}
+        <div className="fabs" aria-label="Quick actions">
+          <button type="button" className={"fab fab--save" + (saved ? ' on' : '')} onClick={saveToggle}
+            title={saved ? 'Saved — tap to remove' : 'Save college'} aria-label="Save college">
+            {saved ? '✓' : '♥'}
           </button>
-          <a className="btn btn--sm btn--ghost" href={c.website} target="_blank" rel="noopener noreferrer" data-site="1" data-label={(c.shortName || c.name) + ' official website'}>🌐 Official site</a>
-          <button type="button" className="btn btn--sm btn--ghost" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>↑ Top</button>
+          <a className="fab" href={c.website} target="_blank" rel="noopener noreferrer" data-site="1"
+            data-label={(c.shortName || c.name) + ' official website'} title="Official website" aria-label="Official website">🌐</a>
+          <button type="button" className="fab" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            title="Back to top" aria-label="Back to top">↑</button>
         </div>
       )}
     </div>
