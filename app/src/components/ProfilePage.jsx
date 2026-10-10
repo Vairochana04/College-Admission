@@ -1,26 +1,39 @@
-/* My Profile — the page the student's own saved details build.
-   Everything here is read back from the server record (api.me), so what was
-   filled once at register/onboarding shows up neatly; no other student's
-   data is ever read. */
+/* My Profile — one page, three modes (the agreed redesign):
+   · VIEW  — grouped, grid-laid sections read back from the server record
+   · EDIT  — the same page switches to inline editing (light theme, sticky bar)
+   · SETUP — first-login fill (exported as <ProfileSetup/>), same form component
+   No dark modal anywhere; one shared ProfileForm keeps fill/view/edit consistent. */
 import { useEffect, useState } from 'react';
 import { cc, set, toast, useCC } from '../store.js';
 import {
-  studentColleges, eligFor, fitScore, initials, fmtLong, nextAdmissionDate, collegeById,
-  STREAMS, WANT, STAY, HOSTELTYPE, TRAVEL, degreesFor, ANY_DEGREE, NOT_SURE,
+  studentColleges, eligFor, fitScore, initials, fmtLong, nextAdmissionDate, collegeById, ANY_DEGREE,
 } from '../core.js';
 import { api } from '../api.js';
+import ProfileForm from './ProfileForm.jsx';
 
 const pctOf = (s) => Math.max(35, Math.min(98, Math.round(96 - s * 18)));
 
-const Chip = ({ on, children, ...rest }) => (
-  <button type="button" className={'chip' + (on ? ' chip--on' : '')} aria-pressed={on} {...rest}>{children}</button>
-);
+const snap = () => ({
+  name: cc.user?.name || '', mobile: cc.user?.mobile || '',
+  marks: cc.marks === null || cc.marks === undefined ? '' : String(cc.marks),
+  stream: cc.stuStream, want: cc.stuWant, degree: cc.stuDegree || ANY_DEGREE,
+  stay: cc.stuStay, hostelType: cc.stuHostelType, travel: cc.stuTravel,
+  town: cc.stuTown || '', consent: true,
+});
+
+function applyToStore(f) {
+  Object.assign(cc, {
+    user: { ...cc.user, name: f.name, mobile: f.mobile, savedServer: true },
+    marks: f.marks, stuStream: f.stream, stuWant: f.want, stuDegree: f.degree,
+    stuStay: f.stay, stuHostelType: f.hostelType, stuTravel: f.travel, stuTown: f.town,
+  });
+  set({});
+}
 
 export default function ProfilePage() {
   useCC();
   const [rec, setRec] = useState(null);
   const [editing, setEditing] = useState(false);
-  const [f, setF] = useState(null);
   useEffect(() => {
     api.me().then((d) => { if (d && d.student) setRec(d.student); }).catch(() => {});
   }, []);
@@ -36,49 +49,33 @@ export default function ProfilePage() {
     if (n && (!next || String(n.date) < String(next.date))) next = n;
   });
 
-  function openEdit() {
-    setF({
-      name: cc.user?.name || '', mobile: cc.user?.mobile || '',
-      marks: cc.marks === null || cc.marks === undefined ? '' : String(cc.marks),
-      stream: cc.stuStream, want: cc.stuWant, degree: cc.stuDegree || ANY_DEGREE,
-      stay: cc.stuStay, hostelType: cc.stuHostelType, travel: cc.stuTravel, town: cc.stuTown || '',
-    });
-    setEditing(true);
-  }
-  const setChip = (k, val) => setF((o) => ({ ...o, [k]: val, ...(k === 'want' ? { degree: ANY_DEGREE } : {}) }));
-  function saveEdit() {
-    if (f.name.trim().length < 2) return toast('Please tell us your name');
-    const mob = f.mobile.replace(/\D/g, '');
-    if (mob.length !== 10) return toast('Mobile number should be 10 digits');
-    const m = Number(f.marks);
-    if (!f.marks || isNaN(m) || m < 30 || m > 100) return toast('Class 12 % should be between 30 and 100');
-    api.updateStudent({
-      name: f.name.trim(), mobile: mob, marks: m, stream: f.stream, want: f.want,
-      degree: f.degree, stay: f.stay, hostelType: f.hostelType, travel: f.travel, town: f.town.trim(),
-    }).then(() => {
-      Object.assign(cc, {
-        user: { ...cc.user, name: f.name.trim(), mobile: mob, savedServer: true },
-        marks: m, stuStream: f.stream, stuWant: f.want, stuDegree: f.degree,
-        stuStay: f.stay, stuHostelType: f.hostelType, stuTravel: f.travel, stuTown: f.town.trim(),
-      });
-      set({});
+  function saveEdit(data) {
+    return api.updateStudent(data).then(() => {
+      applyToStore(data);
       setEditing(false);
-      toast('Saved — your profile is updated');
+      toast('Saved — your profile is updated ✅');
     }).catch(() => toast('Could not save right now. Try again?'));
   }
 
   const v = (x, d) => (x === null || x === undefined || x === '' ? (d || '—') : x);
-  const rows = [
-    ['Email id (login)', v(u.email)],
-    ['Mobile', v(u.mobile)],
-    ['Class 12 %', cc.marks === null || cc.marks === undefined ? '—' : cc.marks + '%'],
-    ['Stream', v(cc.stuStream)],
-    ['Course wanted', v(cc.stuWant)],
-    ['Degree', v(cc.stuDegree)],
-    ['Stay', (cc.stuStay || '—') + (cc.stuStay === 'Hostel needed' && cc.stuHostelType ? ' · ' + cc.stuHostelType : '')],
-    ['Travel', v(cc.stuTravel)],
-    ['Town', v(cc.stuTown)],
-    ['Consent', rec ? (rec.consent === 'true' ? 'Given (DPDP) ✓' : 'Not given') : '…'],
+  const groups = [
+    ['About you', [
+      ['Name', v(u.name)],
+      ['Email id (login)', v(u.email)],
+      ['Mobile', u.mobile ? '+91 ' + u.mobile : '—'],
+      ['Town', v(cc.stuTown)],
+    ]],
+    ['Academic', [
+      ['Class 12 %', cc.marks === null || cc.marks === undefined ? '—' : cc.marks + '%'],
+      ['Stream', v(cc.stuStream)],
+      ['Course wanted', v(cc.stuWant)],
+      ['Degree', v(cc.stuDegree)],
+    ]],
+    ['Stay & travel', [
+      ['Stay', (cc.stuStay || '—') + (cc.stuStay === 'Hostel needed' && cc.stuHostelType ? ' · ' + cc.stuHostelType : '')],
+      ['Travel', v(cc.stuTravel)],
+      ['Consent', rec ? (rec.consent === 'true' ? 'Given (DPDP) ✓' : 'Not given') : '…'],
+    ]],
   ];
 
   return (
@@ -108,15 +105,29 @@ export default function ProfilePage() {
       <div className="prof__grid">
         <section className="card prof__card">
           <h3><span className="dot" />Your details
-            <button className="card__edit" type="button" onClick={openEdit} title="Edit your details" aria-label="Edit your details">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20l4.5-.9L19.6 8a2.1 2.1 0 0 0-3-3L5.5 16.1Z" /><path d="m14.5 6.5 3 3" /></svg>
-            </button>
+            {!editing && (
+              <button className="card__edit" type="button" onClick={() => setEditing(true)} title="Edit your details" aria-label="Edit your details">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20l4.5-.9L19.6 8a2.1 2.1 0 0 0-3-3L5.5 16.1Z" /><path d="m14.5 6.5 3 3" /></svg>
+              </button>
+            )}
           </h3>
-          <dl className="prof__kv">
-            {rows.map(([k, val]) => (
-              <div key={k}><dt>{k}</dt><dd>{val}</dd></div>
-            ))}
-          </dl>
+          {editing ? (
+            <ProfileForm initial={snap()} mode="edit" saveLabel="Save changes"
+              onSave={saveEdit} onCancel={() => setEditing(false)} />
+          ) : (
+            <div className="psecs">
+              {groups.map(([title, rows]) => (
+                <section className="psec" key={title}>
+                  <h4>{title}</h4>
+                  <dl className="pgrid">
+                    {rows.map(([k, val]) => (
+                      <div key={k}><dt>{k}</dt><dd>{val}</dd></div>
+                    ))}
+                  </dl>
+                </section>
+              ))}
+            </div>
+          )}
         </section>
 
         <div className="prof__side">
@@ -145,61 +156,38 @@ export default function ProfilePage() {
                 ? <span className="tag tag--gold">Saved: {savedNames.join(' · ')}</span>
                 : <span className="tag">No saved colleges yet</span>}
               {next && <span className="tag">Next: {next.label}</span>}
-              <span className="tag">Filled once · edit with the pencil on your photo</span>
+              <span className="tag">Filled once · edit with the pencil</span>
             </div>
           </section>
         </div>
       </div>
-
-      {editing && f && (
-        <div className="modal" role="dialog" aria-modal="true" aria-label="Edit your details"
-          onClick={(e) => { if (e.target === e.currentTarget) setEditing(false); }}>
-          <div className="modal__card pop">
-            <div className="modal__head">
-              <h3>Edit your details</h3>
-              <button className="modal__x" type="button" onClick={() => setEditing(false)} aria-label="Close">&times;</button>
-            </div>
-            <div className="stu__edit stu__edit--modal">
-              <div className="stu__editrow">
-                <label htmlFor="peName">Name</label>
-                <input id="peName" type="text" style={{ width: 190 }} value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} />
-                <label htmlFor="peMob">Mobile</label>
-                <input id="peMob" type="tel" inputMode="numeric" maxLength={10} style={{ width: 130 }} value={f.mobile} onChange={(e) => setF({ ...f, mobile: e.target.value.replace(/\D/g, '').slice(0, 10) })} />
-                <label htmlFor="peMarks">Class 12 %</label>
-                <input id="peMarks" type="number" min="30" max="100" step="0.1" style={{ width: 90 }} value={f.marks} onChange={(e) => setF({ ...f, marks: e.target.value })} />
-              </div>
-              <div className="stu__editrow">
-                <label>Stream</label>
-                <span className="chips">{STREAMS.map((x) => <Chip key={x} on={f.stream === x} onClick={() => setChip('stream', x)}>{x}</Chip>)}</span>
-              </div>
-              <div className="stu__editrow">
-                <label>Course</label>
-                <span className="chips">{WANT.map((x) => <Chip key={x} on={f.want === x} onClick={() => setChip('want', x)}>{x}</Chip>)}</span>
-              </div>
-              {f.want !== NOT_SURE && (
-                <div className="stu__editrow">
-                  <label>Degree</label>
-                  <span className="chips">{degreesFor(f.want).map((x) => <Chip key={x} on={f.degree === x} onClick={() => setChip('degree', x)}>{x}</Chip>)}</span>
-                </div>
-              )}
-              <div className="stu__editrow">
-                <label>Stay</label>
-                <span className="chips">{STAY.map((x) => <Chip key={x} on={f.stay === x} onClick={() => setChip('stay', x)}>{x}</Chip>)}
-                  {f.stay === 'Hostel needed' && HOSTELTYPE.map((x) => <Chip key={x} on={f.hostelType === x} onClick={() => setChip('hostelType', x)}>{x}</Chip>)}
-                </span>
-                <label>Travel</label>
-                <span className="chips">{TRAVEL.map((x) => <Chip key={x} on={f.travel === x} onClick={() => setChip('travel', x)}>{x}</Chip>)}</span>
-              </div>
-              <div className="stu__editrow">
-                <label htmlFor="peTown">Town</label>
-                <input id="peTown" type="text" style={{ width: 150 }} placeholder="e.g. Tiruppur" value={f.town} onChange={(e) => setF({ ...f, town: e.target.value })} />
-                <button className="btn btn--gold btn--sm" onClick={saveEdit}>Save</button>
-                <button className="btn btn--ghost btn--sm" onClick={() => setEditing(false)}>Cancel</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
+  );
+}
+
+/* first-login fill — same form, setup mode: welcome header + consent + CTA */
+export function ProfileSetup({ onDone }) {
+  function save(data) {
+    return api.updateStudent({ ...data, consent: data.consent ? 'true' : 'false' }).then((res) => {
+      const s = res.student || {};
+      applyToStore(data);
+      Object.assign(cc, { onboarding: false, user: { ...cc.user, name: s.name || data.name, mobile: s.mobile || data.mobile } });
+      set({});
+      toast('Saved on the server — here are the colleges that fit your ' + data.marks + '%');
+      if (onDone) onDone();
+    }).catch((e) => { toast(e.message || 'Could not save right now. Try again?'); });
+  }
+
+  return (
+    <section className="view active" id="view-setup">
+      <div className="wrap psetup">
+        <div className="card">
+          <h2>Your details, once</h2>
+          <p className="psetup__sub">Saved on the server (not just this browser), so your profile
+            follows you and the colleges that fit you pop up straight away.</p>
+          <ProfileForm initial={snap()} mode="setup" saveLabel="Save & see my colleges" onSave={save} />
+        </div>
+      </div>
+    </section>
   );
 }

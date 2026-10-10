@@ -12,7 +12,7 @@ import {
 } from '../core.js';
 import CollegeBody, { CcFoot } from './CollegeBody.jsx';
 import ChatBot from './ChatBot.jsx';
-import ProfilePage from './ProfilePage.jsx';
+import ProfilePage, { ProfileSetup } from './ProfilePage.jsx';
 import { api, session } from '../api.js';
 
 const Chip = ({ on, children, ...rest }) => (
@@ -205,7 +205,7 @@ export default function StudentView({ onLogout }) {
   const setChip = (k, v) => setChips((c) => ({ ...c, [k]: v, ...(k === 'want' ? { degree: ANY_DEGREE } : {}) }));
 
   if (cc.onboarding) {
-    return <DetailsOnboarding />;
+    return <ProfileSetup />;
   }
 
   const psgGroup = COLLEGES.filter((c) => c.group === 'PSG');
@@ -426,153 +426,3 @@ export function StudentProfile({ id, onBack }) {
 /* First-time details screen. What the student fills here is saved on the server
    (server/data/students.json via POST /api/students/update), and the college
    list below is matched from exactly these details. */
-function DetailsOnboarding() {
-  useCC();
-  const [name, setName] = useState(cc.user?.name || '');
-  const [mobile, setMobile] = useState(cc.user?.mobile || '');
-  const [marks, setMarks] = useState(cc.marks === null || cc.marks === undefined ? '' : String(cc.marks));
-  const [town, setTown] = useState(cc.stuTown || '');
-  const [consent, setConsent] = useState(true);
-  const [alert, setAlert] = useState('');
-  const [busy, setBusy] = useState(false);
-  const [chips, setChips] = useState({
-    stream: cc.stuStream, want: cc.stuWant, degree: cc.stuDegree || ANY_DEGREE,
-    stay: cc.stuStay, hostelType: cc.stuHostelType, travel: cc.stuTravel,
-  });
-  const degrees = degreesFor(chips.want);
-  const setChip = (k, v) => setChips((c) => ({ ...c, [k]: v, ...(k === 'want' ? { degree: ANY_DEGREE } : {}) }));
-
-  async function save() {
-    if (name.trim().length < 2) return setAlert('Please tell us your name — it shows on your workspace.');
-    if (!/^[0-9]{10}$/.test(mobile)) return setAlert('Mobile number should be 10 digits.');
-    const m = Number(marks);
-    if (!marks || isNaN(m) || m < 30 || m > 100)
-      return setAlert('Please enter your Class 12 percentage (between 30 and 100).');
-    setBusy(true);
-    try {
-      const data = await api.updateStudent({
-        name: name.trim(), mobile, marks: m, stream: chips.stream, want: chips.want,
-        degree: chips.degree, stay: chips.stay, hostelType: chips.hostelType,
-        travel: chips.travel, town: town.trim(), consent,
-      });
-      const s = data.student || {};
-      Object.assign(cc, {
-        user: { ...cc.user, name: s.name || name.trim(), mobile: s.mobile || mobile, savedServer: true },
-        marks: m, stuStream: chips.stream, stuWant: chips.want, stuDegree: chips.degree,
-        stuStay: chips.stay, stuHostelType: chips.hostelType, stuTravel: chips.travel,
-        stuTown: town.trim(), onboarding: false,
-      });
-      set({});
-      toast('Saved on the server — here are the colleges that fit your ' + m + '%');
-    } catch (e) {
-      setAlert(e.message || 'Could not save right now. Try again?');
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  return (
-    <section id="view-onboarding" className="view active">
-      <div className="wrap" style={{ maxWidth: 760, paddingTop: 34, paddingBottom: 60 }}>
-        <div className="card">
-          <h2 style={{ margin: '0 0 6px', fontSize: 24, letterSpacing: '-.4px' }}>Your details, once</h2>
-          <p style={{ margin: '0 0 18px', color: 'var(--muted)', fontSize: 14.2 }}>
-            Saved on the server (not just this browser), so your profile follows you and the
-            colleges that fit you pop up straight away.
-          </p>
-
-          {alert && (
-            <p className="auth__alert" role="alert" style={{ marginBottom: 14 }}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16h.01" /></svg>
-              <span>{alert}</span>
-            </p>
-          )}
-
-          <div className="field">
-            <label htmlFor="obName">Your name</label>
-            <div className="field__box">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" /></svg>
-              <input id="obName" type="text" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} />
-            </div>
-          </div>
-
-          <div className="field">
-            <label htmlFor="obMobile">Mobile number</label>
-            <div className="field__box">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5" /><path d="M11 18.5h2" /></svg>
-              <input id="obMobile" type="tel" inputMode="numeric" maxLength={10} placeholder="10-digit mobile" value={mobile} onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))} />
-            </div>
-          </div>
-
-          <div className="field">
-            <label htmlFor="obMarks">Class 12 percentage</label>
-            <div className="field__box">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19h16M7 16V9M12 16V5M17 16v-4" /></svg>
-              <input id="obMarks" type="number" min="30" max="100" step="0.1" inputMode="decimal" placeholder="e.g. 78" value={marks} onChange={(e) => setMarks(e.target.value)} />
-            </div>
-          </div>
-
-          <div className="field">
-            <label>Class 12 stream</label>
-            <div className="chips" role="radiogroup" aria-label="Class 12 stream">
-              {STREAMS.map((s) => <Chip key={s} on={chips.stream === s} onClick={() => setChip('stream', s)}>{s}</Chip>)}
-            </div>
-          </div>
-
-          <div className="field">
-            <label>Which course do you want?</label>
-            <div className="chips" role="radiogroup" aria-label="Course you want">
-              {WANT.map((s) => <Chip key={s} on={chips.want === s} onClick={() => setChip('want', s)}>{s}</Chip>)}
-            </div>
-          </div>
-
-          {chips.want !== NOT_SURE && (
-            <div className="field">
-              <label>Which degree do you want?</label>
-              <div className="chips" role="radiogroup" aria-label="Degree you want">
-                {degrees.map((d) => <Chip key={d} on={chips.degree === d} onClick={() => setChip('degree', d)}>{d}</Chip>)}
-              </div>
-            </div>
-          )}
-
-          <div className="field">
-            <label>Stay &amp; travel</label>
-            <div className="sublab">Hostel</div>
-            <div className="chips" role="radiogroup" aria-label="Hostel">
-              {STAY.map((s) => <Chip key={s} on={chips.stay === s} onClick={() => setChip('stay', s)}>{s}</Chip>)}
-            </div>
-            {chips.stay === 'Hostel needed' && (
-              <div className="chips" style={{ marginTop: 8 }} role="radiogroup" aria-label="Hostel type">
-                {HOSTELTYPE.map((s) => <Chip key={s} on={chips.hostelType === s} onClick={() => setChip('hostelType', s)}>{s}</Chip>)}
-              </div>
-            )}
-            <div className="sublab">Daily travel</div>
-            <div className="chips" role="radiogroup" aria-label="Daily travel">
-              {TRAVEL.map((s) => <Chip key={s} on={chips.travel === s} onClick={() => setChip('travel', s)}>{s}</Chip>)}
-            </div>
-          </div>
-
-          <div className="field">
-            <label htmlFor="obTown">Your town / city <span style={{ fontWeight: 600, color: 'var(--muted)' }}>(optional)</span></label>
-            <div className="field__box">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" /><circle cx="12" cy="10" r="2.6" /></svg>
-              <input id="obTown" type="text" placeholder="e.g. Tiruppur" value={town} onChange={(e) => setTown(e.target.value)} />
-            </div>
-          </div>
-
-          <label className="check" style={{ alignItems: 'flex-start', gap: 9, marginBottom: 16 }}>
-            <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} style={{ marginTop: 2 }} />
-            <span style={{ fontSize: 13.4, color: 'var(--muted)', lineHeight: 1.5 }}>
-              Colleges I show interest in may see these details and contact me about admissions.
-            </span>
-          </label>
-
-          <button className="btn btn--primary btn--block" disabled={busy} onClick={save}>
-            {busy ? 'Saving…' : 'Save my details & show my colleges'}
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h13" /><path d="m12 5 7 7-7 7" /></svg>
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
