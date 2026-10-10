@@ -2493,6 +2493,10 @@ function websiteHTML(c){
         '<a class="btn btn--gold" href="' + esc(c.website) + '" target="_blank" rel="noopener noreferrer" data-site="1" data-cid="' + esc(c.id) + '" data-frame="' + frameFlag(c) + '" data-label="' + esc(c.name) + '">' + ICONS.globe + 'Visit official website</a>' +
         '<button class="btn btn--ghost" data-copy="' + esc(c.website) + '">' + ICONS.link + 'Copy link</button>' +
       '</div>' +
+      '<div class="qr-row">' +
+        '<span class="qr-row__code">' + qrSVG(c.website, 96) + '</span>' +
+        '<div><b>Open on your phone</b><span>Scan the code \u2014 your phone camera opens ' + esc(c.website.replace(/^https?:\/\//,'')) + ' directly.</span></div>' +
+      '</div>' +
     '</div>' +
   '</section>';
 }
