@@ -56,6 +56,63 @@ function useCountUp(target) {
 }
 
 /* ------------------------------------------------------------ dashboard */
+function Donut({ parts }) {
+  const tot = Math.max(1, parts.reduce((a, p) => a + p.v, 0));
+  const R = 42, C = 2 * Math.PI * R;
+  let acc = 0;
+  return (
+    <svg viewBox="0 0 120 120" className="admdonut" role="img" aria-label="Action split">
+      {parts.map((p) => {
+        const len = (p.v / tot) * C;
+        const el = (
+          <circle key={p.label} cx="60" cy="60" r={R} fill="none" stroke={p.color} strokeWidth="15"
+            strokeDasharray={len + ' ' + (C - len)} strokeDashoffset={-acc} transform="rotate(-90 60 60)" />
+        );
+        acc += len;
+        return el;
+      })}
+      <text x="60" y="58" textAnchor="middle" className="admdonut__n">{tot}</text>
+      <text x="60" y="73" textAnchor="middle" className="admdonut__l">actions</text>
+    </svg>
+  );
+}
+
+function Line7({ days }) {
+  if (!days || !days.length) return null;
+  const vals = days.map((d) => d.views);
+  const max = Math.max(1, ...vals);
+  const W = 560, H = 150, P = 14;
+  const pts = vals.map((v, i) => [P + (i * (W - 2 * P)) / (vals.length - 1), H - P - (v / max) * (H - 2 * P - 14)]);
+  let dpath = 'M' + pts[0][0].toFixed(1) + ' ' + pts[0][1].toFixed(1);
+  for (let i = 1; i < pts.length; i++) {
+    const dx = (pts[i][0] - pts[i - 1][0]) / 2;
+    dpath += ' C' + (pts[i - 1][0] + dx).toFixed(1) + ' ' + pts[i - 1][1].toFixed(1)
+      + ' ' + (pts[i][0] - dx).toFixed(1) + ' ' + pts[i][1].toFixed(1)
+      + ' ' + pts[i][0].toFixed(1) + ' ' + pts[i][1].toFixed(1);
+  }
+  const area = dpath + ' L' + pts[pts.length - 1][0].toFixed(1) + ' ' + (H - P) + ' L' + pts[0][0].toFixed(1) + ' ' + (H - P) + ' Z';
+  return (
+    <svg viewBox={'0 0 ' + W + ' ' + (H + 22)} className="admline" role="img" aria-label="7 day views trend">
+      <defs>
+        <linearGradient id="lg7" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#121d38" /><stop offset=".45" stopColor="#f0b64a" /><stop offset="1" stopColor="#2e7d5b" />
+        </linearGradient>
+        <linearGradient id="ag7" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#f0b64a" stopOpacity=".28" /><stop offset="1" stopColor="#f0b64a" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill="url(#ag7)" />
+      <path d={dpath} fill="none" stroke="url(#lg7)" strokeWidth="3.4" strokeLinecap="round" />
+      {pts.map((pt, i) => (
+        <g key={i}>
+          <circle cx={pt[0]} cy={pt[1]} r="3.6" fill="#fff" stroke="#121d38" strokeWidth="2" />
+          <text x={pt[0]} y={H + 16} textAnchor="middle">{new Date(days[i].date + 'T00:00:00Z').toLocaleDateString('en-IN', { weekday: 'short' })}</text>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
 function Chart7({ days }) {
   if (!days || !days.length) return null;
   const max = Math.max(1, ...days.map((d) => Math.max(d.views, d.saves)));
