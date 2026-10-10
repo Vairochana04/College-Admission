@@ -157,6 +157,11 @@ export default function StudentView({ onLogout }) {
     toast(i >= 0 ? 'Removed from your saved colleges' : 'Saved — you will find it under "Saved"');
   }
 
+  function toggleFull() {
+    if (document.fullscreenElement) { if (document.exitFullscreen) document.exitFullscreen().catch(() => {}); }
+    else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
+  }
+
   function onGridClick(e) {
     const open = e.target.closest('[data-stuopen]');
     if (open) {
@@ -265,6 +270,7 @@ export default function StudentView({ onLogout }) {
             <span className="avatar">{initials(cc.user?.name || 'SS')}</span>
             <span><b>{cc.user?.name}</b><em>{cc.user?.email}</em></span>
           </div>
+          <button className="btn btn--ghost btn--sm" title="Full screen (or press F11)" aria-label="Toggle full screen" onClick={toggleFull}>⛶</button>
           <button className="btn btn--ghost btn--sm" onClick={onLogout}>Sign out</button>
         </div>
       </header>
