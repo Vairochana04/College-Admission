@@ -58,6 +58,16 @@ export default function CollegeBody({ college, studentMode, onBack }) {
 
   /* one delegated click handler for everything inside the rendered sections */
   function onClick(e) {
+    const evm = e.target.closest('[data-evmore]');
+    if (evm) {
+      const box = wrap.current && wrap.current.querySelector('.evmore');
+      if (box) {
+        if (!evm.dataset.orig) evm.dataset.orig = evm.textContent;
+        box.hidden = !box.hidden;
+        evm.textContent = box.hidden ? evm.dataset.orig : 'Show fewer events';
+      }
+      return;
+    }
     const site = e.target.closest('[data-site]');
     if (site) {
       /* official website: open live in a new tab — works from any browser */

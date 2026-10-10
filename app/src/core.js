@@ -2410,7 +2410,7 @@ function eventsHTML(c){
 
   var list = upcomingEvents(c).filter(function(e){ return cc.eventTag === 'All' || e.tag === cc.eventTag; });
 
-  var cards = list.map(function(e, idx){
+  var cardArr = list.map(function(e, idx){
     var p = dayParts(e.date);
     var d = daysUntil(e.date);
     var soon = idx === 0 || (d >= 0 && d <= 14);   /* always flag the closest event */
@@ -2435,7 +2435,12 @@ function eventsHTML(c){
         '<a class="btn btn--ghost btn--sm" href="' + esc(c.website) + '" target="_blank" rel="noopener noreferrer" data-site="1" data-frame="' + frameFlag(c) + '" data-label="' + esc(e.title) + '">' + ICONS.link + 'Details</a>' +
       '</div>' +
     '</div>';
-  }).join('');
+  });
+  var cards = cardArr.slice(0, 3).join('');
+  if (cardArr.length > 3){
+    cards += '<div class="evmore" hidden>' + cardArr.slice(3).join('') + '</div>' +
+      '<div class="evmorebtn"><button type="button" class="btn btn--ghost btn--sm" data-evmore="1">Show all ' + cardArr.length + ' events</button></div>';
+  }
 
   if (!list.length){
     cards = '<div class="empty"><b>No upcoming events in this category</b>Switch the filter to see all events, or check the official website for the full calendar.</div>';
@@ -2477,11 +2482,6 @@ function contactHTML(c){
         '<h2>Contact &amp; location</h2>' +
         '<p>Get in touch with the admissions team, or open the address directly in maps.</p>' +
       '</div>' +
-      '<div style="display:flex; gap:10px; flex-wrap:wrap">' +
-        '<a class="btn btn--primary" href="' + esc(c.website) + '" target="_blank" rel="noopener noreferrer" data-site="1" data-frame="' + frameFlag(c) +
-          '" data-label="' + esc(c.name) + '">' + ICONS.globe + esc(c.website.replace(/^https?:\/\//,'')) + '</a>' +
-        '<a class="btn btn--ghost" href="' + mapUrl + '" target="_blank" rel="noopener noreferrer" data-site="1" data-frame="no" data-label="Google Maps directions">' + ICONS.pin + 'Get directions</a>' +
-      '</div>' +
     '</div>' +
 
     '<div class="contact">' +
@@ -2489,7 +2489,6 @@ function contactHTML(c){
         '<div class="cline"><span class="cline__ico">' + ICONS.pin + '</span><div><span>Address</span><b>' + esc(c.address) + '</b></div></div>' +
         '<div class="cline"><span class="cline__ico">' + ICONS.phone + '</span><div><span>Admissions phone</span><b><a href="tel:' + esc(c.phone.replace(/\s/g,'')) + '">' + esc(c.phone) + '</a></b></div></div>' +
         '<div class="cline"><span class="cline__ico">' + ICONS.mail + '</span><div><span>Email</span><b><a href="mailto:' + esc(c.email) + '">' + esc(c.email) + '</a></b></div></div>' +
-        '<div class="cline"><span class="cline__ico">' + ICONS.globe + '</span><div><span>Official website</span><b><a class="link" href="' + esc(c.website) + '" target="_blank" rel="noopener noreferrer" data-site="1" data-frame="' + frameFlag(c) + '" data-label="' + esc(c.name) + '">' + esc(c.website) + '</a></b></div></div>' +
         '<div class="cline"><span class="cline__ico">' + ICONS.clock + '</span><div><span>Office hours</span><b>' + esc(c.officeHours) + '</b></div></div>' +
         '<div class="cline"><span class="cline__ico">' + ICONS.book + '</span><div><span>Affiliation</span><b>' + esc(c.affiliation) + '</b></div></div>' +
       '</div>' +
@@ -2500,94 +2499,19 @@ function contactHTML(c){
 
 
 function websiteHTML(c){
-  var others = COLLEGES.filter(function(x){ return x.id !== c.id; });
-  var mates = others.filter(function(x){ return x.group === c.group; });
-  var sideList = mates.length ? mates : others.slice(0, 4);
-
-  var rows = sideList.map(function(x){
-    return '<div class="site-row"><b>' + esc(x.shortName) + '</b>' +
-      '<a href="' + esc(x.website) + '" target="_blank" rel="noopener noreferrer" data-site="1" data-frame="' + frameFlag(x) +
-      '" data-label="' + esc(x.name) + '">' +
-      esc(x.website.replace(/^https?:\/\//, '')) + '</a></div>';
-  }).join('');
-
-  var quick = others.map(function(x){
-    return '<a class="qn" href="#" data-open="' + esc(x.id) + '">' + ICONS.globe +
-      '<span>' + esc(x.shortName) + '<em>' + esc(categoryOf(x)) + ' · ' + esc(x.city) + '</em></span></a>';
-  }).join('');
-
   return '' +
   '<section class="sec" id="sec-website">' +
-    '<div class="sec-head">' +
-      '<div class="sec-title"><span class="kicker">Step 06 · Last step</span>' +
-        '<h2>Official website &amp; applying</h2>' +
-        '<p>You have seen the whole profile — now go straight to the source. This button opens ' + esc(c.name) +
-        '’s own website, where the application form, fee payment and notifications live.</p>' +
+    '<div class="card site-cta">' +
+      '<span class="kicker">Last step</span>' +
+      '<h3>Apply on ' + esc(c.shortName) + '\u2019s official website</h3>' +
+      '<p>Fees, seat matrix, exam dates and application forms are updated by the college itself \u2014 always confirm them there before you apply.</p>' +
+      '<div class="site-btn">' +
+        '<a class="btn btn--gold" href="' + esc(c.website) + '" target="_blank" rel="noopener noreferrer" data-site="1" data-cid="' + esc(c.id) + '" data-frame="' + frameFlag(c) + '" data-label="' + esc(c.name) + '">' + ICONS.globe + 'Visit official website</a>' +
+        '<button class="btn btn--ghost" data-copy="' + esc(c.website) + '">' + ICONS.link + 'Copy link</button>' +
       '</div>' +
-    '</div>' +
-
-    '<div class="site-card">' +
-      '<div>' +
-        '<span class="pill pill--gold">Official website</span>' +
-        '<h3>Apply on ' + esc(c.shortName) + '’s official website</h3>' +
-        '<p>Everything on this page is a student-friendly summary. Fees, seat matrix, exam dates and application forms are updated by the college itself — always confirm them on the official website before you apply.</p>' +
-        '<div class="site-btn">' +
-          '<a class="btn btn--gold" id="sitePrimary" href="' + esc(c.website) + '" target="_blank" rel="noopener noreferrer" data-site="1" data-cid="' + esc(c.id) + '" data-frame="' + frameFlag(c) +
-            '" data-label="' + esc(c.name) + '">' +
-            ICONS.globe + 'Visit official website' +
-            '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 5h5v5"/><path d="M19 5 10 14"/></svg>' +
-          '</a>' +
-          '<a class="btn btn--ghost" href="' + esc(c.admissionsUrl) + '" target="_blank" rel="noopener noreferrer" data-site="1" data-cid="' + esc(portalProxyId(c)) + '" data-frame="' + frameFlag(c) + '" data-label="' + esc(c.shortName) + ' admission portal">' + ICONS.book + 'Admission portal</a>' +
-          '<button class="btn btn--ghost" data-copy="' + esc(c.website) + '">' + ICONS.link + 'Copy link</button>' +
-          '<a class="btn btn--ghost" href="#sec-contact">' + ICONS.pin + 'Address &amp; directions</a>' +
-        '</div>' +
-        '<span class="tap-hint" id="siteHint">' + ICONS.globe + 'Tap the website box or the button above \u2014 both take you straight to ' +
-          esc(c.website.replace(/^https?:\/\//, '')) + '</span>' +
-        '<div class="site-note">Opens in a new tab where the browser allows it · ' + esc(groupLabelOf(c)) + ' · ' + esc(cityOf(c)) + '</div>' +
-
-        (c.links && c.links.length ?
-          '<div class="qlinks">' +
-            '<h4>Real pages on ' + esc(c.shortName) + '\u2019s website</h4>' +
-            '<div class="qlinks__grid">' +
-              c.links.map(function(l){
-                var domain = l.u.replace(/^https?:\/\//, '').split('/')[0];
-                var path = l.u.replace(/^https?:\/\/[^/]+/, '').replace(/\/+$/, '') || '/';
-                return '<a class="qn" href="' + esc(l.u) + '" target="_blank" rel="noopener noreferrer" data-site="1" data-cid="' + esc(c.id) + '" ' +
-                  'data-frame="' + frameFlag(c) + '" data-label="' + esc(c.shortName + ' \u00b7 ' + l.t) + '">' +
-                  ICONS.link + '<span>' + esc(l.t) + '<em>' + esc(domain + path) + '</em></span></a>';
-              }).join('') +
-            '</div>' +
-            '<p class="qlinks__note">Checked on the official website: ' + esc(c.links.length) + ' live page' +
-              (c.links.length > 1 ? 's' : '') + ' \u2014 each one opens, or shows a QR code if this preview blocks links.</p>' +
-          '</div>' : '') +
-      '</div>' +
-
-      '<div class="site-side">' +
-        '<a class="site-url" href="' + esc(c.website) + '" target="_blank" rel="noopener noreferrer" data-site="1" data-cid="' + esc(c.id) + '" data-frame="' + frameFlag(c) +
-          '" data-label="' + esc(c.name) + '">' + ICONS.globe + '<span>' + esc(c.website) + '</span></a>' +
-        '<div class="qr-card">' +
-          '<span class="qr-card__code">' + qrSVG(c.website, 112) + '</span>' +
-          '<span>' +
-            '<h4>Open on your phone</h4>' +
-            '<b>Scan this code</b>' +
-            '<p>Your phone camera opens ' + esc(c.shortName) + '\u2019s official website straight away \u2014 no typing, no pop-ups.</p>' +
-          '</span>' +
-        '</div>' +
-        '<div class="site-panel">' +
-          '<h4>' + esc(isPSG(c) ? 'More institutions in the PSG group' : 'More colleges on CampusConnect') + '</h4>' +
-          rows +
-        '</div>' +
-      '</div>' +
-    '</div>' +
-
-    '<div class="quicknav">' +
-      '<h4>Every college on this platform</h4>' +
-      '<p>' + COLLEGES.length + ' colleges · tap any college to open its profile.</p>' +
-      '<div class="quicknav__grid">' + quick + '</div>' +
     '</div>' +
   '</section>';
 }
-
 
 function deptListHTML(c){
   var q = cc.courseQuery.trim().toLowerCase();

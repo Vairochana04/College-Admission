@@ -965,3 +965,9 @@ button.stu__pic-edit:hover{transform:scale(1.12)}
   border:1px dashed var(--line); border-radius:var(--radius); color:var(--body)}
 .empty b{display:block; font-size:15px; color:var(--head); margin-bottom:6px}
 .empty p{margin:0 0 12px; font-size:13.2px; color:var(--muted)}
+
+/* ---------- v1.9 · trimmed college page ---------- */
+.evmorebtn{text-align:center; margin-top:14px}
+.site-cta{padding:24px 22px; margin-top:18px}
+.site-cta h3{font-size:19px; margin:8px 0 6px; color:var(--head)}
+.site-cta p{font-size:13.6px; color:var(--body); margin:0 0 14px}
