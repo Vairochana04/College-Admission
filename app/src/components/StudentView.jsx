@@ -11,6 +11,7 @@ import {
   collegeById, saveStudentDetails, logoOrMono, COLLEGES,
 } from '../core.js';
 import CollegeBody, { CcFoot } from './CollegeBody.jsx';
+import ChatBot from './ChatBot.jsx';
 import ProfilePage from './ProfilePage.jsx';
 import { api, session } from '../api.js';
 
@@ -243,7 +244,7 @@ export default function StudentView({ onLogout }) {
     : null;
 
   if (profileId) {
-    return <div className="viewfade" key={'p' + profileId}><Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} /><StudentProfile id={profileId} onBack={() => setProfileId(null)} /></div>;
+    return <div className="viewfade" key={'p' + profileId}><Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} /><ChatBot /><StudentProfile id={profileId} onBack={() => setProfileId(null)} /></div>;
   }
 
   /* one order for every college: home row → branches → college page */
@@ -252,7 +253,7 @@ export default function StudentView({ onLogout }) {
     const dc = isGroup ? null : collegeById(drill);
     return (
       <section id="view-drill" className="view active viewfade" key={'d' + drill}>
-        <Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} />
+        <Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} /><ChatBot />
         <div className="wrap" style={{ paddingTop: 18, paddingBottom: 46 }}>
           <button className="btn btn--ghost btn--sm" onClick={() => setDrill(null)}>← All colleges</button>
           <div className="crumbs">Colleges › <b>{isGroup ? 'PSG Institutions' : dc.shortName}</b></div>
@@ -272,7 +273,7 @@ export default function StudentView({ onLogout }) {
 
   return (
     <section id="view-student" className="view active viewfade" key="home">
-      <Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} />
+      <Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} /><ChatBot />
       <header className="topbar">
         <div className="wrap topbar__in">
           <div className="brand">
