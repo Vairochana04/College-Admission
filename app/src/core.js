@@ -2180,24 +2180,8 @@ function heroHTML(c){
     return '<div><b>' + esc(s.v) + '</b><span>' + esc(s.k) + '</span></div>';
   }).join('');
 
-  var mm = mediaOf(c);
+  /* hero photo band removed on request - clean text-only hero */
   var photoBand = '';
-  if (mm && mm.gallery && mm.gallery.length){
-    var slides = mm.gallery.map(function(src, i){
-      return '<div class="hero__slide"><img src="' + src + '" alt="' + esc(c.name) + ' event ' + (i + 1) + '" loading="' + (i === 0 ? 'eager' : 'lazy') + '" decoding="async"></div>';
-    }).join('') + '<div class="hero__slide"><img src="' + mm.gallery[0] + '" alt="' + esc(c.name) + ' event 1" loading="lazy" decoding="async"></div>';
-    photoBand = '<div class="hero__photo hero__photo--carousel" aria-label="PSG College event gallery">' +
-      '<div class="hero__track">' + slides + '</div>' +
-      '<div class="hero__dots" aria-hidden="true">' + mm.gallery.map(function(){ return '<span></span>'; }).join('') + '</div>' +
-      groupMarkHTML(c) +
-    '</div>';
-  } else if (mm && mm.photo){
-    photoBand = '<div class="hero__photo">' +
-      '<img src="' + mm.photo + '" alt="' + esc(c.name) + ' — campus" loading="eager" decoding="async">' +
-      '<span class="hero__credit">Photo: ' + esc(mm.photoCredit || 'official website') + '</span>' +
-      groupMarkHTML(c) +
-    '</div>';
-  }
   return '' +
   '<section class="sec" id="sec-profile">' +
     '<div class="hero pop' + (photoBand ? ' hero--photo' : '') + '">' +
