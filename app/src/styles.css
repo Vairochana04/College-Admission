@@ -1099,3 +1099,24 @@ button.stu__pic-edit:hover{transform:scale(1.12)}
 .psetup h2{margin:0 0 6px; font-size:24px; letter-spacing:-.4px; color:var(--head)}
 .psetup__sub{margin:0 0 16px; color:var(--muted); font-size:14px}
 @media (max-width:720px){ .pf{grid-template-columns:1fr} }
+
+/* ---------- v2.6 · Windows / full-screen alignment pack ---------- */
+/* Windows scrollbars take ~15px of width, so centred pages shifted sideways
+   between short/long pages and when toggling ⛶ full-screen. Reserving the
+   gutter keeps every page on the exact same centre line. */
+html{scrollbar-gutter:stable}
+/* never let marquees / wide tables push the page into horizontal scroll */
+body{overflow-x:clip}
+/* big monitors & Windows full-screen: breathe a little wider */
+@media (min-width:1600px){
+  :root{--maxw:1320px}
+  .prof__grid{grid-template-columns:1.25fr .75fr}
+  .pgrid{grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+  .ixfoot__in{gap:40px}
+}
+/* 1366x768 Windows laptops: tighten gutters so chips/rows don't wrap oddly */
+@media (max-width:1440px) and (min-width:1041px){
+  .wrap,.stu{padding-left:18px; padding-right:18px}
+  .prof__grid{gap:14px}
+  .pgrid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+}
