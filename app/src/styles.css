@@ -1132,3 +1132,18 @@ body{overflow-x:clip}
   color:#b97d10; display:grid; place-items:center; margin-bottom:10px}
 .helpcard b{display:block; font-size:13.6px; color:var(--head); margin-bottom:6px}
 .helpcard p{margin:0; font-size:12.6px; color:var(--body); line-height:1.55}
+
+/* ---------- v2.8 · Infolexus footer on navy (classic site-footer feel) ---------- */
+.ixfoot{background:var(--navy); border-top:0; padding:34px 0 30px}
+.ixfoot__mark{background:var(--gold); color:#231303}
+.ixfoot__brand b{color:#fff}
+.ixfoot__brand small{color:#c0cde6}
+.ixfoot__line{color:#e2e9f7}
+.ixfoot__line svg{color:#8fa3ca}
+.ixfoot__line a{color:var(--gold); font-weight:600}
+.ixfoot__map iframe{border-color:rgba(255,255,255,.22)}
+.ixfoot__larger{color:#9db0d4}
+.ixfoot h4{color:#93a7cd}
+.ixfoot p{color:#e2e9f7}
+.ixfoot p b{color:#fff}
+.ixfoot__note{color:#93a7cd}
