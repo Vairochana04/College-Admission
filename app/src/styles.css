@@ -1333,3 +1333,20 @@ body{overflow-x:clip}
 .admref{display:inline-block; margin-right:4px}
 .admref--spin{animation:refspin .8s linear infinite}
 @keyframes refspin{to{transform:rotate(360deg)}}
+
+/* ---------- v2.18 · fix mobile admin nav stretch (row mode neat) ---------- */
+@media (max-width:900px){
+  .admn{flex-direction:row; align-items:center; overflow-x:auto; padding:6px; gap:6px}
+  .admn__i{flex:0 0 auto; align-self:center; white-space:nowrap; padding:8px 12px}
+  .admn__i--on{flex:0 0 auto}
+  .admn__foot{display:none}   /* locked desks live on the Roadmap page on small screens */
+}
+
+/* ---------- v2.19 · mobile admin nav: slide one-by-one horizontally ---------- */
+@media (max-width:900px){
+  .admn{scroll-snap-type:x mandatory; scroll-behavior:smooth; scrollbar-width:thin;
+    -webkit-overflow-scrolling:touch}
+  .admn__i{scroll-snap-align:center; scroll-snap-stop:always}
+  .admn::-webkit-scrollbar{height:5px}
+  .admn::-webkit-scrollbar-thumb{background:#cfd7e6; border-radius:3px}
+}
