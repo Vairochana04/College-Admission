@@ -17,6 +17,48 @@ const fmtWhen = (iso) => {
     + ' · ' + d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
 };
 
+
+/* company footer — the reference layout the client shared (logo+address | map | glance) */
+const IX_MAP_EMBED = 'https://www.google.com/maps?q=' + encodeURIComponent(
+  'Infolexus Solutions, 63/54-55, Dhamu Nagar, Puliyakulam Road, Ramanathapuram, Coimbatore, Tamil Nadu 641045, India') + '&output=embed';
+const IX_MAP_LINK = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(
+  'Infolexus Solutions, 63/54-55, Dhamu Nagar, Puliyakulam Road, Ramanathapuram, Coimbatore, Tamil Nadu 641045, India');
+
+function InfolexusFooter() {
+  return (
+    <div className="ixfoot">
+      <div className="wrap ixfoot__in">
+        <div>
+          <div className="ixfoot__brand">
+            <span className="ixfoot__mark">iX</span>
+            <div><b>Infolexus Solutions</b><small>Software &amp; IT services · Coimbatore</small></div>
+          </div>
+          <div className="ixfoot__line">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
+            <span>63/54-55, Dhamu Nagar, Puliyakulam Road,<br />Ramanathapuram, Coimbatore,<br />Tamil Nadu – 641045, India</span>
+          </div>
+          <div className="ixfoot__line">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" /></svg>
+            <a href={IX_MAP_LINK} target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
+          </div>
+        </div>
+        <div className="ixfoot__map">
+          <iframe title="Infolexus Solutions — Google Map" src={IX_MAP_EMBED} loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade" allowFullScreen></iframe>
+          <a className="ixfoot__larger" href={IX_MAP_LINK} target="_blank" rel="noopener noreferrer">View larger map ↗</a>
+        </div>
+        <div>
+          <h4>Platform credit</h4>
+          <p>CampusConnect — college admission portal for Tamil Nadu students.
+            Designed &amp; developed by <b>Infolexus Solutions</b>, Coimbatore.</p>
+          <p className="ixfoot__note">Addresses &amp; map © Google · college data is indicative
+            demo content; confirm details with each institution.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminView({ onLogout }) {
   useCC();
   const [data, setData] = useState(null);
@@ -230,6 +272,7 @@ export default function AdminView({ onLogout }) {
           </div>
         </div>
       </div>
+      <InfolexusFooter />
     </section>
   );
 }
