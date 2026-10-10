@@ -754,7 +754,38 @@ public class Server {
                  .append(",\"clicks\":").append(e.getValue()[2])
                  .append(",\"students\":").append(who).append("}");
         }
-        sendJson(ex, 200, "{\"ok\":true,\"totals\":{\"students\":" + students.size()
+        // 7-day series + recent activity (admin charts & audit feed)
+        StringBuilder days = new StringBuilder();
+        java.time.LocalDate today = java.time.LocalDate.now(java.time.Clock.systemUTC());
+        for (int off = 6; off >= 0; off--) {
+            String d = today.minusDays(off).toString();
+            int v = 0, sv = 0, ck = 0, lg = 0;
+            for (Map<String, String> e : events) {
+                String at = e.getOrDefault("at", "");
+                if (at.length() < 10 || !at.substring(0, 10).equals(d)) continue;
+                String t2 = e.getOrDefault("type", "");
+                if (t2.equals("profile_view")) v++;
+                else if (t2.equals("save")) sv++;
+                else if (t2.equals("login")) lg++;
+                else ck++;
+            }
+            if (off < 6) days.append(",");
+            days.append("{\"date\":\"").append(d).append("\",\"views\":").append(v)
+                .append(",\"saves\":").append(sv).append(",\"clicks\":").append(ck)
+                .append(",\"logins\":").append(lg).append("}");
+        }
+        StringBuilder recent = new StringBuilder();
+        int rstart = Math.max(0, events.size() - 160);
+        for (int i = events.size() - 1; i >= rstart; i--) {
+            Map<String, String> e = events.get(i);
+            if (i < events.size() - 1) recent.append(",");
+            recent.append("{\"at\":\"").append(jesc(e.getOrDefault("at", "")))
+                  .append("\",\"email\":\"").append(jesc(e.getOrDefault("email", "")))
+                  .append("\",\"type\":\"").append(jesc(e.getOrDefault("type", "")))
+                  .append("\",\"cid\":\"").append(jesc(e.getOrDefault("cid", "")))
+                  .append("\",\"label\":\"").append(jesc(e.getOrDefault("label", ""))).append("\"}");
+        }
+        sendJson(ex, 200, "{\"ok\":true,\"days\":[" + days + "],\"recent\":[" + recent + "],\"totals\":{\"students\":" + students.size()
                 + ",\"events\":" + events.size()
                 + ",\"profileViews\":" + tViews
                 + ",\"saves\":" + tSaves
