@@ -33,6 +33,9 @@ const IX_MAP_LINK = 'https://www.google.com/maps/search/?api=1&query=' + encodeU
 function InfolexusFooter() {
   return (
     <div className="ixfoot">
+      <div className="wrap">
+        <h3 className="ixfoot__title">Help and Contact</h3>
+      </div>
       <div className="wrap ixfoot__in">
         <div>
           <div className="ixfoot__brand">
@@ -47,7 +50,13 @@ function InfolexusFooter() {
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" /></svg>
             <a href={IX_MAP_LINK} target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
           </div>
-          <div className="ixfoot__line">
+
+        </div>
+        <div className="ixfoot__map">
+          <iframe title="Infolexus Solutions — Google Map" src={IX_MAP_EMBED} loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade" allowFullScreen></iframe>
+          <a className="ixfoot__larger" href={IX_MAP_LINK} target="_blank" rel="noopener noreferrer">View larger map ↗</a>
+                    <div className="ixfoot__line">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M5 4h4l2 5-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2" /></svg>
             <span className="ixfoot__tels">
               <b>Contact us · Phone / WhatsApp</b>
@@ -62,11 +71,6 @@ function InfolexusFooter() {
               ))}
             </span>
           </div>
-        </div>
-        <div className="ixfoot__map">
-          <iframe title="Infolexus Solutions — Google Map" src={IX_MAP_EMBED} loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade" allowFullScreen></iframe>
-          <a className="ixfoot__larger" href={IX_MAP_LINK} target="_blank" rel="noopener noreferrer">View larger map ↗</a>
         </div>
         <div>
           <h4>Platform credit</h4>

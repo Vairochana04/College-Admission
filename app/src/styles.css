@@ -1172,3 +1172,9 @@ body{overflow-x:clip}
 .ixfoot__wa:hover{background:rgba(168,212,255,.26)}
 .ixfoot__tel em{font-style:normal; font-size:11px; color:#8fb4e8; background:rgba(168,212,255,.12);
   border-radius:999px; padding:2px 8px}
+
+/* ---------- v2.11 · "Help and Contact" title + contacts under the map ---------- */
+.ixfoot__title{margin:0 0 18px; font-size:18px; letter-spacing:-.2px; color:#e4f0ff;
+  display:flex; align-items:center; gap:10px}
+.ixfoot__title::after{content:""; flex:0 0 46px; height:3px; border-radius:2px; background:var(--gold)}
+.ixfoot__map .ixfoot__line{margin-top:14px}
