@@ -1327,3 +1327,9 @@ body{overflow-x:clip}
 .admn__foot span{font-size:11.4px; color:var(--muted)}
 .admbar--wrap{flex-wrap:wrap}
 .admbar--wrap .chip{border-radius:999px}
+
+/* ---------- v2.17 · admin manual refresh ---------- */
+.admhero__act{display:flex; gap:8px; align-items:center}
+.admref{display:inline-block; margin-right:4px}
+.admref--spin{animation:refspin .8s linear infinite}
+@keyframes refspin{to{transform:rotate(360deg)}}

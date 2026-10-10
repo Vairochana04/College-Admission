@@ -476,8 +476,13 @@ export default function AdminView({ onLogout }) {
   const [page, setPage] = useState('dash');
   const [d, setD] = useState(null);
   const [err, setErr] = useState('');
+  const [upd, setUpd] = useState(null);
+  const [busy, setBusy] = useState(false);
   const load = useCallback(() => {
-    api.adminSummary().then(setD).catch((e) => setErr(e.message || 'Could not load the summary.'));
+    setBusy(true);
+    api.adminSummary().then((x) => { setD(x); setUpd(new Date()); })
+      .catch((e) => setErr(e.message || 'Could not load the summary.'))
+      .finally(() => setBusy(false));
   }, []);
   useEffect(() => {
     load();
@@ -503,9 +508,15 @@ export default function AdminView({ onLogout }) {
           <div className="admhero__in">
             <div>
               <h1>Platform admin · {curt}</h1>
-              <p>CampusConnect business desk · signed in as <b>{cc.user?.email || 'admin'}</b> · live data, refreshes every 30s</p>
+              <p>CampusConnect business desk · signed in as <b>{cc.user?.email || 'admin'}</b> · auto-refresh 30s
+                {upd ? <> · updated <b>{upd.toLocaleTimeString('en-IN')}</b></> : null}</p>
             </div>
-            <button className="btn btn--ghost btn--sm" type="button" onClick={onLogout}>Sign out</button>
+            <span className="admhero__act">
+              <button className="btn btn--ghost btn--sm" type="button" onClick={load} disabled={busy}>
+                <span className={'admref' + (busy ? ' admref--spin' : '')}>⟳</span> {busy ? 'Refreshing…' : 'Refresh'}
+              </button>
+              <button className="btn btn--ghost btn--sm" type="button" onClick={onLogout}>Sign out</button>
+            </span>
           </div>
         </div>
       </header>
