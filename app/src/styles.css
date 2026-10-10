@@ -1237,3 +1237,29 @@ body{overflow-x:clip}
   .admn{position:static; flex-direction:row; overflow-x:auto; gap:6px}
   .admn__i{white-space:nowrap}
 }
+
+/* ---------- v2.13 · admin single-page: hero, ticker, sticky chips, roadmap ---------- */
+.admhero{background:linear-gradient(135deg,#0d1626 0%,#16233f 60%,#1d2c4f 100%); color:#fff; padding:26px 0 0}
+.admhero h1{color:#fff; font-size:26px; letter-spacing:-.5px}
+.admhero p{margin:4px 0 0; color:#c0cde6; font-size:13px}
+.admhero p b{color:#fff}
+.admhero__in{display:flex; align-items:flex-end; justify-content:space-between; gap:14px; padding-bottom:16px}
+.admhero .btn--ghost{color:#dfe8fa; border-color:rgba(255,255,255,.28)}
+.admtick{overflow:hidden; border-top:1px solid rgba(255,255,255,.14); padding:9px 0}
+.admtick__track{display:flex; width:max-content; animation:rmarq 34s linear infinite}
+.admtick__g{display:flex; gap:26px; padding-right:26px}
+.admtick em{font-style:normal; font-size:12px; color:#a8c0e8; white-space:nowrap}
+.admsecnav{position:sticky; top:0; z-index:40; background:rgba(255,255,255,.94); backdrop-filter:blur(8px); border-bottom:1px solid var(--line)}
+.admsecnav__in{display:flex; gap:8px; overflow-x:auto; padding:9px 22px}
+.admsecnav a{white-space:nowrap; text-decoration:none; color:var(--body); font-size:12.6px; font-weight:600;
+  border:1px solid var(--line); background:#fff; border-radius:999px; padding:6px 13px}
+.admsecnav a:hover{border-color:#cfd7e6}
+.admsec{margin-top:26px; scroll-margin-top:64px; display:flex; flex-direction:column; gap:14px}
+.admsec__t{font-size:17px; letter-spacing:-.2px; display:flex; align-items:center; gap:8px;
+  padding-bottom:8px; border-bottom:1px solid var(--line)}
+.admkpi--t0{background:linear-gradient(160deg,#fff 60%,#fdf3dd)}
+.admkpi--t1{background:linear-gradient(160deg,#fff 60%,#e8eefb)}
+.admkpi--t2{background:linear-gradient(160deg,#fff 60%,#e6f4ec)}
+.admkpi--t3{background:linear-gradient(160deg,#fff 60%,#f6e8ee)}
+.admroad{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px}
+.admroad .admlock{padding:22px 18px; text-align:left}
