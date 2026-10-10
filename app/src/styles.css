@@ -1147,3 +1147,16 @@ body{overflow-x:clip}
 .ixfoot p{color:#e2e9f7}
 .ixfoot p b{color:#fff}
 .ixfoot__note{color:#93a7cd}
+
+/* ---------- v2.9 · navy footer + light-blue (sky) lettering ---------- */
+.ixfoot__brand b{color:#e4f0ff}
+.ixfoot__brand small{color:#a9c6ee}
+.ixfoot__line{color:#c3d8f7}
+.ixfoot__line svg{color:#7fa6dd}
+.ixfoot__line a{color:#a8d4ff}
+.ixfoot__line a:hover{text-decoration:underline}
+.ixfoot__larger{color:#8fb4e8}
+.ixfoot h4{color:#8fb4e8}
+.ixfoot p{color:#c3d8f7}
+.ixfoot p b{color:#e4f0ff}
+.ixfoot__note{color:#8fb4e8}
