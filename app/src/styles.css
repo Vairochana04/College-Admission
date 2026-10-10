@@ -1121,18 +1121,6 @@ body{overflow-x:clip}
   .pgrid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
 }
 
-/* ---------- v2.7 · Help & Support band (above company footer) ---------- */
-.helpband{margin-top:34px; background:var(--bg); border-top:1px solid var(--line); padding:26px 0 30px}
-.helpband__head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:16px}
-.helpband__head h3{font-size:17px; letter-spacing:-.2px}
-.helpband__head p{margin:0; color:var(--muted); font-size:12.8px}
-.helpband__grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px}
-.helpcard{background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 16px 14px}
-.helpcard__ic{width:34px; height:34px; border-radius:10px; background:rgba(240,182,74,.16);
-  color:#b97d10; display:grid; place-items:center; margin-bottom:10px}
-.helpcard b{display:block; font-size:13.6px; color:var(--head); margin-bottom:6px}
-.helpcard p{margin:0; font-size:12.6px; color:var(--body); line-height:1.55}
-
 /* ---------- v2.8 · Infolexus footer on navy (classic site-footer feel) ---------- */
 .ixfoot{background:var(--navy); border-top:0; padding:34px 0 30px}
 .ixfoot__mark{background:var(--gold); color:#231303}
