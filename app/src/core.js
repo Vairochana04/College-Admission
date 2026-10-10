@@ -129,7 +129,9 @@ var COLLEGES = [
     officeHours:'Mon \u2013 Fri · 9:00 AM \u2013 5:00 PM',
     about:[
       'PSG College of Technology was started in 1951 by PSG & Sons\u2019 Charities, the same trust that began the PSG Industrial Institute in 1926. It is a government-aided, autonomous engineering college affiliated to Anna University, and it has grown into one of the best-known technical institutions in Tamil Nadu.',
-      'Teaching is built around industry-institute interaction: centres of excellence set up with industry partners, mandatory internship and project semesters, and the PSG Science & Technology Entrepreneurial Park (STEP, 1998) inside the campus to support student start-ups.'
+      'Teaching is built around industry-institute interaction: centres of excellence set up with industry partners, mandatory internship and project semesters, and the PSG Science & Technology Entrepreneurial Park (STEP, 1998) inside the campus to support student start-ups.',
+      'PSG College of Technology 1951-la PSG & Sons\u2019 Charities Trust-aal Coimbatore-la niruvikkapattu, Anna University-kku affiliated, ISO 9001:2015 certified, autonomous institution aagum. Inge 21 undergraduate matrum 24 postgraduate programmes-ai 8,500-kku mel students padikkiraargal; 500-kku mel research scholars aaraichi seigiraargal. Industry collaborations, MoUs matrum advanced research centres moolam intha college strong industry-institute interaction-ai kaaththu varugiradhu.',
+      'Vision: engineering education, research matrum arivin payanpaadil oru thalaisirandha nilayamaaga thigazhndhu samoogathukku payan alippadhu. Mission: world-class education alippadhu, R&D-ai valarpadhu, puthumaiyana technology applications-ai uruvakkuvadhu, entrepreneurship-ai oogkuvippadhu matrum naatin nalanukkaga thalaimai thiramai konda ilaignargalai uruvakkuvadhu.'
     ],
     stats:[
       {v:'8,500+', k:'Students'},
