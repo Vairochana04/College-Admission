@@ -569,7 +569,7 @@ export default function AdminView({ onLogout }) {
                 {upd ? <> · updated <b>{upd.toLocaleTimeString('en-IN')}</b></> : null}</p>
             </div>
             <span className="admhero__act">
-              <button className="btn btn--ghost btn--sm" type="button" onClick={load} disabled={busy}>
+              <button className="btn btn--gold btn--sm admrefbtn" type="button" onClick={load} disabled={busy}>
                 <span className={'admref' + (busy ? ' admref--spin' : '')}>⟳</span> {busy ? 'Refreshing…' : 'Refresh'}
               </button>
               <button className="btn btn--ghost btn--sm" type="button" onClick={onLogout}>Sign out</button>

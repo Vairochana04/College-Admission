@@ -1350,3 +1350,10 @@ body{overflow-x:clip}
   .admn::-webkit-scrollbar{height:5px}
   .admn::-webkit-scrollbar-thumb{background:#cfd7e6; border-radius:3px}
 }
+
+/* ---------- v2.20 · hero buttons neat (readable on navy) ---------- */
+.admhero .btn--ghost{background:transparent; color:#eaf1fd; border:1px solid rgba(255,255,255,.38)}
+.admhero .btn--ghost:hover{background:rgba(255,255,255,.12)}
+.admhero .btn--gold{box-shadow:0 8px 20px -12px rgba(240,182,74,.8)}
+.admhero .btn[disabled]{opacity:.6; cursor:default}
+.admrefbtn .admref{font-weight:700}
