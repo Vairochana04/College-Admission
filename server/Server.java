@@ -880,6 +880,21 @@ public class Server {
         String rel = path.equals("/") || path.isEmpty() ? "index.html" : path.substring(1);
         Path file = DIST.resolve(rel).normalize();
         if (!file.startsWith(DIST) || !Files.isRegularFile(file)) {
+            /* self-heal: hashed bundle files change on every build; a stale cached
+               index.html would ask for index-<oldhash>.js and get a broken page.
+               Serve the CURRENT bundle instead of missing hashed assets. */
+            if (rel.startsWith("assets/index-") && (rel.endsWith(".js") || rel.endsWith(".css"))) {
+                String ext = rel.endsWith(".css") ? ".css" : ".js";
+                Path cur = null;
+                try (var st = Files.list(DIST.resolve("assets"))) {
+                    cur = st.filter(f -> f.getFileName().toString().startsWith("index-")
+                            && f.getFileName().toString().endsWith(ext))
+                            .findFirst().orElse(null);
+                }
+                if (cur != null) file = cur;
+            }
+        }
+        if (!file.startsWith(DIST) || !Files.isRegularFile(file)) {
             /* SPA fallback: unknown path -> index.html (the React app routes itself) */
             file = DIST.resolve("index.html");
             if (!Files.isRegularFile(file)) {
@@ -894,6 +909,15 @@ public class Server {
     /* ------------------------------------------------------------------ main */
 
     public static void main(String[] args) throws IOException {
+        try {
+            java.net.ServerSocket probe = new java.net.ServerSocket(PORT);
+            probe.close();
+        } catch (java.net.BindException be) {
+            System.out.println("ERROR: port " + PORT + " is already in use - an OLD server");
+            System.out.println("window is still running. Close that PowerShell window (or run");
+            System.out.println("  taskkill /F /IM java.exe  ), then start again.");
+            return;
+        }
         HttpServer server = HttpServer.create(new InetSocketAddress("0.0.0.0", PORT), 0);
         ExecutorService pool = Executors.newFixedThreadPool(16);
         server.setExecutor(pool);
