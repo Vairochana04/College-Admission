@@ -115,7 +115,7 @@ export default function CollegeView({ onLogout }) {
           </div>
         </nav>
         <main className="content">
-          <CollegeBody college={current} />
+          <CollegeBody key={current.id} college={current} />
         </main>
       </div>
 

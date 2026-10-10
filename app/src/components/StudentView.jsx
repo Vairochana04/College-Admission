@@ -19,7 +19,7 @@ const Chip = ({ on, children, ...rest }) => (
 );
 
 /* left rail: hamburger on top, then My Profile -> Colleges (order the user asked) */
-function Rail({ page, go, open, setOpen }) {
+function Rail({ page, go, open, setOpen, onLogout }) {
   return (
     <nav className="rail" data-open={open ? '1' : '0'} aria-label="Sections">
       <button type="button" className="rail__top" onClick={() => setOpen(!open)} aria-label="Toggle menu" title="Menu">
@@ -32,6 +32,10 @@ function Rail({ page, go, open, setOpen }) {
       <button type="button" className={'rail__i' + (page === 'colleges' ? ' on' : '')} onClick={() => go('colleges')} title="Colleges">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.6" /><rect x="13" y="4" width="7" height="7" rx="1.6" /><rect x="4" y="13" width="7" height="7" rx="1.6" /><rect x="13" y="13" width="7" height="7" rx="1.6" /></svg>
         <span>Colleges</span>
+      </button>
+      <button type="button" className="rail__i rail__i--end" onClick={onLogout} title="Sign out">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="m16 17 5-5-5-5" /><path d="M21 12H9" /></svg>
+        <span>Sign out</span>
       </button>
     </nav>
   );
@@ -50,7 +54,7 @@ export default function StudentView({ onLogout }) {
   const [drill, setDrill] = useState(null);
   const [railOpen, setRailOpen] = useState(() => { try { return localStorage.getItem('cc_rail_open') === '1'; } catch (e) { return false; } });
   function setRail(v) { setRailOpen(v); try { localStorage.setItem('cc_rail_open', v ? '1' : '0'); } catch (e) {} }
-  function go(v) { setProfileId(null); if (v === 'colleges') setDrill(null); setPage(v); }   /* 'psg-group' or a college id → its branches */
+  function go(v) { setProfileId(null); setDrill(null); setPage(v); }   /* 'psg-group' or a college id → its branches */
   const [chips, setChips] = useState({
     stream: cc.stuStream, want: cc.stuWant, degree: cc.stuDegree || ANY_DEGREE,
     stay: cc.stuStay, hostelType: cc.stuHostelType, travel: cc.stuTravel,
@@ -239,7 +243,7 @@ export default function StudentView({ onLogout }) {
     : null;
 
   if (profileId) {
-    return <div className="viewfade" key={'p' + profileId}><Rail page={page} go={go} open={railOpen} setOpen={setRail} /><StudentProfile id={profileId} onBack={() => setProfileId(null)} /></div>;
+    return <div className="viewfade" key={'p' + profileId}><Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} /><StudentProfile id={profileId} onBack={() => setProfileId(null)} /></div>;
   }
 
   /* one order for every college: home row → branches → college page */
@@ -248,7 +252,7 @@ export default function StudentView({ onLogout }) {
     const dc = isGroup ? null : collegeById(drill);
     return (
       <section id="view-drill" className="view active viewfade" key={'d' + drill}>
-        <Rail page={page} go={go} open={railOpen} setOpen={setRail} />
+        <Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} />
         <div className="wrap" style={{ paddingTop: 18, paddingBottom: 46 }}>
           <button className="btn btn--ghost btn--sm" onClick={() => setDrill(null)}>← All colleges</button>
           <div className="crumbs">Colleges › <b>{isGroup ? 'PSG Institutions' : dc.shortName}</b></div>
@@ -268,7 +272,7 @@ export default function StudentView({ onLogout }) {
 
   return (
     <section id="view-student" className="view active viewfade" key="home">
-      <Rail page={page} go={go} open={railOpen} setOpen={setRail} />
+      <Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} />
       <header className="topbar">
         <div className="wrap topbar__in">
           <div className="brand">
@@ -414,7 +418,7 @@ export default function StudentView({ onLogout }) {
    real website opening inside the app */
 export function StudentProfile({ id, onBack }) {
   const c = collegeById(id);
-  return <CollegeBody college={c} studentMode onBack={onBack} />;
+  return <CollegeBody key={c.id} college={c} studentMode onBack={onBack} />;
 }
 
 

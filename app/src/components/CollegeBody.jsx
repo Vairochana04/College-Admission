@@ -54,7 +54,7 @@ export default function CollegeBody({ college, studentMode, onBack }) {
     location: mapHTML(c),
     contact: contactHTML(c) + faqHTML(c),
     website: websiteHTML(c),
-  }), [c, level, query, eventTag]);
+  }), [c, level, query, eventTag, cc.courseQuery, cc.courseLevel, cc.eventTag]);
 
   /* one delegated click handler for everything inside the rendered sections */
   function onClick(e) {

@@ -1005,3 +1005,5 @@ button.stu__pic-edit:hover{transform:scale(1.12)}
 .fab--save.on{background:var(--navy); border-color:var(--navy); color:#fff}
 .hasfab{padding-bottom:26px}
 @media (max-width:720px){ .fabs{right:12px; bottom:12px} .fab{width:44px; height:44px} }
+.rail__i--end{margin-top:auto}
+.rail[data-open="1"] .rail__i--end{margin-top:auto}
