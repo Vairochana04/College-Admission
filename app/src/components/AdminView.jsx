@@ -56,80 +56,6 @@ function useCountUp(target) {
 }
 
 /* ------------------------------------------------------------ dashboard */
-function Ticker({ recent }) {
-  const items = (recent || []).slice(0, 10);
-  if (!items.length) return null;
-  const verb = (t) => (t === 'save' ? 'saved' : t === 'profile_view' ? 'viewed' : t === 'login' ? 'signed in' : t === 'website_click' ? 'opened site of' : t === 'update' ? 'updated profile' : t);
-  const line = items.map((e, i) => (
-    <em key={i}>{EVIC[e.type] || '•'} {e.email || 'guest'} {verb(e.type)}{e.cid ? ' ' + cname(e.cid) : ''}</em>
-  ));
-  return (
-    <div className="admtick" aria-hidden="true">
-      <div className="admtick__track">
-        <span className="admtick__g">{line}</span>
-        <span className="admtick__g">{line}</span>
-      </div>
-    </div>
-  );
-}
-
-function Donut({ parts }) {
-  const tot = Math.max(1, parts.reduce((a, p) => a + p.v, 0));
-  const R = 42, C = 2 * Math.PI * R;
-  let acc = 0;
-  return (
-    <svg viewBox="0 0 120 120" className="admdonut" role="img" aria-label="Action split">
-      {parts.map((p) => {
-        const len = (p.v / tot) * C;
-        const el = (
-          <circle key={p.label} cx="60" cy="60" r={R} fill="none" stroke={p.color} strokeWidth="15"
-            strokeDasharray={len + ' ' + (C - len)} strokeDashoffset={-acc} transform="rotate(-90 60 60)" />
-        );
-        acc += len;
-        return el;
-      })}
-      <text x="60" y="58" textAnchor="middle" className="admdonut__n">{tot}</text>
-      <text x="60" y="73" textAnchor="middle" className="admdonut__l">actions</text>
-    </svg>
-  );
-}
-
-function Line7({ days }) {
-  if (!days || !days.length) return null;
-  const vals = days.map((d) => d.views);
-  const max = Math.max(1, ...vals);
-  const W = 560, H = 150, P = 14;
-  const pts = vals.map((v, i) => [P + (i * (W - 2 * P)) / (vals.length - 1), H - P - (v / max) * (H - 2 * P - 14)]);
-  let dpath = 'M' + pts[0][0].toFixed(1) + ' ' + pts[0][1].toFixed(1);
-  for (let i = 1; i < pts.length; i++) {
-    const dx = (pts[i][0] - pts[i - 1][0]) / 2;
-    dpath += ' C' + (pts[i - 1][0] + dx).toFixed(1) + ' ' + pts[i - 1][1].toFixed(1)
-      + ' ' + (pts[i][0] - dx).toFixed(1) + ' ' + pts[i][1].toFixed(1)
-      + ' ' + pts[i][0].toFixed(1) + ' ' + pts[i][1].toFixed(1);
-  }
-  const area = dpath + ' L' + pts[pts.length - 1][0].toFixed(1) + ' ' + (H - P) + ' L' + pts[0][0].toFixed(1) + ' ' + (H - P) + ' Z';
-  return (
-    <svg viewBox={'0 0 ' + W + ' ' + (H + 22)} className="admline" role="img" aria-label="7 day views trend">
-      <defs>
-        <linearGradient id="lg7" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stopColor="#121d38" /><stop offset=".45" stopColor="#f0b64a" /><stop offset="1" stopColor="#2e7d5b" />
-        </linearGradient>
-        <linearGradient id="ag7" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#f0b64a" stopOpacity=".28" /><stop offset="1" stopColor="#f0b64a" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d={area} fill="url(#ag7)" />
-      <path d={dpath} fill="none" stroke="url(#lg7)" strokeWidth="3.4" strokeLinecap="round" />
-      {pts.map((pt, i) => (
-        <g key={i}>
-          <circle cx={pt[0]} cy={pt[1]} r="3.6" fill="#fff" stroke="#121d38" strokeWidth="2" />
-          <text x={pt[0]} y={H + 16} textAnchor="middle">{new Date(days[i].date + 'T00:00:00Z').toLocaleDateString('en-IN', { weekday: 'short' })}</text>
-        </g>
-      ))}
-    </svg>
-  );
-}
-
 function Chart7({ days }) {
   if (!days || !days.length) return null;
   const max = Math.max(1, ...days.map((d) => Math.max(d.views, d.saves)));
@@ -491,9 +417,63 @@ function InfolexusFooter() {
   );
 }
 
-/* ------------------------------------------------------------ shell: one page, header to footer */
+/* ------------------------------------------------------------ leads desk */
+function Leads({ d }) {
+  const crows = d.colleges || [];
+  const [cid, setCid] = useState(crows[0] ? crows[0].id : '');
+  const cur = crows.find((c) => c.id === cid) || crows[0];
+  const list = useMemo(() => (d.students || []).filter((r) =>
+    (r.topColleges || []).some((c) => c.id === (cur || {}).id)), [d, cur]);
+  if (!crows.length) return <section className="card admpad"><p className="admnote">No lead activity yet.</p></section>;
+  return (
+    <>
+      <div className="admbar admbar--wrap">
+        {(crows).map((c) => (
+          <button key={c.id} type="button" className={'chip' + (cur && c.id === cur.id ? ' chip--on' : '')}
+            onClick={() => setCid(c.id)}>{c.name} · {c.students}</button>
+        ))}
+      </div>
+      {cur && (
+        <>
+          <div className="admkpis">
+            <div className="admkpi admkpi--c1"><span className="admkpi__ic">👨‍🎓</span><b>{cur.students}</b><span>Students interested</span></div>
+            <div className="admkpi admkpi--c0"><span className="admkpi__ic">👁</span><b>{cur.views}</b><span>Profile views</span></div>
+            <div className="admkpi admkpi--c2"><span className="admkpi__ic">♥</span><b>{cur.saves}</b><span>Saves</span></div>
+            <div className="admkpi admkpi--c3"><span className="admkpi__ic">🌐</span><b>{cur.clicks}</b><span>Site clicks</span></div>
+          </div>
+          <section className="card admpad">
+            <h3><span className="dot" />{cur.name} — interested students
+              <span className="admtools">
+                <a className="btn btn--sm" href={api.studentsCsvUrl(cur.id)} target="_blank" rel="noopener noreferrer">Leads CSV ↓</a>
+              </span>
+            </h3>
+            <div className="admtable">
+              <table>
+                <thead><tr><th>Student</th><th>Marks / stream</th><th>Views of this college</th><th>Contact</th></tr></thead>
+                <tbody>
+                  {list.map((r) => (
+                    <tr key={r.email}>
+                      <td><span className="admav">{initials(r.name || r.email)}</span><b>{r.name || r.email}</b><small>{r.email}</small></td>
+                      <td>{r.marks ?? '—'}% · {r.stream || '—'}</td>
+                      <td>{((r.topColleges || []).find((c) => c.id === cur.id) || {}).views || '—'}</td>
+                      <td><a href={'tel:+91' + (r.mobile || '')}>📞</a> <a href={'mailto:' + r.email}>✉️</a></td>
+                    </tr>
+                  ))}
+                  {!list.length && <tr><td colSpan="4">No named students yet — activity only. Exact list in the CSV.</td></tr>}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </>
+      )}
+    </>
+  );
+}
+
+/* ------------------------------------------------------------ shell: separate pages + sidebar */
 export default function AdminView({ onLogout }) {
   useCC();
+  const [page, setPage] = useState('dash');
   const [d, setD] = useState(null);
   const [err, setErr] = useState('');
   const load = useCallback(() => {
@@ -505,14 +485,16 @@ export default function AdminView({ onLogout }) {
     return () => clearInterval(t);
   }, [load]);
 
-  const secs = [
-    ['adm-dash', '📊', 'Dashboard'],
-    ['adm-colleges', '🏫', 'Colleges'],
-    ['adm-students', '👨‍🎓', 'Students / Leads'],
-    ['adm-analytics', '📈', 'Analytics'],
-    ['adm-audit', '🧾', 'Audit log'],
-    ['adm-roadmap', '🚧', 'Roadmap'],
+  const PAGES = [
+    ['dash', '📊', 'Dashboard'],
+    ['colleges', '🏫', 'Colleges'],
+    ['students', '👨‍', 'Students'],
+    ['leads', '🎯', 'Leads'],
+    ['analytics', '📈', 'Analytics'],
+    ['audit', '🧾', 'Audit log'],
+    ['roadmap', '🚧', 'Roadmap'],
   ];
+  const curt = (PAGES.find(([id]) => id === page) || [])[2] || '';
 
   return (
     <section className="view active" id="view-admin">
@@ -520,22 +502,13 @@ export default function AdminView({ onLogout }) {
         <div className="wrap">
           <div className="admhero__in">
             <div>
-              <h1>Platform admin</h1>
+              <h1>Platform admin · {curt}</h1>
               <p>CampusConnect business desk · signed in as <b>{cc.user?.email || 'admin'}</b> · live data, refreshes every 30s</p>
             </div>
             <button className="btn btn--ghost btn--sm" type="button" onClick={onLogout}>Sign out</button>
           </div>
-          {d && <Ticker recent={d.recent} />}
         </div>
       </header>
-
-      <div className="admsecnav">
-        <div className="wrap admsecnav__in">
-          {secs.map(([id, ic, t]) => (
-            <a key={id} href={'#' + id}>{ic} {t}</a>
-          ))}
-        </div>
-      </div>
 
       <div className="wrap admwrap">
         {err && (
@@ -543,53 +516,41 @@ export default function AdminView({ onLogout }) {
             <span>{err} Sign in again from the front page as admin.</span>
           </div>
         )}
-        {!d && !err && <p className="admnote">Loading summary…</p>}
-
-        {d && (
-          <section id="adm-dash" className="admsec">
-            <h2 className="admsec__t">📊 Dashboard</h2>
-            <Dash d={d} />
-          </section>
-        )}
-
-        <section id="adm-colleges" className="admsec">
-          <h2 className="admsec__t">🏫 Colleges</h2>
-          <Colleges />
-        </section>
-
-        {d && (
-          <section id="adm-students" className="admsec">
-            <h2 className="admsec__t">👨‍🎓 Students / Leads</h2>
-            <Students d={d} />
-          </section>
-        )}
-
-        {d && (
-          <section id="adm-analytics" className="admsec">
-            <h2 className="admsec__t">📈 Analytics</h2>
-            <Analytics d={d} />
-          </section>
-        )}
-
-        {d && (
-          <section id="adm-audit" className="admsec">
-            <h2 className="admsec__t">🧾 Audit log</h2>
-            <Audit d={d} />
-          </section>
-        )}
-
-        <section id="adm-roadmap" className="admsec">
-          <h2 className="admsec__t">🚧 Roadmap — next desks</h2>
-          <div className="admroad">
-            {NAV.filter((n) => n.lock).map((n) => (
-              <section className="card admlock" key={n.id}>
-                <span className="admlock__ic">{n.ic}</span>
-                <h3>{n.t}</h3>
-                <p>Stage {n.lock} — roles / payments backend venum; demo data mature aana pira inge full management varum.</p>
-              </section>
+        <div className="adm">
+          <nav className="admn" aria-label="Admin pages">
+            {PAGES.map(([id, ic, t]) => (
+              <button key={id} type="button" className={'admn__i' + (page === id ? ' admn__i--on' : '')}
+                onClick={() => setPage(id)}>
+                <span className="admn__ic">{ic}</span>{t}
+              </button>
             ))}
+            <div className="admn__foot">
+              {NAV.filter((n) => n.lock).map((n) => (
+                <span key={n.id} title={'Stage ' + n.lock}>{n.ic} {n.t} 🔒</span>
+              ))}
+            </div>
+          </nav>
+          <div className="admc">
+            {!d && !err && <p className="admnote">Loading summary…</p>}
+            {d && page === 'dash' && <Dash d={d} />}
+            {page === 'colleges' && <Colleges />}
+            {d && page === 'students' && <Students d={d} />}
+            {d && page === 'leads' && <Leads d={d} />}
+            {d && page === 'analytics' && <Analytics d={d} />}
+            {d && page === 'audit' && <Audit d={d} />}
+            {page === 'roadmap' && (
+              <div className="admroad">
+                {NAV.filter((n) => n.lock).map((n) => (
+                  <section className="card admlock" key={n.id}>
+                    <span className="admlock__ic">{n.ic}</span>
+                    <h3>{n.t}</h3>
+                    <p>Stage {n.lock} — roles / payments backend venum; demo data mature aana pira inge full management varum.</p>
+                  </section>
+                ))}
+              </div>
+            )}
           </div>
-        </section>
+        </div>
       </div>
       <InfolexusFooter />
     </section>
