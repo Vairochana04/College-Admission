@@ -10,7 +10,7 @@ import {
   degreesFor, NOT_SURE, ANY_DEGREE, STREAMS, WANT, STAY, HOSTELTYPE, TRAVEL,
   collegeById, saveStudentDetails, logoOrMono, COLLEGES,
 } from '../core.js';
-import CollegeBody from './CollegeBody.jsx';
+import CollegeBody, { CcFoot } from './CollegeBody.jsx';
 import ProfilePage from './ProfilePage.jsx';
 import { api, session } from '../api.js';
 
@@ -211,7 +211,7 @@ export default function StudentView({ onLogout }) {
     : null;
 
   if (profileId) {
-    return <StudentProfile id={profileId} onBack={() => setProfileId(null)} />;
+    return <div className="viewfade" key={'p' + profileId}><StudentProfile id={profileId} onBack={() => setProfileId(null)} /></div>;
   }
 
   /* one order for every college: home row → branches → college page */
@@ -219,9 +219,10 @@ export default function StudentView({ onLogout }) {
     const isGroup = drill === 'psg-group';
     const dc = isGroup ? null : collegeById(drill);
     return (
-      <section id="view-drill" className="view active">
+      <section id="view-drill" className="view active viewfade" key={'d' + drill}>
         <div className="wrap" style={{ paddingTop: 18, paddingBottom: 46 }}>
           <button className="btn btn--ghost btn--sm" onClick={() => setDrill(null)}>← All colleges</button>
+          <div className="crumbs">Colleges › <b>{isGroup ? 'PSG Institutions' : dc.shortName}</b></div>
           <h2 style={{ margin: '16px 0 4px', fontSize: 22 }}>{isGroup ? 'PSG Institutions' : dc.name}</h2>
           <p className="muted" style={{ margin: '0 0 14px', fontSize: 13.4 }}>
             {isGroup
@@ -237,7 +238,7 @@ export default function StudentView({ onLogout }) {
   }
 
   return (
-    <section id="view-student" className="view active">
+    <section id="view-student" className="view active viewfade" key="home">
       <header className="topbar">
         <div className="wrap topbar__in">
           <div className="brand">
@@ -347,7 +348,10 @@ export default function StudentView({ onLogout }) {
           <div className="slidehub__track">
             {filtering ? (
               rowList.length === 0
-                ? <p className="muted" style={{ margin: '6px 2px', fontSize: 13.2 }}>No college matches — try another name, or clear the search / filter.</p>
+                ? <div className="empty"><b>No colleges match</b>
+                    <p>Try another name, or clear the search / filter.</p>
+                    <button className="btn btn--gold btn--sm" type="button" onClick={() => set({ stuQuery: '', stuFilter: 'all' })}>Clear search &amp; filters</button>
+                  </div>
                 : rowList.map(collegeRow)
             ) : (
               <>
@@ -383,6 +387,8 @@ export default function StudentView({ onLogout }) {
               (cc.stuWant && cc.stuWant !== NOT_SURE ? ' · course: ' + cc.stuWant : '') +
               (cc.stuDegree && cc.stuDegree !== ANY_DEGREE ? ' · ' + cc.stuDegree : '')}
         </p>
+
+        <CcFoot />
 
             </>
           ) : (

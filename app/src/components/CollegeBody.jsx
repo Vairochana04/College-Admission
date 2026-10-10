@@ -17,6 +17,22 @@ export default function CollegeBody({ college, studentMode, onBack }) {
   const [level, setLevel] = useState('All');
   const [query, setQuery] = useState('');
   const [eventTag, setEventTag] = useState('All');
+  const saved = cc.saved.includes(c.id);
+
+  function saveToggle() {
+    const i = cc.saved.indexOf(c.id);
+    const next = cc.saved.slice();
+    if (i >= 0) next.splice(i, 1); else next.push(c.id);
+    if (cc.user) { try { localStorage.setItem('cc_student_saved_v1:' + cc.user.email, JSON.stringify(next)); } catch (e) {} }
+    set({ saved: next });
+    api.track(i >= 0 ? 'unsave' : 'save', c.id);
+    toast(i >= 0 ? 'Removed from your saved colleges' : 'Saved — you will find it under "Saved"');
+  }
+
+  function openSite() {
+    window.open(c.website, '_blank', 'noopener,noreferrer');
+    api.track('website_click', c.id);
+  }
   const wrap = useRef(null);
   const ids = ['sec-about', 'sec-courses', 'sec-admissions', 'sec-fees', 'sec-events', 'sec-location', 'sec-contact', 'sec-website'];
   const labels = {
@@ -104,10 +120,11 @@ export default function CollegeBody({ college, studentMode, onBack }) {
   }, [c.id, sections]);
 
   return (
-    <div ref={wrap} onClick={onClick} onInput={onInput}>
+    <div ref={wrap} onClick={onClick} onInput={onInput} className={studentMode ? 'hasbar' : ''}>
       {studentMode && (
         <div className="wrap" style={{ paddingTop: 18 }}>
           <button className="btn btn--ghost btn--sm" onClick={onBack}>← All colleges</button>
+          <div className="crumbs">Colleges › <b>{c.shortName || c.name}</b></div>
         </div>
       )}
 
@@ -128,6 +145,26 @@ export default function CollegeBody({ college, studentMode, onBack }) {
         <div dangerouslySetInnerHTML={{ __html: sections.website }} />
       </div>
 
+      <CcFoot />
+      {studentMode && (
+        <div className="actionbar">
+          <button type="button" className={"btn btn--sm " + (saved ? 'btn--gold' : 'btn--primary')} onClick={saveToggle}>
+            {saved ? '✓ Saved' : '♥ Save college'}
+          </button>
+          <button type="button" className="btn btn--sm btn--ghost" onClick={openSite}>🌐 Official site</button>
+          <button type="button" className="btn btn--sm btn--ghost" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>↑ Top</button>
+        </div>
+      )}
     </div>
+  );
+}
+
+/* small shared footer — keeps every page ending the same neat way */
+export function CcFoot() {
+  return (
+    <footer className="ccfoot">
+      <span>CampusConnect · a demo admission guide for Tamil Nadu students · values are indicative — confirm with the college</span>
+      <span>© 2026 CampusConnect · Coimbatore</span>
+    </footer>
   );
 }

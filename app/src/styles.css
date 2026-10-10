@@ -946,3 +946,22 @@ button.stu__pic-edit:hover{transform:scale(1.12)}
 .faq__i summary:hover{background:var(--bg)}
 .faq__i[open] summary{background:var(--bg)}
 .faq__i p{padding:10px 14px; font-size:13.2px; line-height:1.55}
+
+/* ---------- v1.8 · flow polish: transitions, crumbs, action bar, footer ---------- */
+.viewfade{animation:vfade .18s ease}
+@keyframes vfade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.crumbs{font-size:12px; color:var(--muted); margin:8px 0 0; letter-spacing:.02em}
+.crumbs b{color:var(--body); font-weight:600}
+.hasbar{padding-bottom:86px}
+.actionbar{position:fixed; left:0; right:0; bottom:0; z-index:70; display:flex; gap:10px;
+  justify-content:center; padding:10px 14px calc(10px + env(safe-area-inset-bottom, 0px));
+  background:rgba(255,255,255,.94); backdrop-filter:blur(8px); border-top:1px solid var(--line);
+  box-shadow:0 -8px 24px -18px rgba(13,22,38,.35)}
+.actionbar .btn{flex:0 1 200px}
+.ccfoot{margin:30px auto 0; padding:16px 4px 22px; border-top:1px solid var(--line);
+  color:var(--muted); font-size:12.3px; display:flex; gap:12px; flex-wrap:wrap;
+  justify-content:space-between; max-width:1120px}
+.empty{margin:10px 0; padding:28px 20px; text-align:center; background:#fff;
+  border:1px dashed var(--line); border-radius:var(--radius); color:var(--body)}
+.empty b{display:block; font-size:15px; color:var(--head); margin-bottom:6px}
+.empty p{margin:0 0 12px; font-size:13.2px; color:var(--muted)}
