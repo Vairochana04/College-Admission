@@ -7,7 +7,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { cc, useCC } from '../store.js';
 import { api } from '../api.js';
-import { COLLEGES, collegeById, initials } from '../core.js';
+import { COLLEGES, collegeById, initials, BUILD_TAG } from '../core.js';
 
 const NAV = [
   { id: 'dash', ic: '📊', t: 'Dashboard' },
@@ -566,7 +566,7 @@ export default function AdminView({ onLogout }) {
             <div>
               <h1>Platform admin · {curt}</h1>
               <p>CampusConnect business desk · signed in as <b>{cc.user?.email || 'admin'}</b> · auto-refresh 30s
-                {upd ? <> · updated <b>{upd.toLocaleTimeString('en-IN')}</b></> : null}</p>
+                {upd ? <> · updated <b>{upd.toLocaleTimeString('en-IN')}</b></> : null} · build {BUILD_TAG}</p>
             </div>
             <span className="admhero__act">
               <button className="btn btn--gold btn--sm admrefbtn" type="button" onClick={load} disabled={busy}>

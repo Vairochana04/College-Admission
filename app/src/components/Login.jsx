@@ -11,6 +11,7 @@ import { useEffect, useMemo, useState } from 'react';
 import ChatBot from './ChatBot.jsx';
 import LoginAside from '../gen/LoginAside.jsx';
 import { cc, set, toast } from '../store.js';
+import { BUILD_TAG } from '../core.js';
 import { api, session } from '../api.js';
 import {
   STREAMS, WANT, STAY, HOSTELTYPE, TRAVEL, NOT_SURE, ANY_DEGREE, degreesFor,
@@ -402,5 +403,6 @@ export default function Login() {
         </main>
       </div>
     <ChatBot />
+    <span className="buildtag">build {BUILD_TAG}</span>
     </section>  );
 }

@@ -104,6 +104,7 @@ var ICONS = {
 
 
 /* ---- data: COLLEGES ---- */
+var BUILD_TAG = '2026-10-10 r3';
 var COLLEGES = [
   /* ===================================================================
      PSG GROUP — PSG & Sons' Charities, Coimbatore
@@ -2988,6 +2989,6 @@ function faqHTML(c) {
     }).join('') + '</div></div></div>';
 }
 
-export {
+export { BUILD_TAG,
   ICONS, COLLEGES, USERS, DEMO_CREDENTIALS, DEGREES, FACIL, MATCH, CATEGORY_OF, ITEM_NOTE, GROUP_ORDER, PROXY_ID, ROLE_COPY, NOT_SURE, ANY_DEGREE, STREAMS, WANT, STAY, HOSTELTYPE, TRAVEL, degreesFor, degreeRe, degreeMatches, courseMatches, fitScore, eligFor, storeGet, storeSet, storeDel, studentAccounts, studentLookup, isSeeded, saveStudentDetails, restoreStudentSession, saveStudentList, startStudentSession, studentColleges, studentVisible, stuPrefsLine, faciNote, subLineOf, hayMatches, collegesInGroup, categoryOf, isPSG, groupLabelOfCategory, proxyIdFor, portalProxyId, fmtLong, fmtShort, dayParts, countdownText, initials, collegeById, groupLabelOf, cityOf, nextAdmissionDate, upcomingEvents, esc, countCourses, selectionMode, qrSVG, pathFromUrl, logoOrMono, groupMarkHTML, mediaOf, stuCardHTML, heroHTML, aboutHTML, coursesHTML, admissionsHTML, eventsHTML, contactHTML, websiteHTML, deptListHTML, pickerHTML, FEES, QUOTA, counselHTML, feesHTML, mapHTML, faqHTML
 };
