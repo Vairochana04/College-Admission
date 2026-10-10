@@ -18,6 +18,25 @@ const Chip = ({ on, children, ...rest }) => (
   <button type="button" className={'chip' + (on ? ' chip--on' : '')} aria-pressed={on} {...rest}>{children}</button>
 );
 
+/* left rail: hamburger on top, then My Profile -> Colleges (order the user asked) */
+function Rail({ page, go, open, setOpen }) {
+  return (
+    <nav className="rail" data-open={open ? '1' : '0'} aria-label="Sections">
+      <button type="button" className="rail__top" onClick={() => setOpen(!open)} aria-label="Toggle menu" title="Menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+      </button>
+      <button type="button" className={'rail__i' + (page === 'profile' ? ' on' : '')} onClick={() => go('profile')} title="My Profile">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="3.6" /><path d="M5 19.4c1.4-3.4 4-5 7-5s5.6 1.6 7 5" /></svg>
+        <span>My Profile</span>
+      </button>
+      <button type="button" className={'rail__i' + (page === 'colleges' ? ' on' : '')} onClick={() => go('colleges')} title="Colleges">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.6" /><rect x="13" y="4" width="7" height="7" rx="1.6" /><rect x="4" y="13" width="7" height="7" rx="1.6" /><rect x="13" y="13" width="7" height="7" rx="1.6" /></svg>
+        <span>Colleges</span>
+      </button>
+    </nav>
+  );
+}
+
 export default function StudentView({ onLogout }) {
   useCC();
   const [editing, setEditing] = useState(false);
@@ -28,7 +47,10 @@ export default function StudentView({ onLogout }) {
   const photoRef = useRef(null);
   const [profileId, setProfileId] = useState(null);
   const [page, setPage] = useState('colleges');
-  const [drill, setDrill] = useState(null);   /* 'psg-group' or a college id → its branches */
+  const [drill, setDrill] = useState(null);
+  const [railOpen, setRailOpen] = useState(() => { try { return localStorage.getItem('cc_rail_open') === '1'; } catch (e) { return false; } });
+  function setRail(v) { setRailOpen(v); try { localStorage.setItem('cc_rail_open', v ? '1' : '0'); } catch (e) {} }
+  function go(v) { setProfileId(null); if (v === 'colleges') setDrill(null); setPage(v); }   /* 'psg-group' or a college id → its branches */
   const [chips, setChips] = useState({
     stream: cc.stuStream, want: cc.stuWant, degree: cc.stuDegree || ANY_DEGREE,
     stay: cc.stuStay, hostelType: cc.stuHostelType, travel: cc.stuTravel,
@@ -217,7 +239,7 @@ export default function StudentView({ onLogout }) {
     : null;
 
   if (profileId) {
-    return <div className="viewfade" key={'p' + profileId}><StudentProfile id={profileId} onBack={() => setProfileId(null)} /></div>;
+    return <div className="viewfade" key={'p' + profileId}><Rail page={page} go={go} open={railOpen} setOpen={setRail} /><StudentProfile id={profileId} onBack={() => setProfileId(null)} /></div>;
   }
 
   /* one order for every college: home row → branches → college page */
@@ -226,6 +248,7 @@ export default function StudentView({ onLogout }) {
     const dc = isGroup ? null : collegeById(drill);
     return (
       <section id="view-drill" className="view active viewfade" key={'d' + drill}>
+        <Rail page={page} go={go} open={railOpen} setOpen={setRail} />
         <div className="wrap" style={{ paddingTop: 18, paddingBottom: 46 }}>
           <button className="btn btn--ghost btn--sm" onClick={() => setDrill(null)}>← All colleges</button>
           <div className="crumbs">Colleges › <b>{isGroup ? 'PSG Institutions' : dc.shortName}</b></div>
@@ -245,6 +268,7 @@ export default function StudentView({ onLogout }) {
 
   return (
     <section id="view-student" className="view active viewfade" key="home">
+      <Rail page={page} go={go} open={railOpen} setOpen={setRail} />
       <header className="topbar">
         <div className="wrap topbar__in">
           <div className="brand">
@@ -253,18 +277,6 @@ export default function StudentView({ onLogout }) {
             </span>
             <span>CampusConnect<small>Student workspace</small></span>
           </div>
-          <nav className="topnav" aria-label="Student sections">
-            <button type="button" className={'topnav__i' + (page === 'profile' ? ' on' : '')}
-              onClick={() => { setProfileId(null); setPage('profile'); }}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="3.6" /><path d="M5 19.4c1.4-3.4 4-5 7-5s5.6 1.6 7 5" /></svg>
-              My Profile
-            </button>
-            <button type="button" className={'topnav__i' + (page === 'colleges' ? ' on' : '')}
-              onClick={() => setPage('colleges')}>
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.6" /><rect x="13" y="4" width="7" height="7" rx="1.6" /><rect x="4" y="13" width="7" height="7" rx="1.6" /><rect x="13" y="13" width="7" height="7" rx="1.6" /></svg>
-              Colleges
-            </button>
-          </nav>
           <div className="topbar__spacer"></div>
           <div className="userchip">
             <span className="avatar">{initials(cc.user?.name || 'SS')}</span>

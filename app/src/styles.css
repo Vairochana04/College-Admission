@@ -977,3 +977,21 @@ button.stu__pic-edit:hover{transform:scale(1.12)}
 .qr-row__code svg{display:block; width:96px; height:96px}
 .qr-row b{display:block; font-size:13.5px; color:var(--head); margin-bottom:3px}
 .qr-row div span{font-size:12.5px; color:var(--muted)}
+
+/* ---------- v2.0 · left rail nav (hamburger top-left, Profile then Colleges) ---------- */
+.rail{position:fixed; left:0; top:0; bottom:0; width:58px; z-index:80; background:#fff;
+  border-right:1px solid var(--line); display:flex; flex-direction:column; align-items:center;
+  gap:8px; padding:10px 8px; transition:width .18s ease; box-shadow:1px 0 0 rgba(13,22,38,.02)}
+.rail[data-open="1"]{width:188px; align-items:stretch; padding:10px; box-shadow:14px 0 34px -26px rgba(13,22,38,.4)}
+.rail__top{width:42px; height:42px; border-radius:12px; border:0; background:transparent; color:var(--head);
+  display:grid; place-items:center; cursor:pointer; margin:0 auto}
+.rail[data-open="1"] .rail__top{width:100%; margin:0; justify-content:flex-start; padding:0 12px; display:flex; gap:10px}
+.rail__i{width:42px; height:42px; border-radius:12px; border:0; background:transparent; color:var(--body);
+  display:flex; align-items:center; justify-content:center; gap:10px; cursor:pointer; margin:0 auto; flex:0 0 auto}
+.rail[data-open="1"] .rail__i{width:100%; margin:0; justify-content:flex-start; padding:0 12px}
+.rail__i span{display:none; font-size:13px; font-weight:600; white-space:nowrap}
+.rail[data-open="1"] .rail__i span{display:block}
+.rail__i:hover{background:var(--bg)}
+.rail__i.on{background:var(--navy); color:#fff}
+#view-student, #view-drill, .viewfade{margin-left:58px}
+@media (max-width:720px){ .rail{width:48px; padding:8px 5px} #view-student, #view-drill, .viewfade{margin-left:48px} }
