@@ -8,6 +8,7 @@
    (server/data/students.json); without a server the app falls back to the
    device, so the demo never dead-ends. */
 import { useEffect, useMemo, useState } from 'react';
+import ChatBot from './ChatBot.jsx';
 import LoginAside from '../gen/LoginAside.jsx';
 import { cc, set, toast } from '../store.js';
 import { api, session } from '../api.js';
