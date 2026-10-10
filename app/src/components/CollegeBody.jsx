@@ -70,12 +70,10 @@ export default function CollegeBody({ college, studentMode, onBack }) {
     }
     const site = e.target.closest('[data-site]');
     if (site) {
-      /* official website: open live in a new tab — works from any browser */
-      e.preventDefault();
-      const href = site.getAttribute('href') || '';
+      /* native anchor navigation (target=_blank) does the opening — most reliable;
+         we only log the click here */
       const cid = site.getAttribute('data-cid') || c.id;
       const label = site.getAttribute('data-label') || (c.shortName + ' official website');
-      if (href) window.open(href, '_blank', 'noopener,noreferrer');
       api.track('website_click', cid, label);
       return;
     }
@@ -161,7 +159,7 @@ export default function CollegeBody({ college, studentMode, onBack }) {
           <button type="button" className={"btn btn--sm " + (saved ? 'btn--gold' : 'btn--primary')} onClick={saveToggle}>
             {saved ? '✓ Saved' : '♥ Save college'}
           </button>
-          <button type="button" className="btn btn--sm btn--ghost" onClick={openSite}>🌐 Official site</button>
+          <a className="btn btn--sm btn--ghost" href={c.website} target="_blank" rel="noopener noreferrer" data-site="1" data-label={(c.shortName || c.name) + ' official website'}>🌐 Official site</a>
           <button type="button" className="btn btn--sm btn--ghost" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>↑ Top</button>
         </div>
       )}

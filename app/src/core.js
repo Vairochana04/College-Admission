@@ -2199,8 +2199,8 @@ function heroHTML(c){
         '<p class="hero__tag">' + esc(c.tagline) + '</p>' +
 
         '<div class="hero__cta">' +
-          '<a class="btn btn--gold" href="#sec-website">' +
-            ICONS.globe + 'Official website ↓' +
+          '<a class="btn btn--gold" href="' + esc(c.website) + '" target="_blank" rel="noopener noreferrer" data-site="1" data-cid="' + esc(c.id) + '" data-label="' + esc(c.name) + '">' +
+            ICONS.globe + 'Official website' +
           '</a>' +
           '<a class="btn btn--onDark" href="#sec-admissions">' +
             ICONS.cal + 'Admissions ' + esc(c.admission.cycle) +
