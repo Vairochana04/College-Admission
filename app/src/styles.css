@@ -1298,3 +1298,30 @@ body{overflow-x:clip}
 .pill--b{background:#e8eefb; color:#27407a}
 .pill--y{background:#fdf3dd; color:#8a5b06}
 @media (max-width:900px){ .admbanrow,.admcharts{grid-template-columns:1fr} }
+
+/* ---------- v2.15 · admin neat + mobile pass ---------- */
+.admsec{gap:12px}
+.admsec__t{font-size:16.5px}
+.card{box-shadow:0 10px 26px -22px rgba(13,22,38,.35)}
+.admtable td,.admtable th{padding:9px 12px}
+.admrow:hover td{background:var(--bg)}
+.admtick{padding:8px 0}
+.admtick em{font-size:11.6px}
+.admkpi{padding:13px 15px}
+.admkpi b{font-size:23px}
+.admban{padding:22px 24px}
+.admdonut{width:140px}
+.admfeed__i{padding:9px 6px}
+.admsecnav__in{padding:8px 22px}
+.admsecnav a{padding:6px 12px; font-size:12.3px}
+@media (max-width:720px){
+  .admkpis{grid-template-columns:1fr 1fr}
+  .admban{flex-direction:column; align-items:flex-start; gap:10px}
+  .admban__art{width:96px; align-self:flex-end}
+  .admtoday ul{grid-template-columns:1fr 1fr}
+  .admfunnel{grid-template-columns:minmax(90px,1fr) 1fr 38px; font-size:12px}
+  .admdraw{width:100%}
+  .admhead h1,.admhero h1{font-size:22px}
+  .admwrap{padding-top:16px}
+  .admdonutwrap{justify-content:center}
+}
