@@ -59,6 +59,59 @@ function InfolexusFooter() {
   );
 }
 
+
+/* Help & Support band — sits right above the company footer */
+function HelpSupport() {
+  const cards = [
+    {
+      icon: <><path d="M4 19.5V6a2 2 0 0 1 2-2h13v14H6.5a2.5 2.5 0 0 0 0 5H19" /></>,
+      t: 'Quick guide (students)',
+      b: <>1 · Profile details fill pannunga (one time) → 2 · Colleges list-la ungal
+        marks-ku fit-aana colleges → 3 · ♥ save panni compare → 4 · college page-la
+        counselling steps & official site.</>,
+    },
+    {
+      icon: <><path d="M21 12a8 8 0 0 1-8 8H4l2-3a8 8 0 1 1 15-5Z" /><path d="M9 11h6M9 14h4" /></>,
+      t: 'Guide bot',
+      b: <>Bottom-left 💬 bubble — colleges, cutoff, hostel, fees, apply steps pathi
+        kelunga; college data-va irundhu instant answers (server-ku data pogadhu).</>,
+    },
+    {
+      icon: <><path d="M3 11 12 3l9 8" /><path d="M5 10v10h14V10" /><path d="M12 21v-6" /></>,
+      t: 'College help desks',
+      b: <>Every college page → “Help & contact” section: admissions phone, email,
+        office hours + Google map. Official website link-um athileye.</>,
+    },
+    {
+      icon: <><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16h.01" /></>,
+      t: 'Technical support',
+      b: <>Platform issues-ku <b>Infolexus Solutions</b>, Coimbatore — full address
+        & map kile (“Platform credit” block). Institution admin via-va report pannalam.</>,
+    },
+  ];
+  return (
+    <div className="helpband">
+      <div className="wrap">
+        <div className="helpband__head">
+          <h3>Help &amp; Support</h3>
+          <p>Quick answers first — reach a human only if you still need one.</p>
+        </div>
+        <div className="helpband__grid">
+          {cards.map((c) => (
+            <section className="helpcard" key={c.t}>
+              <span className="helpcard__ic">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">{c.icon}</svg>
+              </span>
+              <b>{c.t}</b>
+              <p>{c.b}</p>
+            </section>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminView({ onLogout }) {
   useCC();
   const [data, setData] = useState(null);
@@ -272,6 +325,7 @@ export default function AdminView({ onLogout }) {
           </div>
         </div>
       </div>
+      <HelpSupport />
       <InfolexusFooter />
     </section>
   );
