@@ -201,6 +201,7 @@ export default function StudentView({ onLogout }) {
   /* front page shows names only: the search / filter chips narrow this linear list */
   const q = (cc.stuQuery || '').trim().toLowerCase();
   const filtering = q !== '' || cc.stuFilter !== 'all';
+  const frontRows = 1 + COLLEGES.filter((c) => c.group !== 'PSG').length;   /* rows actually on this page */
   const rowList = filtering
     ? COLLEGES.filter((c) => {
         if (q && (c.name + ' ' + c.shortName + ' ' + c.city).toLowerCase().indexOf(q) < 0) return false;
@@ -317,7 +318,7 @@ export default function StudentView({ onLogout }) {
           </div>
 
           <div className="stu__stats">
-            <div><b>{all.length}</b><span>Colleges for you</span></div>
+            <div><b>{filtering ? visible.length : frontRows}</b><span>Colleges for you</span></div>
             <div><b>{cc.saved.length}</b><span>Saved</span></div>
             <div><b>{nextAll ? fmtShort(nextAll.date) : '—'}</b><span>{nextAll ? nextAll.label : 'next date'}</span></div>
           </div>
@@ -330,7 +331,7 @@ export default function StudentView({ onLogout }) {
               onChange={(e) => set({ stuQuery: e.target.value })} />
           </div>
           <div className="chips chips--filter">
-            <Chip on={cc.stuFilter === 'all'} onClick={() => set({ stuFilter: 'all' })}>All colleges <span className="cnt">{all.length}</span></Chip>
+            <Chip on={cc.stuFilter === 'all'} onClick={() => set({ stuFilter: 'all' })}>All colleges <span className="cnt">{frontRows}</span></Chip>
             <Chip on={cc.stuFilter === 'eligible'} onClick={() => set({ stuFilter: 'eligible' })}>Eligible for me <span className="cnt">{eligCount}</span></Chip>
             <Chip on={cc.stuFilter === 'saved'} onClick={() => set({ stuFilter: 'saved' })}>Saved <span className="cnt">{cc.saved.length}</span></Chip>
           </div>
@@ -371,13 +372,14 @@ export default function StudentView({ onLogout }) {
         </div>
 
         <p className="stu__gridline" id="stuGridLine">
-          {(cc.marks === null || cc.marks === undefined)
-            ? 'All ' + all.length + ' colleges · add your Class 12 % to see your fit'
-            : 'Showing ' + visible.length + ' college' + (visible.length === 1 ? '' : 's') +
-              ' · sorted for your ' + cc.marks + '% · ' + cc.stuStream +
-              (eligCount ? ' · ' + eligCount + ' match your marks' : '') +
+          {filtering
+            ? 'Showing ' + visible.length + ' college' + (visible.length === 1 ? '' : 's') +
+              (cc.marks !== null && cc.marks !== undefined ? ' · sorted for your ' + cc.marks + '% · ' + cc.stuStream : '') +
+              (eligCount && cc.stuFilter === 'eligible' ? '' : (eligCount ? ' · ' + eligCount + ' match your marks' : '')) +
               (cc.stuWant && cc.stuWant !== NOT_SURE ? ' · course: ' + cc.stuWant : '') +
-              (cc.stuDegree && cc.stuDegree !== ANY_DEGREE ? ' · ' + cc.stuDegree : '')}
+              (cc.stuDegree && cc.stuDegree !== ANY_DEGREE ? ' · ' + cc.stuDegree : '')
+            : frontRows + ' lists on this page · PSG Institutions row holds ' + psgGroup.length + ' campuses' +
+              (cc.marks === null || cc.marks === undefined ? ' · add your Class 12 % to see your fit' : '')}
         </p>
 
         <CcFoot />
