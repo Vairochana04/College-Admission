@@ -400,6 +400,6 @@ export default function Login() {
           </form>
         </main>
       </div>
-    </section>
-  );
+    <ChatBot />
+    </section>  );
 }
