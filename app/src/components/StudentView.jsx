@@ -34,7 +34,7 @@ export default function StudentView({ onLogout }) {
     stay: cc.stuStay, hostelType: cc.stuHostelType, travel: cc.stuTravel,
   });
 
-  const all = studentColleges();
+  const all = COLLEGES;   /* count = every college shown on this page */
   const nextAll = useMemo(() => {
     let best = null;
     all.forEach((c) => {
@@ -304,14 +304,6 @@ export default function StudentView({ onLogout }) {
                   ? <img className="avatar avatar--xl" src={cc.user.photo} alt="Your profile photo" />
                   : <span className="avatar avatar--xl">{initials(cc.user?.name || 'SS')}</span>}
               </button>
-              <button className="stu__pic-edit" type="button" onClick={openEditor} title="Edit your details" aria-label="Edit your details">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 20l4.5-.9L19.6 8a2.1 2.1 0 0 0-3-3L5.5 16.1Z" /><path d="m14.5 6.5 3 3" /></svg>
-              </button>
-              {cc.user?.savedServer && (
-                <span className="stu__tick" title="All done — profile saved on server" aria-label="All done, profile saved on server">
-                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round"><path d="m5 13 4 4L19 7" /></svg>
-                </span>
-              )}
               <input ref={photoRef} type="file" accept="image/*" style={{ display: 'none' }} onChange={onPickPhoto} />
             </div>
             <div className="stu__hello">
