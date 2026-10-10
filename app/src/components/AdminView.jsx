@@ -73,6 +73,63 @@ function Ticker({ recent }) {
   );
 }
 
+function Donut({ parts }) {
+  const tot = Math.max(1, parts.reduce((a, p) => a + p.v, 0));
+  const R = 42, C = 2 * Math.PI * R;
+  let acc = 0;
+  return (
+    <svg viewBox="0 0 120 120" className="admdonut" role="img" aria-label="Action split">
+      {parts.map((p) => {
+        const len = (p.v / tot) * C;
+        const el = (
+          <circle key={p.label} cx="60" cy="60" r={R} fill="none" stroke={p.color} strokeWidth="15"
+            strokeDasharray={len + ' ' + (C - len)} strokeDashoffset={-acc} transform="rotate(-90 60 60)" />
+        );
+        acc += len;
+        return el;
+      })}
+      <text x="60" y="58" textAnchor="middle" className="admdonut__n">{tot}</text>
+      <text x="60" y="73" textAnchor="middle" className="admdonut__l">actions</text>
+    </svg>
+  );
+}
+
+function Line7({ days }) {
+  if (!days || !days.length) return null;
+  const vals = days.map((d) => d.views);
+  const max = Math.max(1, ...vals);
+  const W = 560, H = 150, P = 14;
+  const pts = vals.map((v, i) => [P + (i * (W - 2 * P)) / (vals.length - 1), H - P - (v / max) * (H - 2 * P - 14)]);
+  let dpath = 'M' + pts[0][0].toFixed(1) + ' ' + pts[0][1].toFixed(1);
+  for (let i = 1; i < pts.length; i++) {
+    const dx = (pts[i][0] - pts[i - 1][0]) / 2;
+    dpath += ' C' + (pts[i - 1][0] + dx).toFixed(1) + ' ' + pts[i - 1][1].toFixed(1)
+      + ' ' + (pts[i][0] - dx).toFixed(1) + ' ' + pts[i][1].toFixed(1)
+      + ' ' + pts[i][0].toFixed(1) + ' ' + pts[i][1].toFixed(1);
+  }
+  const area = dpath + ' L' + pts[pts.length - 1][0].toFixed(1) + ' ' + (H - P) + ' L' + pts[0][0].toFixed(1) + ' ' + (H - P) + ' Z';
+  return (
+    <svg viewBox={'0 0 ' + W + ' ' + (H + 22)} className="admline" role="img" aria-label="7 day views trend">
+      <defs>
+        <linearGradient id="lg7" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stopColor="#121d38" /><stop offset=".45" stopColor="#f0b64a" /><stop offset="1" stopColor="#2e7d5b" />
+        </linearGradient>
+        <linearGradient id="ag7" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#f0b64a" stopOpacity=".28" /><stop offset="1" stopColor="#f0b64a" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      <path d={area} fill="url(#ag7)" />
+      <path d={dpath} fill="none" stroke="url(#lg7)" strokeWidth="3.4" strokeLinecap="round" />
+      {pts.map((pt, i) => (
+        <g key={i}>
+          <circle cx={pt[0]} cy={pt[1]} r="3.6" fill="#fff" stroke="#121d38" strokeWidth="2" />
+          <text x={pt[0]} y={H + 16} textAnchor="middle">{new Date(days[i].date + 'T00:00:00Z').toLocaleDateString('en-IN', { weekday: 'short' })}</text>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
 function Chart7({ days }) {
   if (!days || !days.length) return null;
   const max = Math.max(1, ...days.map((d) => Math.max(d.views, d.saves)));
@@ -98,7 +155,7 @@ function Chart7({ days }) {
 function Kpi({ k, v, ic, i }) {
   const n = useCountUp(v);
   return (
-    <div className={'admkpi admkpi--t' + (i % 4)} >
+    <div className={'admkpi admkpi--c' + (i % 4)}>
       <span className="admkpi__ic">{ic}</span><b>{n}</b><span>{k}</span>
     </div>
   );
@@ -115,17 +172,62 @@ function Dash({ d }) {
     ['Colleges with interest', t.collegesWithInterest ?? 0, '🏫'],
     ['Logins today', today.logins ?? 0, '🔑'],
   ];
+  const week = (d.days || []).reduce((a, x) => ({ v: a.v + x.views, s: a.s + x.saves }), { v: 0, s: 0 });
   return (
     <>
+      <div className="admbanrow">
+        <section className="admban">
+          <div>
+            <h2>Hi {String(cc.user?.name || 'Admin').split(/\s+/)[0]}! Welcome back 👋</h2>
+            <p>{t.students ?? 0} students · {week.v} profile views & {week.s} saves this week ·
+              {' '}{t.websiteClicks ?? 0} official-site clicks overall. The feed below ticks every 30 seconds.</p>
+          </div>
+          <svg viewBox="0 0 120 90" className="admban__art" aria-hidden="true">
+            <circle cx="88" cy="26" r="17" fill="rgba(240,182,74,.9)" />
+            <circle cx="60" cy="52" r="26" fill="rgba(255,255,255,.14)" />
+            <rect x="18" y="44" width="52" height="34" rx="6" fill="rgba(255,255,255,.22)" />
+            <rect x="26" y="52" width="36" height="4" rx="2" fill="rgba(255,255,255,.55)" />
+            <rect x="26" y="60" width="26" height="4" rx="2" fill="rgba(255,255,255,.4)" />
+          </svg>
+        </section>
+        <section className="card admtoday">
+          <h3><span className="dot" />Today</h3>
+          <ul>
+            <li><i>🔑</i>{today.logins ?? 0} logins</li>
+            <li><i>👁</i>{today.views ?? 0} profile views</li>
+            <li><i>♥</i>{today.saves ?? 0} saves</li>
+            <li><i>🌐</i>{today.clicks ?? 0} site clicks</li>
+          </ul>
+          <a className="admnote" href="#adm-audit">Open live audit feed →</a>
+        </section>
+      </div>
       <div className="admkpis">
         {kpis.map(([k, v, ic], i) => <Kpi key={k} k={k} v={v} ic={ic} i={i} />)}
       </div>
-      <section className="card admpad">
-        <h3><span className="dot" />Last 7 days
-          <span className="admlegend"><i style={{ background: '#f0b64a' }} />profile views<i style={{ background: '#121d38' }} />saves</span>
-        </h3>
-        <Chart7 days={d.days} />
-      </section>
+      <div className="admcharts">
+        <section className="card admpad">
+          <h3><span className="dot" />Action split</h3>
+          <div className="admdonutwrap">
+            <Donut parts={[
+              { label: 'views', v: t.profileViews ?? 0, color: '#f0b64a' },
+              { label: 'saves', v: t.saves ?? 0, color: '#121d38' },
+              { label: 'clicks', v: t.websiteClicks ?? 0, color: '#2e7d5b' },
+            ]} />
+            <ul className="admdonutlg">
+              <li><i style={{ background: '#f0b64a' }} />Profile views<b>{t.profileViews ?? 0}</b></li>
+              <li><i style={{ background: '#121d38' }} />Saves<b>{t.saves ?? 0}</b></li>
+              <li><i style={{ background: '#2e7d5b' }} />Site clicks<b>{t.websiteClicks ?? 0}</b></li>
+            </ul>
+          </div>
+        </section>
+        <section className="card admpad">
+          <h3><span className="dot" />7-day views trend
+            <span className="admlegend"><i style={{ background: '#f0b64a' }} />views<i style={{ background: '#121d38' }} />saves (bars)</span>
+          </h3>
+          <Line7 days={d.days} />
+          <Chart7 days={d.days} />
+        </section>
+      </div>
       <section className="card admpad">
         <h3><span className="dot" />College-wise interest
           <span className="admtools">
@@ -172,18 +274,20 @@ function Students({ d }) {
       </div>
       <div className="admtable">
         <table>
-          <thead><tr><th>Student</th><th>Marks / stream</th><th>Course</th><th>Saves</th><th>Views</th><th>Last activity</th></tr></thead>
+          <thead><tr><th>Student</th><th>Marks / stream</th><th>Course</th><th>Status</th><th>Saves</th><th>Views</th><th>Last activity</th></tr></thead>
           <tbody>
             {rows.map((r) => (
               <tr key={r.email} onClick={() => setOpen(r)} className="admrow">
                 <td><span className="admav">{initials(r.name || r.email)}</span><b>{r.name || r.email}</b><small>{r.email}</small></td>
                 <td>{r.marks ?? '—'}% · {r.stream || '—'}</td>
                 <td>{r.want || '—'}</td>
+                <td><span className={'pill ' + ((r.saves ?? 0) > 0 ? 'pill--g' : (Date.now() - new Date(r.lastActivity || r.created)) / 86400000 <= 7 ? 'pill--b' : 'pill--y')}>
+                  {(r.saves ?? 0) > 0 ? 'Saved' : (Date.now() - new Date(r.lastActivity || r.created)) / 86400000 <= 7 ? 'Active' : 'New'}</span></td>
                 <td>{r.saves ?? 0}</td><td>{r.profileViews ?? 0}</td>
                 <td>{ago(r.lastActivity)}</td>
               </tr>
             ))}
-            {!rows.length && <tr><td colSpan="6">No students match.</td></tr>}
+            {!rows.length && <tr><td colSpan="7">No students match.</td></tr>}
           </tbody>
         </table>
       </div>
