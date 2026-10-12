@@ -9,7 +9,7 @@
 /* ---------- 1. design tokens ---------- */
 :root{
   --navy:#121d38; --navy-2:#1c2b4e; --navy-3:#2b3d6b;
-  --ink:#0d1626; --body:#42506b; --muted:#74829d;
+  --ink:#0d1626; --head:#0d1626; --body:#42506b; --muted:#74829d;
   --line:#e5e9f2; --line-2:#eef1f8;
   --bg:#f5f7fc; --card:#ffffff;
   --gold:#c78f22; --gold-2:#f0b64a; --gold-soft:#fdf6e6;
@@ -1289,7 +1289,7 @@ body{overflow-x:clip}
 .admdonutlg b{margin-left:8px; color:var(--head)}
 .admline{width:100%; height:auto}
 .admline text{font-size:11px; fill:var(--muted)}
-.pill{display:inline-block; border-radius:999px; padding:3px 10px; font-size:11px; font-weight:700}
+.pill{display:inline-flex; align-items:center; gap:6px; border-radius:999px; padding:3px 10px; font-size:11px; font-weight:700}
 .pill--g{background:#e6f4ec; color:#20674a}
 .pill--b{background:#e8eefb; color:#27407a}
 .pill--y{background:#fdf3dd; color:#8a5b06}
