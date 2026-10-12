@@ -2364,13 +2364,6 @@ function admissionsHTML(c){
 
         '<div class="block"><h4>Eligibility</h4><p style="font-size:14.6px">' + esc(a.eligibility) + '</p></div>' +
 
-        '<div class="block"><h4>How to apply — step by step</h4><div class="steps">' + steps + '</div></div>' +
-
-        '<div class="block"><h4>Documents to keep ready</h4><ul class="docs">' + docs + '</ul></div>' +
-
-        (a.note ? '<div class="alert alert--info show" style="margin-top:20px">' +
-          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex:0 0 auto;margin-top:2px"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>' +
-          '<span>' + esc(a.note) + '</span></div>' : '') +
       '</div>' +
 
       '<div class="card" style="padding:22px 22px 24px">' +
@@ -2386,6 +2379,12 @@ function admissionsHTML(c){
         '</div>' +
       '</div>' +
     '</div>' +
+    /* steps + documents as FULL-WIDTH bands: never squeezed into a narrow column */
+    '<div class="block stepswide"><h4>How to apply — step by step</h4><div class="steps">' + steps + '</div></div>' +
+    '<div class="block docswide"><h4>Documents to keep ready</h4><ul class="docs">' + docs + '</ul></div>' +
+    (a.note ? '<div class="alert alert--info show notewide">' +
+      '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" strokeLinecap="round" style="flex:0 0 auto;margin-top:2px"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>' +
+      '<span>' + esc(a.note) + '</span></div>' : '') +
   '</section>';
 }
 
