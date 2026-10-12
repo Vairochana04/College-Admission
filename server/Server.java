@@ -467,12 +467,12 @@ public class Server {
         for (Map.Entry<String, Map<String, String>> e : students.entrySet()) {
             if (!first) sb.append(",");
             first = false;
-            sb.append("\\"").append(jesc(e.getKey())).append("\\":{");
+            sb.append("\"").append(jesc(e.getKey())).append("\":{");
             boolean f2 = true;
             for (Map.Entry<String, String> kv : e.getValue().entrySet()) {
                 if (!f2) sb.append(",");
                 f2 = false;
-                sb.append("\\"").append(jesc(kv.getKey())).append("\\":\\"").append(jesc(kv.getValue())).append("\\"");
+                sb.append("\"").append(jesc(kv.getKey())).append("\":\"").append(jesc(kv.getValue())).append("\"");
             }
             sb.append("}");
         }
