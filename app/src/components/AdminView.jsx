@@ -583,7 +583,7 @@ export default function AdminView({ onLogout }) {
             <span>{err} Sign in again from the front page as admin.</span>
           </div>
         )}
-        <div className="adm">
+        <div className="admshell">
           <nav className="admn" aria-label="Admin pages">
             {PAGES.map(([id, ic, t]) => (
               <button key={id} type="button" className={'admn__i' + (page === id ? ' admn__i--on' : '')}

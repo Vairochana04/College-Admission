@@ -8,6 +8,7 @@ import {
   heroHTML, aboutHTML, coursesHTML, admissionsHTML, eventsHTML, contactHTML,
   websiteHTML, deptListHTML, counselHTML, feesHTML, mapHTML, faqHTML,
   esc, portalProxyId, collegeById,
+BUILD_TAG,
 } from '../core.js';
 import { api } from '../api.js';
 
@@ -189,6 +190,14 @@ export default function CollegeBody({ college, studentMode, onBack }) {
 
 /* small shared footer — keeps every page ending the same neat way */
 export function CcFoot() {
+  return (
+    <footer className="ccfoot">
+      <span>CampusConnect · a demo admission guide for Tamil Nadu students · values are indicative — confirm with the college</span>
+      <span>build {BUILD_TAG} · © 2026 CampusConnect · Coimbatore</span>
+    </footer>
+  );
+}
+function CcFootOld() {
   return (
     <footer className="ccfoot">
       <span>CampusConnect · a demo admission guide for Tamil Nadu students · values are indicative — confirm with the college</span>

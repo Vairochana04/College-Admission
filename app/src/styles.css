@@ -1172,7 +1172,7 @@ body{overflow-x:clip}
 .admhead{display:flex; align-items:flex-end; justify-content:space-between; gap:14px; margin-bottom:16px}
 .admhead h1{font-size:24px; letter-spacing:-.4px}
 .admhead p{margin:2px 0 0; color:var(--muted); font-size:13px}
-.adm{display:grid; grid-template-columns:216px 1fr; gap:16px; align-items:start}
+.admshell{display:grid; grid-template-columns:216px 1fr; gap:16px; align-items:start}
 .admn{position:sticky; top:74px; background:#fff; border:1px solid var(--line); border-radius:14px; padding:8px; display:flex; flex-direction:column; gap:2px}
 .admn__i{display:flex; align-items:center; gap:9px; border:0; background:transparent; text-align:left;
   padding:9px 10px; border-radius:10px; font-size:13.2px; font-weight:600; color:var(--body); cursor:pointer}
@@ -1233,7 +1233,7 @@ body{overflow-x:clip}
 .admlock h3{justify-content:center; margin:8px 0 6px}
 .admlock p{margin:0 auto; max-width:420px; color:var(--muted); font-size:13px}
 @media (max-width:900px){
-  .adm{grid-template-columns:1fr}
+  .admshell{grid-template-columns:1fr}
   .admn{position:static; flex-direction:row; overflow-x:auto; gap:6px}
   .admn__i{white-space:nowrap}
 }
@@ -1439,3 +1439,35 @@ body{overflow-x:clip}
 .docs li{break-inside:avoid; padding:6px 0}
 .notewide{margin-top:18px; max-width:760px}
 @media (max-width:860px){ .docs{columns:1} }
+
+/* ---------- v2.30 · college page compact typography (PSG pilot) ---------- */
+body{line-height:1.55}
+.sec-title h2{font-size:22px}
+.about p{font-size:14.2px}
+.about p + p{margin-top:11px}
+.hero h1{font-size:28px}
+.hero__tag{font-size:14px}
+.hero__stats b{font-size:18px}
+.hero__stats span{font-size:11.8px}
+.hero__logo{width:92px; height:58px}
+.fact b{font-size:13.6px}
+.fact span{font-size:11px}
+.tl b{font-size:13.8px}
+.tl span{font-size:12.4px}
+.tl__date{font-size:12px}
+.step p{font-size:12.8px; line-height:1.45}
+.dept__ttl b{font-size:14.5px}
+.dept__ttl span{font-size:12.2px}
+.course b{font-size:13.6px}
+.course__meta{font-size:11.8px}
+.ev__body h4{font-size:14.5px}
+.ev__body p{font-size:12.8px}
+.cline b{font-size:13.4px}
+.cline span{font-size:11px}
+.fee-table{font-size:12.8px}
+.adm{gap:18px}
+.facts{gap:10px}
+.hl__item h4{font-size:13.6px}
+.hl__item p{font-size:12.6px}
+.block h4{font-size:12.2px}
+@media (max-width:760px){ .hero h1{font-size:23px} .sec-title h2{font-size:20px} }
