@@ -1487,3 +1487,12 @@ body{line-height:1.55}
 @media (max-width:1040px){
   .adm,.about,.contact,.site-card,.prof__grid{grid-template-columns:minmax(0,1fr)}
 }
+
+/* ---------- v2.30.3 · admissions text-safety pack (merged from review feedback) ---------- */
+.adm > *{min-width:0; max-width:100%}
+.facts{grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px}
+.fact{min-width:0; overflow-wrap:anywhere; box-sizing:border-box}
+.fact b,.fact span{overflow-wrap:anywhere; word-break:normal}
+.timeline{min-width:0}
+.adm__status b,.adm__status span{overflow-wrap:anywhere}
+@media (max-width:600px){ .facts{grid-template-columns:minmax(0,1fr)} }
