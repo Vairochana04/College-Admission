@@ -1430,3 +1430,12 @@ body{overflow-x:clip}
 .ixfoot__mapt{margin:0 0 9px; font-size:12.5px; letter-spacing:.12em; text-transform:uppercase;
   color:#8fb4e8; font-weight:800}
 .ixfoot__title{margin:0 0 20px}
+
+/* ---------- v2.29 · admissions steps & documents: full-width, professional ---------- */
+.stepswide,.docswide{margin-top:20px}
+.stepswide h4,.docswide h4{font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); font-weight:800; margin-bottom:12px}
+.steps{grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px}
+.docs{columns:2; column-gap:34px}
+.docs li{break-inside:avoid; padding:6px 0}
+.notewide{margin-top:18px; max-width:760px}
+@media (max-width:860px){ .docs{columns:1} }
