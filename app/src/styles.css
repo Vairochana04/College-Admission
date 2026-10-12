@@ -1370,3 +1370,16 @@ body{overflow-x:clip}
 .ctop__l{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
 .ctop__a{display:flex; align-items:center; gap:8px}
 .fab--sm{width:38px; height:38px; font-size:16px}
+
+/* ---------- v2.24 · Windows gap-killer + shorter tall blocks ---------- */
+/* entrance animation must never leave a block at opacity 0 */
+.pop{animation-fill-mode:backwards}
+/* tall dark/light blocks trimmed so a failed paint can't eat the viewport */
+.hero__photo--carousel{height:260px}
+.event-gallery__slide{height:300px}
+.map-embed iframe{height:260px}
+.ixfoot__map iframe{height:170px}
+@media (max-width:760px){
+  .hero__photo--carousel{height:210px}
+  .event-gallery__slide{height:220px}
+}

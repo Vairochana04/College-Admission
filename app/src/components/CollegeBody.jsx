@@ -111,6 +111,22 @@ export default function CollegeBody({ college, studentMode, onBack }) {
     }
   }
 
+  /* Windows gap-killer: if any block inside the profile is stuck invisible
+     (opacity/visibility left at 0 by a skipped animation or driver bug),
+     force it visible shortly after mount. */
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const root = document.getElementById('collegeContent');
+      if (!root) return;
+      root.querySelectorAll('*').forEach((el) => {
+        const cs = getComputedStyle(el);
+        if (parseFloat(cs.opacity) < 0.9) el.style.opacity = '1';
+        if (cs.visibility === 'hidden') el.style.visibility = 'visible';
+      });
+    }, 700);
+    return () => clearTimeout(t);
+  }, [c.id]);
+
   /* scroll-spy for the side navigation */
   useEffect(() => {
     const root = wrap.current;
