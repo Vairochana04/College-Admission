@@ -2276,10 +2276,12 @@ function aboutHTML(c){
       '<h2 style="margin-top:8px">What ' + esc(c.shortName) + ' is known for</h2></div>' +
       c.about.map(function(p){ return '<p>' + esc(p) + '</p>'; }).join('') +
       '<div class="block"><h4>Campus &amp; facilities</h4><div class="chips">' + facilities + '</div></div>' +
-      '<div class="block"><h4>Top recruiters</h4>' + recruiters + '</div>' +
     '</div>' +
     '<div class="hl">' + hl + '</div>' +
-  '</div>';
+  '</div>' +
+  /* recruiters as a FULL-WIDTH band right after the about grid:
+     no column-height mismatch can ever leave a blank pocket under it */
+  '<div class="block recband"><h4>Top recruiters</h4>' + recruiters + '</div>';
 }
 
 

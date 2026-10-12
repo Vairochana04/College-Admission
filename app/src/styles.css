@@ -1383,3 +1383,10 @@ body{overflow-x:clip}
   .hero__photo--carousel{height:210px}
   .event-gallery__slide{height:220px}
 }
+
+/* ---------- v2.25 · gap-proof about layout (professional spacing) ---------- */
+.about{align-items:start}                 /* columns never stretch -> no blank pocket */
+.recband{margin-top:20px}
+.recband h4{margin-bottom:10px}
+.content{gap:38px}                        /* tighter, calmer rhythm between sections */
+@media (max-width:1040px){ .content{gap:30px} }
