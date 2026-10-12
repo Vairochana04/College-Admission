@@ -1476,3 +1476,14 @@ body{line-height:1.55}
 .docs{display:block; columns:2; column-gap:34px}
 .docs li{display:flex; gap:10px; align-items:flex-start; break-inside:avoid; padding:6px 0}
 @media (max-width:860px){ .docs{columns:1} }
+
+/* ---------- v2.30.2 · squeeze-proof grids (minmax(0,..) kills min-content floors) ---------- */
+.adm{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}
+.about{grid-template-columns:minmax(0,1.25fr) minmax(0,.95fr)}
+.contact,.site-card{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.prof__grid{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr)}
+.admshell{grid-template-columns:216px minmax(0,1fr)}
+.adm2__grid{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr)}
+@media (max-width:1040px){
+  .adm,.about,.contact,.site-card,.prof__grid{grid-template-columns:minmax(0,1fr)}
+}
