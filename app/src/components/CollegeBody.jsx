@@ -128,11 +128,21 @@ export default function CollegeBody({ college, studentMode, onBack }) {
   }, [c.id, sections]);
 
   return (
-    <div ref={wrap} onClick={onClick} onInput={onInput} className={studentMode ? 'hasfab' : ''}>
+    <div ref={wrap} onClick={onClick} onInput={onInput} className="">
       {studentMode && (
-        <div className="wrap" style={{ paddingTop: 18 }}>
-          <button className="btn btn--ghost btn--sm" onClick={onBack}>← All colleges</button>
-          <div className="crumbs">Colleges › <b>{c.shortName || c.name}</b></div>
+        <div className="wrap ctop" style={{ paddingTop: 18 }}>
+          <div className="ctop__l">
+            <button className="btn btn--ghost btn--sm" onClick={onBack}>← All colleges</button>
+            <div className="crumbs">Colleges › <b>{c.shortName || c.name}</b></div>
+          </div>
+          <div className="ctop__a" aria-label="Quick actions">
+            <button type="button" className={"fab fab--sm fab--save" + (saved ? ' on' : '')} onClick={saveToggle}
+              title={saved ? 'Saved — tap to remove' : 'Save college'} aria-label="Save college">
+              {saved ? '✓' : '♥'}
+            </button>
+            <a className="fab fab--sm" href={c.website} target="_blank" rel="noopener noreferrer" data-site="1"
+              data-label={(c.shortName || c.name) + ' official website'} title="Official website" aria-label="Official website">🌐</a>
+          </div>
         </div>
       )}
 
@@ -154,18 +164,6 @@ export default function CollegeBody({ college, studentMode, onBack }) {
       </div>
 
       <CcFoot />
-      {studentMode && (
-        <div className="fabs" aria-label="Quick actions">
-          <button type="button" className={"fab fab--save" + (saved ? ' on' : '')} onClick={saveToggle}
-            title={saved ? 'Saved — tap to remove' : 'Save college'} aria-label="Save college">
-            {saved ? '✓' : '♥'}
-          </button>
-          <a className="fab" href={c.website} target="_blank" rel="noopener noreferrer" data-site="1"
-            data-label={(c.shortName || c.name) + ' official website'} title="Official website" aria-label="Official website">🌐</a>
-          <button type="button" className="fab" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-            title="Back to top" aria-label="Back to top">↑</button>
-        </div>
-      )}
     </div>
   );
 }
