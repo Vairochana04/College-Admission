@@ -424,6 +424,7 @@ const IX_MAP_LINK = 'https://www.google.com/maps/search/?api=1&query=' + encodeU
 function InfolexusFooter() {
   return (
     <div className="ixfoot">
+      <div className="wrap"><h3 className="ixfoot__title">Help and Support</h3></div>
       <div className="wrap ixfoot__in">
         <div>
           <div className="ixfoot__brand">
@@ -440,7 +441,7 @@ function InfolexusFooter() {
           </div>
         </div>
         <div className="ixfoot__map">
-          <h3 className="ixfoot__title">Help and Support</h3>
+          <h4 className="ixfoot__mapt">Google Map</h4>
           <iframe title="Infolexus Solutions — Google Map" src={IX_MAP_EMBED} loading="lazy"
             referrerPolicy="no-referrer-when-downgrade" allowFullScreen></iframe>
           <a className="ixfoot__larger" href={IX_MAP_LINK} target="_blank" rel="noopener noreferrer">View larger map ↗</a>

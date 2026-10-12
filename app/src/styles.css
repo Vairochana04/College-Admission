@@ -1425,3 +1425,8 @@ body{overflow-x:clip}
 .herobar__save.on{background:var(--navy); border-color:var(--navy); color:#fff}
 .herobar .btn{padding:10px 16px}
 @media (max-width:760px){ .herobar{padding:10px 12px} .herobar .btn{flex:1 1 auto; justify-content:center} }
+
+/* ---------- v2.28 · footer titles: "Help and Support" on top, "Google Map" above map ---------- */
+.ixfoot__mapt{margin:0 0 9px; font-size:12.5px; letter-spacing:.12em; text-transform:uppercase;
+  color:#8fb4e8; font-weight:800}
+.ixfoot__title{margin:0 0 20px}
