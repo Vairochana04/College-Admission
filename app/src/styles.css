@@ -1471,3 +1471,8 @@ body{line-height:1.55}
 .hl__item p{font-size:12.6px}
 .block h4{font-size:12.2px}
 @media (max-width:760px){ .hero h1{font-size:23px} .sec-title h2{font-size:20px} }
+
+/* ---------- v2.30.1 · docs checklist: block + two columns (grid was killing columns) ---------- */
+.docs{display:block; columns:2; column-gap:34px}
+.docs li{display:flex; gap:10px; align-items:flex-start; break-inside:avoid; padding:6px 0}
+@media (max-width:860px){ .docs{columns:1} }
