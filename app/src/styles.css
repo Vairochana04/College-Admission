@@ -1390,3 +1390,31 @@ body{overflow-x:clip}
 .recband h4{margin-bottom:10px}
 .content{gap:38px}                        /* tighter, calmer rhythm between sections */
 @media (max-width:1040px){ .content{gap:30px} }
+
+/* ---------- v2.26 · compact professional rhythm (heights + white space down) ---------- */
+.content{gap:30px}
+.sec-head{margin-bottom:14px}
+.block + .block{margin-top:14px}
+.recband{margin-top:14px}
+.secnav{margin:12px 0}
+.ccfoot{margin-top:18px}
+.hero{padding:26px 26px 22px}
+.hero__cta{margin-top:18px}
+.hero__stats{margin-top:18px; padding-top:16px}
+.hl{gap:10px}
+.hl__item{padding:12px 14px}
+.dept summary{padding:12px 16px}
+.event-gallery__slide{height:240px}
+.hero__photo--carousel{height:220px}
+.map-embed iframe{height:240px}
+/* marquee: no mask layer (paint-safe on all GPUs), fixed slim height */
+.rmarq{-webkit-mask-image:none; mask-image:none; height:88px; overflow:hidden}
+.rlogo{width:96px; height:78px; gap:6px; padding:8px 6px}
+.rlogo img{width:30px; height:30px}
+.rlogo__mono{width:30px; height:30px; font-size:11px}
+.rlogo__name{font-size:10.2px}
+@media (max-width:760px){
+  .content{gap:24px}
+  .rmarq{height:80px}
+  .event-gallery__slide{height:200px}
+}
