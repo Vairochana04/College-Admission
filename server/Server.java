@@ -37,6 +37,7 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Stream;
 import java.util.concurrent.*;
 import java.util.regex.*;
 import javax.net.ssl.*;
@@ -886,7 +887,7 @@ public class Server {
             if (rel.startsWith("assets/index-") && (rel.endsWith(".js") || rel.endsWith(".css"))) {
                 String ext = rel.endsWith(".css") ? ".css" : ".js";
                 Path cur = null;
-                try (var st = Files.list(DIST.resolve("assets"))) {
+                try (Stream<Path> st = Files.list(DIST.resolve("assets"))) {
                     cur = st.filter(f -> f.getFileName().toString().startsWith("index-")
                             && f.getFileName().toString().endsWith(ext))
                             .findFirst().orElse(null);

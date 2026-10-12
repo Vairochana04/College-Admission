@@ -28,9 +28,16 @@ pause
 exit /b 1
 
 :havejava
+echo  Compiling Server.java ...
+javac -encoding UTF-8 Server.java
+if %errorlevel% NEQ 0 (
+    echo  Compile failed - copy the red error text and send it.
+    pause
+    exit /b 1
+)
 echo  Starting the Java server...
 start "" http://localhost:8080
-java Server.java
+java -Dfile.encoding=UTF-8 Server
 echo.
 echo  Server ninnuduchu (server stopped). Idha close pannalam.
 pause
