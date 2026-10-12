@@ -151,19 +151,22 @@ export default function CollegeBody({ college, studentMode, onBack }) {
             <button className="btn btn--ghost btn--sm" onClick={onBack}>← All colleges</button>
             <div className="crumbs">Colleges › <b>{c.shortName || c.name}</b></div>
           </div>
-          <div className="ctop__a" aria-label="Quick actions">
-            <button type="button" className={"fab fab--sm fab--save" + (saved ? ' on' : '')} onClick={saveToggle}
-              title={saved ? 'Saved — tap to remove' : 'Save college'} aria-label="Save college">
-              {saved ? '✓' : '♥'}
-            </button>
-            <a className="fab fab--sm" href={c.website} target="_blank" rel="noopener noreferrer" data-site="1"
-              data-label={(c.shortName || c.name) + ' official website'} title="Official website" aria-label="Official website">🌐</a>
-          </div>
         </div>
       )}
 
       <div className="wrap col" id="collegeContent">
         <div dangerouslySetInnerHTML={{ __html: sections.hero }} />
+        {studentMode && (
+          <div className="herobar" role="group" aria-label="Quick actions">
+            <button type="button" className={"btn btn--ghost herobar__save" + (saved ? ' on' : '')} onClick={saveToggle}>
+              <span aria-hidden="true">{saved ? '✓' : '♥'}</span> {saved ? 'Saved to my list' : 'Save college'}
+            </button>
+            <a className="btn btn--gold" href={c.website} target="_blank" rel="noopener noreferrer" data-site="1"
+              data-label={(c.shortName || c.name) + ' official website'}>
+              <span aria-hidden="true">🌐</span> Official website
+            </a>
+          </div>
+        )}
         <div className={"secnav" + (studentMode ? "" : " secnav--app")} role="navigation" aria-label="Profile sections">
           {ids.map((id) => (
             <a key={id} href={'#' + id}>{labels[id]}</a>

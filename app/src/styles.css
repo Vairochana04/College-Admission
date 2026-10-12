@@ -1418,3 +1418,10 @@ body{overflow-x:clip}
   .rmarq{height:80px}
   .event-gallery__slide{height:200px}
 }
+
+/* ---------- v2.27 · action bar under the hero (Save college + Official website) ---------- */
+.herobar{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:14px;
+  padding:12px 14px; background:#fff; border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow-1)}
+.herobar__save.on{background:var(--navy); border-color:var(--navy); color:#fff}
+.herobar .btn{padding:10px 16px}
+@media (max-width:760px){ .herobar{padding:10px 12px} .herobar .btn{flex:1 1 auto; justify-content:center} }
