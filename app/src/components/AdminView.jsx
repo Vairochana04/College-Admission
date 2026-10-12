@@ -330,7 +330,7 @@ function Analytics({ d }) {
         {steps.map(([k, v, col]) => (
           <div className="admfunnel" key={k}>
             <span>{k}</span>
-            <i style={{ width: Math.max(3, (v / max) * 100) + '%', background: col }} />
+            <div className="admfunnel__track"><i style={{ width: Math.max(3, (v / max) * 100) + '%', background: col }} /></div>
             <b>{v}</b>
           </div>
         ))}
@@ -342,7 +342,7 @@ function Analytics({ d }) {
         {tops.map((c) => (
           <div className="admfunnel" key={c.id}>
             <span>{c.name}</span>
-            <i style={{ width: Math.max(3, (c.students / tmax) * 100) + '%', background: '#f0b64a' }} />
+            <div className="admfunnel__track"><i style={{ width: Math.max(3, (c.students / tmax) * 100) + '%', background: '#f0b64a' }} /></div>
             <b>{c.students}</b>
           </div>
         ))}

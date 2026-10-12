@@ -1496,3 +1496,8 @@ body{line-height:1.55}
 .timeline{min-width:0}
 .adm__status b,.adm__status span{overflow-wrap:anywhere}
 @media (max-width:600px){ .facts{grid-template-columns:minmax(0,1fr)} }
+
+/* ---------- v2.30.4 · funnel bars contained (no overflow past the card) ---------- */
+.admfunnel{grid-template-columns:minmax(120px,220px) minmax(0,1fr) 44px}
+.admfunnel__track{position:relative; height:14px; border-radius:7px; background:var(--line-2); min-width:0; overflow:hidden}
+.admfunnel__track i{position:absolute; left:0; top:0; bottom:0; border-radius:7px; display:block}
