@@ -20,20 +20,26 @@ const Chip = ({ on, children, ...rest }) => (
 );
 
 /* left rail: hamburger on top, then My Profile -> Colleges (order the user asked) */
-function Rail({ page, go, open, setOpen, onLogout }) {
+function Rail({ page, go, open, setOpen, onLogout, saved }) {
   return (
     <nav className="rail" data-open={open ? '1' : '0'} aria-label="Sections">
       <button type="button" className="rail__top" onClick={() => setOpen(!open)} aria-label="Toggle menu" title="Menu">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
       </button>
-      <button type="button" className={'rail__i' + (page === 'profile' ? ' on' : '')} onClick={() => go('profile')} title="My Profile">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="3.6" /><path d="M5 19.4c1.4-3.4 4-5 7-5s5.6 1.6 7 5" /></svg>
-        <span>My Profile</span>
-      </button>
-      <button type="button" className={'rail__i' + (page === 'colleges' ? ' on' : '')} onClick={() => go('colleges')} title="Colleges">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.6" /><rect x="13" y="4" width="7" height="7" rx="1.6" /><rect x="4" y="13" width="7" height="7" rx="1.6" /><rect x="13" y="13" width="7" height="7" rx="1.6" /></svg>
-        <span>Colleges</span>
-      </button>
+      {open && (
+        <>
+          {!saved && (
+                  <button type="button" className={'rail__i' + (page === 'profile' ? ' on' : '')} onClick={() => go('profile')} title="My Profile">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="3.6" /><path d="M5 19.4c1.4-3.4 4-5 7-5s5.6 1.6 7 5" /></svg>
+              <span>My Profile</span>
+            </button>
+          )}
+          <button type="button" className={'rail__i' + (page === 'colleges' ? ' on' : '')} onClick={() => go('colleges')} title="Colleges">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.6" /><rect x="13" y="4" width="7" height="7" rx="1.6" /><rect x="4" y="13" width="7" height="7" rx="1.6" /><rect x="13" y="13" width="7" height="7" rx="1.6" /></svg>
+            <span>Colleges</span>
+          </button>
+        </>
+      )}
       <button type="button" className="rail__i rail__i--end" onClick={onLogout} title="Sign out">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="m16 17 5-5-5-5" /><path d="M21 12H9" /></svg>
         <span>Sign out</span>
@@ -244,7 +250,7 @@ export default function StudentView({ onLogout }) {
     : null;
 
   if (profileId) {
-    return <div className="viewfade" key={'p' + profileId}><Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} /><ChatBot /><StudentProfile id={profileId} onBack={() => setProfileId(null)} /></div>;
+    return <div className="viewfade" key={'p' + profileId}><Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} saved={!cc.onboarding} /><ChatBot /><StudentProfile id={profileId} onBack={() => setProfileId(null)} /></div>;
   }
 
   /* one order for every college: home row → branches → college page */
@@ -253,7 +259,7 @@ export default function StudentView({ onLogout }) {
     const dc = isGroup ? null : collegeById(drill);
     return (
       <section id="view-drill" className="view active viewfade" key={'d' + drill}>
-        <Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} /><ChatBot />
+        <Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} saved={!cc.onboarding} /><ChatBot />
         <div className="wrap" style={{ paddingTop: 18, paddingBottom: 46 }}>
           <button className="btn btn--ghost btn--sm" onClick={() => setDrill(null)}>← All colleges</button>
           <div className="crumbs">Colleges › <b>{isGroup ? 'PSG Institutions' : dc.shortName}</b></div>
@@ -273,7 +279,7 @@ export default function StudentView({ onLogout }) {
 
   return (
     <section id="view-student" className="view active viewfade" key="home">
-      <Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} /><ChatBot />
+      <Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} saved={!cc.onboarding} /><ChatBot />
       <header className="topbar">
         <div className="wrap topbar__in">
           <div className="brand">
