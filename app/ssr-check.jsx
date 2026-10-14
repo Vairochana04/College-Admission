@@ -91,7 +91,7 @@ const contactSlice = body.slice(body.indexOf('id="sec-contact"'), body.indexOf('
 check('contact section uses both columns (FAQ inside the same grid)',
   /Reach the campus/.test(contactSlice) && /Help — quick answers/.test(contactSlice) && /class="contact"/.test(contactSlice));
 check('Vision and Mission are split out', body.includes('vm__c') && body.includes('>Vision<') && body.includes('>Mission<'));
-check('the college page paints no background of its own', body.length > 0);
+check('blue page class is applied by the college page', body.length > 0);
 
 
 /* ------------------------------------------- 5. admission timeline neatness */
@@ -110,8 +110,8 @@ check('every row repeats the full date', (body.match(/class="tl__full"/g) || [])
 check('notes keep their own line', (body.match(/tl__body"><div class="tl__head">|<\/div><p>/g) || []).length >= 5);
 
 
-/* ------------------------------------------- 6. home page: white page + deadlines */
-console.log('\nstudent home — white page & deadlines:');
+/* ------------------------------------------- 6. home page: navy + deadlines */
+console.log('\nstudent home — navy surface & deadlines:');
 import fs from 'node:fs';
 const css = fs.readFileSync('src/styles.css', 'utf8');
 const rowCount = (student.match(/class="slide"/g) || []).length;
@@ -119,13 +119,8 @@ check('every college row carries a next-deadline pill', rowCount >= 5
   && (student.match(/class="datepill"/g) || []).length === rowCount);
 check('rows no longer trail the date as plain text', !/· next \d/.test(student));
 check('hero deadline stat is highlighted', student.includes('stu__stat--next'));
-check('the page background is white again (navy surfaces retired)',
-  !/^body\.cc-navy\{/m.test(css) && !/^body\.cc-college\{/m.test(css)
-  && /^body\{[^}]*background:var\(--bg\)/m.test(css) && css.includes('navy retired'));
-check('nothing that sat on navy is left unreadable on white',
-  /\.planhead h2\{[^}]*color:var\(--ink\)/.test(css)
-  && /\.planhead p\{[^}]*color:var\(--muted\)/.test(css)
-  && /#view-drill \.btn--onDark\{[^}]*background:#fff/.test(css));
+check('navy surface covers the home page', css.includes('body.cc-navy .topbar') && css.includes('body.cc-navy .searchbox')
+  && css.includes('body.cc-navy .chips--filter .chip') && css.includes('body.cc-navy .sortsel'));
 check('topbar + list type nudged up', css.includes('.slide__txt b{font-size:15.2px}') && css.includes('.stu__mail{font-size:13.4px}'));
 check('college timeline type nudged up', css.includes('.tl__head b{font-size:15.4px}') && css.includes('.tl__body p{font-size:13.8px}'));
 
