@@ -1607,11 +1607,11 @@ var DEGREES = {
 }
 
 var FACIL = {
-  psg:       {hostel:true,  bus:true,  busNote:'city &amp; route buses'},
-  psgitech:  {hostel:true,  bus:true,  busNote:'city &amp; route buses'},
-  psgcas:    {hostel:true,  bus:true,  busNote:'city &amp; route buses'},
-  psgimsr:   {hostel:true,  bus:true,  busNote:'city &amp; route buses'},
-  psgim:     {hostel:true,  bus:true,  busNote:'city &amp; route buses'},
+  psg:       {hostel:true,  bus:true,  busNote:'city & route buses'},
+  psgitech:  {hostel:true,  bus:true,  busNote:'city & route buses'},
+  psgcas:    {hostel:true,  bus:true,  busNote:'city & route buses'},
+  psgimsr:   {hostel:true,  bus:true,  busNote:'city & route buses'},
+  psgim:     {hostel:true,  bus:true,  busNote:'city & route buses'},
   psgnursing:{hostel:true,  bus:true,  busNote:'college transport'},
   psgpharma: {hostel:true,  bus:false, busNote:''},
   psgphysio: {hostel:true,  bus:false, busNote:''},
@@ -2345,12 +2345,30 @@ function aboutHTML(c){
 
   var facilities = c.facilities.map(function(r){ return '<span class="chip">' + esc(r) + '</span>'; }).join('');
 
+  /* a paragraph that carries both Vision and Mission is pulled out of the
+     run-on text and shown as two labelled blocks instead */
+  var vm = '';
+  var paras = [];
+  c.about.forEach(function (p) {
+    var vmMatch = /vision\s*:\s*([\s\S]*?)(?:mission\s*:\s*([\s\S]*))?$/i.exec(p);
+    if (vmMatch && /mission\s*:/i.test(p)) {
+      vm = '<div class="vm">' +
+        '<div class="vm__c"><h5>Vision</h5><p>' + esc(vmMatch[1].trim().replace(/[.\s]+$/, '')) + '</p></div>' +
+        '<div class="vm__c"><h5>Mission</h5><p>' + esc((vmMatch[2] || '').trim().replace(/[.\s]+$/, '')) + '</p></div>' +
+        '</div>';
+    } else {
+      paras.push('<p>' + esc(p) + '</p>');
+    }
+  });
+
   return '' +
   '<div class="about pop">' +
     '<div>' +
       '<div class="sec-title" style="margin-bottom:16px"><span class="kicker">About the college</span>' +
       '<h2 style="margin-top:8px">What ' + esc(c.shortName) + ' is known for</h2></div>' +
-      c.about.map(function(p){ return '<p>' + esc(p) + '</p>'; }).join('') +
+      paras[0] +
+      (vm || '') +
+      paras.slice(1).join('') +
       '<div class="block"><h4>Campus &amp; facilities</h4><div class="chips">' + facilities + '</div></div>' +
     '</div>' +
     '<div class="hl">' + hl + '</div>' +
@@ -2365,17 +2383,24 @@ function aboutHTML(c){
    reports, who recruits, and what that means for the branch you pick. */
 function placementsHTML(c){
   var st = c.stats || [];
-  var cards = st.map(function(x){
-    return '<div class="pstat"><b>' + esc(x.v) + '</b><span>' + esc(x.k) + '</span></div>';
-  }).join('');
-  var hl = (c.highlights || []).filter(function(h){
-    return /placement|recruit|industry|internship|training/i.test(h.title + ' ' + h.text);
-  });
-  var hlHTML = hl.map(function(h){
-    return '<div class="hl__item"><span class="hl__ico">' + (ICONS[h.icon] || ICONS.check) + '</span>' +
-      '<div><h4>' + esc(h.title) + '</h4><p>' + esc(h.text) + '</p></div></div>';
-  }).join('');
-  var n = (c.recruiters || []).length;
+  /* only placement-relevant figures belong under this heading; the students /
+     faculty / campus numbers stay in the hero where they read correctly */
+  var rate = null;
+  st.forEach(function (x) { if (/placement|placement rate|recruit/i.test(x.k)) rate = x; });
+  var own = (c.recruiters || []);
+  var shown = own.concat(MNC_EXTRA.filter(function (x) { return own.indexOf(x) < 0; }));
+  var progs = countCourses(c);
+  var cards = '';
+  if (rate) cards += '<div class="pstat"><b>' + esc(rate.v) + '</b><span>' + esc(rate.k) + '</span></div>';
+  cards += '<div class="pstat"><b>' + shown.length + '</b><span>Recruiters on campus</span></div>';
+  cards += '<div class="pstat"><b>' + (c.departments || []).length + '</b><span>Departments hiring from</span></div>';
+  cards += '<div class="pstat"><b>' + progs + '</b><span>UG &amp; PG programmes</span></div>';
+  var does = [
+    'Final-year campus drives with core and IT recruiters, plus pooled drives across the group',
+    'Internships and project semesters with industry partners',
+    'Aptitude, soft-skill and mock-interview training through the placement cell',
+    'Alumni referrals and off-campus openings shared with the batch'
+  ].map(function (s) { return '<div class="step"><p>' + esc(s) + '</p></div>'; }).join('');
   return '' +
   '<section class="sec" id="sec-placements">' +
     '<div class="sec-head">' +
@@ -2383,11 +2408,11 @@ function placementsHTML(c){
         '<h2>Who hires from ' + esc(c.shortName) + '</h2>' +
         '<p>Placement figures and recruiters are as published by the college — confirm the current season with the placement cell.</p></div>' +
     '</div>' +
-    '<div class="card placecard">' +
+    '<div class="placecard">' +
       '<div class="pstats">' + cards + '</div>' +
-      (hlHTML ? '<div class="hl" style="margin-top:16px">' + hlHTML + '</div>' : '') +
-      '<div class="block recband"><h4>Top recruiters' + (n ? ' · ' + n + ' companies' : '') + '</h4>' + recruitersHTML(c) + '</div>' +
-      '<p class="muted" style="margin:14px 2px 0;font-size:13px">Campus placement drives usually run in the final year; internships start earlier. Ask the department you are applying to for its own placement record.</p>' +
+      '<div class="block" style="margin-top:20px"><h4>What the placement cell does</h4><div class="steps">' + does + '</div></div>' +
+      '<div class="block recband"><h4>Recruiters' + (own.length ? ' · ' + own.length + ' listed for ' + esc(c.shortName) : '') + '</h4>' + recruitersHTML(c) + '</div>' +
+      '<p class="muted" style="margin:14px 2px 0;font-size:13px">The strip shows the college\u2019s own recruiter list plus leading MNCs that hire across the group. Campus drives usually run in the final year; internships start earlier.</p>' +
     '</div>' +
   '</section>';
 }
@@ -2466,7 +2491,7 @@ function admissionsHTML(c){
         '<div class="facts">' +
           '<div class="fact"><span>Application fee</span><b>As per official portal</b></div>' +
           '<div class="fact"><span>Annual tuition</span><b>' + esc(a.fee) + '</b></div>' +
-          '<div class="fact"><span>Mode of selection</span><b>' + esc(selectionMode(c)) + '</b></div>' +
+          '<div class="fact"><span>Mode of selection</span><b>' + esc(a.mode || selectionMode(c)) + '</b></div>' +
           '<div class="fact"><span>Admissions office</span><b>' + esc(a.contactPhone) + '</b></div>' +
         '</div>' +
 
@@ -2588,7 +2613,8 @@ function contactHTML(c){
         '<div class="cline"><span class="cline__ico">' + ICONS.clock + '</span><div><span>Office hours</span><b>' + esc(c.officeHours) + '</b></div></div>' +
         '<div class="cline"><span class="cline__ico">' + ICONS.book + '</span><div><span>Affiliation</span><b>' + esc(c.affiliation) + '</b></div></div>' +
       '</div>' +
-
+      /* the FAQ fills the second column: the section used to leave it empty */
+      '<div class="card" style="padding:22px 22px 8px">' + faqBody(c) + '</div>' +
     '</div>' +
   '</section>';
 }
@@ -3103,6 +3129,14 @@ function faqHTML(c) {
     '<div class="faq">' + qs.map(function (x) {
       return '<details class="faq__i"><summary>' + x[0] + '</summary><p>' + x[1] + '</p></details>';
     }).join('') + '</div></div></div>';
+}
+
+/* the FAQ list on its own, so the contact section can place it in its grid */
+function faqBody(c) {
+  var html = faqHTML(c);
+  var open = html.indexOf('<div class="block">');
+  var close = html.lastIndexOf('</div></div></div>');
+  return html.slice(open + '<div class="block">'.length, close);
 }
 
 export { BUILD_TAG,

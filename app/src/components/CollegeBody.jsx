@@ -48,6 +48,13 @@ export default function CollegeBody({ college, studentMode, onBack }) {
   useEffect(() => { set({ courseLevel: level, courseQuery: query, eventTag }); }, [level, query, eventTag]);
   useEffect(() => { set({ collegeId: c.id }); }, [c.id]);
 
+  /* the college profile sits on a blue page (the branch lists use the darker
+     navy class in StudentView); released when the profile closes */
+  useEffect(() => {
+    document.body.classList.add('cc-college');
+    return () => document.body.classList.remove('cc-college');
+  }, []);
+
   const sections = useMemo(() => ({
     hero: heroHTML(c),
     about: aboutHTML(c),
@@ -58,7 +65,7 @@ export default function CollegeBody({ college, studentMode, onBack }) {
     counsel: counselHTML(c),
     events: eventsHTML(c),
     location: mapHTML(c),
-    contact: contactHTML(c) + faqHTML(c),
+    contact: contactHTML(c),
     website: websiteHTML(c),
   }), [c, level, query, eventTag, cc.courseQuery, cc.courseLevel, cc.eventTag]);
 

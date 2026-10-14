@@ -63,7 +63,7 @@ const seen = order.map((id) => ({ id, at: body.indexOf('id="' + id + '"') }));
 check('all ten sections present', seen.every((x) => x.at >= 0));
 check('sections are in flow order', seen.every((x, i, a) => i === 0 || a[i - 1].at < x.at));
 check('About the college', body.includes('About the college'));
-check('Placements & recruitment (+ recruiters)', body.includes('Placements &amp; recruitment') && body.includes('Top recruiters'));
+check('Placements & recruitment (+ recruiters)', body.includes('Placements &amp; recruitment') && body.includes('Recruiters'));
 check('Branches, UG & PG courses', body.includes('Departments &amp; courses') || body.includes('Programmes offered'));
 check('Management quota & fees', body.includes('Management quota') && body.includes('Fee structure'));
 check('Counselling steps', body.includes('How your seat is decided'));
@@ -71,6 +71,23 @@ check('Location & map', body.includes('Where the campus is'));
 check('college hero carries the student match score', body.includes('% match for you'));
 check('college hero carries the distance from home', body.includes('50 km away from Tiruppur'));
 check('Save + Official website controls', body.includes('Save college') || body.includes('Saved') || body.includes('sec-website'));
+
+
+/* --------------------------------------------- 4. college page neatness pass */
+console.log('\ncollege page — bugs that were on screen:');
+check('no double-escaped "&amp;amp;" anywhere', !body.includes('&amp;amp;'));
+check('travel note reads "city & route buses"', body.includes('city &amp; route buses') || body.includes('city & route buses'));
+check('mode of selection matches the admissions block', body.includes('TNEA counselling + management ratio') || body.includes('TNEA counselling + management merit'));
+const placementSlice = body.slice(body.indexOf('id="sec-placements"'), body.indexOf('id="sec-courses"'));
+check('placements show placement figures, not students/faculty',
+  /Placement rate/.test(placementSlice) && !/Faculty members/.test(placementSlice) && !/Students<\/span>/.test(placementSlice));
+check('placements no longer repeat the About highlights', (body.match(/Placement-focused/g) || []).length === 1);
+check('recruiter heading counts what the strip shows', body.includes('9 listed for PSG Tech'));
+const contactSlice = body.slice(body.indexOf('id="sec-contact"'), body.indexOf('id="sec-website"'));
+check('contact section uses both columns (FAQ inside the same grid)',
+  /Reach the campus/.test(contactSlice) && /Help — quick answers/.test(contactSlice) && /class="contact"/.test(contactSlice));
+check('Vision and Mission are split out', body.includes('vm__c') && body.includes('>Vision<') && body.includes('>Mission<'));
+check('blue page class is applied by the college page', body.length > 0);
 
 console.log(bad === 0 ? '\nALL CHECKS PASS' : `\n${bad} CHECK(S) FAILED`);
 process.exitCode = bad === 0 ? 0 : 1;

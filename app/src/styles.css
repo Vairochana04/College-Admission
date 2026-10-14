@@ -1621,3 +1621,63 @@ h1,h2,h3,h4{letter-spacing:-.022em}
 .slide__txt .slide__pills .travelpill{font-size:11.1px; color:var(--body)}
 @media (max-width:760px){ .slide__txt .slide__pills{margin-top:5px} .slide__txt .slide__pills .matchpill{font-size:11px} }
 .pill--match{background:linear-gradient(140deg,var(--gold-2),var(--gold)); color:#3a2606; font-weight:800}
+
+/* ==========================================================================
+   v2.36 — the college page, made proper
+   Blue page + one tidy white card per section. Inner panels lose their second
+   frame (they become a light tint inside the card) so nothing is boxed twice.
+   ========================================================================== */
+
+body.cc-college{
+  background-color:#e8effc;
+  background-image:linear-gradient(180deg,#dde8fb 0%,#eef3fe 38%,#e4edfc 100%);
+  background-attachment:fixed;
+}
+
+/* the hero (#sec-profile) keeps its own navy gradient — every other section
+   becomes one tidy white card on the blue page */
+#collegeContent .sec:not(#sec-profile), #collegeContent #sec-about > .about{
+  background:#fff; border:1px solid var(--line); border-radius:20px;
+  padding:26px 26px 28px; box-shadow:0 1px 2px rgba(13,22,38,.05);
+}
+#collegeContent .sec, #collegeContent #sec-about > .about{margin-top:18px}
+#collegeContent .sec-head{margin-bottom:18px}
+#collegeContent .sec-head .sec-title h2{font-size:23px}
+
+/* sections that already carry their own card look: flatten the inner frame */
+#collegeContent .sec .card, #collegeContent .placecard{
+  background:var(--bg); border-color:var(--line-2); box-shadow:none;
+}
+#collegeContent .placecard{background:#fff}
+
+/* the section container itself should not double-pad the inner cards */
+#collegeContent #sec-courses, #collegeContent #sec-admissions,
+#collegeContent #sec-fees, #collegeContent #sec-counsel,
+#collegeContent #sec-events, #collegeContent #sec-location,
+#collegeContent #sec-contact, #collegeContent #sec-website{padding-bottom:26px}
+
+/* --- placements: figures, what the cell does, recruiters --- */
+.placecard{padding:24px}
+.placecard .steps{margin-top:12px}
+
+/* --- Vision / Mission, pulled out of the run-on paragraph --- */
+.vm{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:16px 0}
+.vm__c{background:linear-gradient(160deg,#f7faff,#eef3fd); border:1px solid var(--line);
+  border-radius:14px; padding:15px 17px}
+.vm__c h5{margin:0 0 6px; font-size:11.4px; font-weight:800; letter-spacing:.12em;
+  text-transform:uppercase; color:var(--gold)}
+.vm__c p{font-size:14.2px; color:var(--body); line-height:1.6}
+.about p{max-width:74ch}
+
+/* --- contact card + FAQ side by side (both columns now used) --- */
+#collegeContent .contact{align-items:stretch}
+#collegeContent .contact > .card{height:100%}
+#collegeContent .contact .faq__i + .faq__i{border-top:1px solid var(--line-2)}
+
+@media (max-width:1040px){
+  .vm{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  #collegeContent .sec, #collegeContent #sec-about > .about{padding:18px 16px 20px; border-radius:16px}
+  #collegeContent .sec-head .sec-title h2{font-size:21px}
+}
