@@ -9,13 +9,11 @@ import {
   nextAdmissionDate, fmtShort, hayMatches, categoryOf, cityOf, esc,
   degreesFor, NOT_SURE, ANY_DEGREE, STREAMS, WANT, STAY, HOSTELTYPE, TRAVEL,
   collegeById, saveStudentDetails, logoOrMono, COLLEGES, matchPct, nearYou,
-  planDeadlines, checklistPct, DOC_ITEMS, stageOf, stageLabel,
 } from '../core.js';
-import { hydratePlan, toggleRemind } from '../plan.js';
+import { hydratePlan } from '../plan.js';
 import MyColleges from './MyColleges.jsx';
 import CollegeBody, { CcFoot } from './CollegeBody.jsx';
 import ChatBot from './ChatBot.jsx';
-import CutoffCard from './CutoffCard.jsx';
 import ProfilePage, { ProfileSetup } from './ProfilePage.jsx';
 import { api, session } from '../api.js';
 
@@ -443,8 +441,6 @@ export default function StudentView({ onLogout }) {
           </div>
         </div>
 
-        <CutoffCard />
-        <PlanStrip go={go} onOpen={setProfileId} />
 
         <div className="slidehub" aria-label="Colleges — linear list">
           <div className="slidehub__track">
@@ -508,47 +504,6 @@ export default function StudentView({ onLogout }) {
             <ProfilePage />
           )}
     </section>
-  );
-}
-
-/* the shortlist strip on the home page: what is due, what is still missing */
-function PlanStrip({ go, onOpen }) {
-  useCC();
-  const savedCount = cc.saved.length;
-  const docs = cc.checklist.length;
-  const due = planDeadlines(true).filter((d) => cc.remind.includes(d.cid) || d.saved);
-  const next = due[0];
-  return (
-    <div className="planstrip">
-      <div className="planstrip__cell">
-        <span className="planstrip__k">My Colleges</span>
-        <b>{savedCount ? savedCount + ' saved' : 'Nothing saved yet'}</b>
-        <em>{savedCount ? 'compare · track · apply' : 'tap Save college on any profile'}</em>
-      </div>
-      <div className="planstrip__cell">
-        <span className="planstrip__k">Documents</span>
-        <b>{docs}/{DOC_ITEMS.length} ready</b>
-        <span className="planbar planbar--mini"><i style={{ width: checklistPct() + '%' }} /></span>
-      </div>
-      <div className="planstrip__cell">
-        <span className="planstrip__k">Next deadline</span>
-        {next ? (
-          <>
-            <b>{next.days === 0 ? 'Today' : next.days === 1 ? 'Tomorrow' : 'In ' + next.days + ' days'}</b>
-            <em>{next.name} · {next.label}</em>
-          </>
-        ) : <b>Nothing listed</b>}
-      </div>
-      <div className="planstrip__act">
-        {next && (
-          <button type="button" className={'btn btn--ghost btn--sm' + (cc.remind.includes(next.cid) ? ' on' : '')}
-            onClick={() => toggleRemind(next.cid)}>
-            {cc.remind.includes(next.cid) ? '🔔 Reminder on' : '🔕 Remind me'}
-          </button>
-        )}
-        <button type="button" className="btn btn--gold btn--sm" onClick={() => go('mycolleges')}>Open My Colleges</button>
-      </div>
-    </div>
   );
 }
 

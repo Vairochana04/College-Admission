@@ -127,16 +127,17 @@ check('college timeline type nudged up', css.includes('.tl__head b{font-size:15.
 
 /* ---------------------------------------------- 7. TNEA cutoff calculator */
 console.log('\nTNEA cutoff:');
-check('home page asks for / shows the cutoff', student.includes('cutcard') && student.includes('Your TNEA cutoff'));
-check('cutoff maths is right (98 + 92/2 + 95/2 = 191.5)', student.includes('191.5'));
-check('the worked-out sum is shown', student.includes('Maths 98 + Physics 92/2 + Chemistry 95/2'));
+check('the home page list is clean again (no cutoff card, no shortlist strip)',
+  !student.includes('cutcard') && !student.includes('planstrip'));
+check('cutoff maths is right (98 + 92/2 + 95/2 = 191.5)', profileHTML.includes('191.5'));
+check('the worked-out sum is shown on the profile', profileHTML.includes('Maths 98 + Physics 92/2 + Chemistry 95/2'));
 check('college branch list gets the cutoff line', body.includes('cutline') && body.includes('191.5 / 200'));
 const ugCount = college.departments.reduce((n, d) => n + d.courses.filter((x) => x.level === 'UG').length, 0);
 check('every UG branch carries a chance badge (' + ugCount + ' programmes)',
   ugCount >= 5 && (body.match(/class="chance chance--/g) || []).length === ugCount);
 check('chances use all three tones', body.includes('chance--high') && body.includes('chance--mid'));
 check('badge explains itself on hover', /title="Last year this branch closed around \d/.test(body));
-check('profile page carries the cutoff card', profileHTML.includes('Your TNEA cutoff'));
+check('profile page carries the cutoff card', profileHTML.includes('cutcard') && profileHTML.includes('Your TNEA cutoff'));
 
 
 /* ------------------------------------ 8. My Colleges: compare, track, checklist */

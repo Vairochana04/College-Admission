@@ -1970,20 +1970,6 @@ body.cc-navy .empty b{color:#fff}
 .remlist__what b{display:block; font-size:13.8px; color:var(--ink)}
 .remlist__what em{display:block; margin-top:2px; font-style:normal; font-size:12.2px; color:var(--muted)}
 
-/* ---- the strip on the home page ---- */
-.planstrip{display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin:0 0 14px; padding:14px 18px;
-  border-radius:16px; border:1px solid rgba(255,255,255,.16);
-  background:linear-gradient(140deg, rgba(255,255,255,.10), rgba(255,255,255,.04))}
-.planstrip__cell{min-width:0; flex:1 1 160px}
-.planstrip__k{display:block; font-size:10.4px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:#9fb0d4}
-.planstrip__cell b{display:block; margin-top:3px; font-size:15.4px; color:#fff}
-.planstrip__cell em{display:block; margin-top:2px; font-style:normal; font-size:12.2px; color:#b7c4e2;
-  overflow-overflow:hidden; text-overflow:ellipsis}
-.planstrip__act{display:flex; gap:9px; flex-wrap:wrap; margin-left:auto}
-.planstrip .btn--ghost{background:rgba(255,255,255,.10); color:#fff; border-color:rgba(255,255,255,.26)}
-.planstrip .btn--ghost:hover{background:rgba(255,255,255,.18)}
-.planstrip .btn--ghost.on{background:rgba(240,182,74,.22); border-color:rgba(240,182,74,.5); color:#fff}
-
 /* the hero's Saved number is a link into the shortlist */
 .stu__statlink{background:none; border:0; padding:0; font:inherit; text-align:left; cursor:pointer}
 .stu__statlink b{display:block; font-size:26px; color:#fff; font-variant-numeric:tabular-nums}
