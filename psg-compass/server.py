@@ -38,8 +38,8 @@ INDEX = os.path.join(HERE, "index.html")
 DATA_DIR = os.path.join(HERE, "data")
 DATA_FILE = os.path.join(DATA_DIR, "students.json")
 
-DEMO_EMAIL = "psg@demo.edu"
-DEMO_PW = "psg12345"
+DEMO_EMAIL = "student@demo.edu"
+DEMO_PW = "student123"
 # The demo account starts empty on purpose: first login -> Profile details ->
 # Save and submit -> colleges. Log in again with the same email + password and
 # the saved details are used straight away (no second registration).
