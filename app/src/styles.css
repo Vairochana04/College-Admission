@@ -1543,26 +1543,3 @@ body.cc-navy .rail__i.on{background:rgba(255,255,255,.16); color:#fff}
 /* the tiny build tag also lives bottom-right - move it left so the bubble
    never sits on top of it (it is the stale-build detector) */
 .buildtag{right:auto; left:10px; bottom:8px}
-
-/* ---------- v2.34 · create-account wizard + working alerts ---------- */
-/* (the .auth__alert markup existed but had no styles, so errors showed as plain text) */
-.auth__alert:not(.auth__alert--info){display:flex; gap:10px; align-items:flex-start; padding:11px 13px;
-  border-radius:11px; font-size:13.4px; line-height:1.5; background:#fef2f2; color:#b42318; border:1px solid #fde3e1}
-.auth__alert:not(.auth__alert--info) svg{flex:0 0 auto; margin-top:2px}
-/* the resting page's hint (.auth__alert--info) stays exactly as it always
-   rendered - a small icon above plain text, no box; only real errors are boxed *//* the resting login page keeps its plain-text hint: only the error state is boxed */
-.auth__alert:not(.auth__alert--info) .link{background:none; border:0; font:inherit; font-weight:700; color:inherit;
-  text-decoration:underline; padding:0; cursor:pointer; white-space:nowrap}
-.wiz{margin:18px 0 2px}
-.wiz__bar{display:flex; gap:6px}
-.wiz__seg{flex:1; height:5px; border-radius:3px; background:var(--line); transition:.2s ease}
-.wiz__seg.on{background:linear-gradient(90deg,var(--navy-2),var(--navy))}
-.wiz__lbl{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:8px;
-  font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
-.wiz__lbl b{color:var(--navy)}
-.wiz__nav{display:flex; gap:10px; margin-top:16px}
-.wiz__nav .btn--primary{flex:1}
-.pwtoggle{background:none; border:0; padding:0 2px; cursor:pointer;
-  font-size:12px; font-weight:700; letter-spacing:.02em; color:var(--muted)}
-.pwtoggle:hover{color:var(--navy-3)}
-.pwcaps{color:var(--amber); font-weight:600}
