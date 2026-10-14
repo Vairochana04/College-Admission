@@ -65,6 +65,15 @@ export default function StudentView({ onLogout }) {
     stay: cc.stuStay, hostelType: cc.stuHostelType, travel: cc.stuTravel,
   });
 
+  /* the branch lists (PSG Institutions, or a college's departments) are shown on
+     the brand navy: the body class paints the whole page — including the rail
+     gutter and the space below the last card — while that list is open. */
+  useEffect(() => {
+    const navy = !!drill && !profileId;
+    document.body.classList.toggle('cc-navy', navy);
+    return () => document.body.classList.remove('cc-navy');
+  }, [drill, profileId]);
+
   const all = COLLEGES;   /* count = every college shown on this page */
   const nextAll = useMemo(() => {
     let best = null;
@@ -259,7 +268,7 @@ export default function StudentView({ onLogout }) {
       <section id="view-drill" className="view active viewfade" key={'d' + drill}>
         <Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} /><ChatBot />
         <div className="wrap" style={{ paddingTop: 18, paddingBottom: 46 }}>
-          <button className="btn btn--ghost btn--sm" onClick={() => setDrill(null)}>← All colleges</button>
+          <button className="btn btn--onDark btn--sm" onClick={() => setDrill(null)}>← All colleges</button>
           <div className="crumbs">Colleges › <b>{isGroup ? 'PSG Institutions' : dc.shortName}</b></div>
           <h2 style={{ margin: '16px 0 4px', fontSize: 22 }}>{isGroup ? 'PSG Institutions' : dc.name}</h2>
           <p className="muted" style={{ margin: '0 0 14px', fontSize: 13.4 }}>

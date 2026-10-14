@@ -1501,3 +1501,29 @@ body{line-height:1.55}
 .admfunnel{grid-template-columns:minmax(120px,220px) minmax(0,1fr) 44px}
 .admfunnel__track{position:relative; height:14px; border-radius:7px; background:var(--line-2); min-width:0; overflow:hidden}
 .admfunnel__track i{position:absolute; left:0; top:0; bottom:0; border-radius:7px; display:block}
+
+/* ---------- v2.31 · navy branch lists (PSG Institutions / department lists) ---------- */
+/* The drill pages (#view-drill — the PSG group list and a college's department
+   list) sit on the brand navy, so the white cards read as a list on a dark
+   backdrop. StudentView toggles .cc-navy on <body> while that list is open,
+   which also paints the 58px rail gutter and the space under the last card. */
+body.cc-navy{
+  background-color:var(--navy);
+  background-image:
+    radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+    radial-gradient(120% 120% at 15% 0%, #26385f 0%, var(--navy) 55%, #0d1730 100%);
+  background-size:22px 22px, 100% 100%;
+  background-repeat:repeat, no-repeat;
+  background-attachment:fixed, fixed;
+}
+body.cc-navy .crumbs{color:#9fb0d4}
+body.cc-navy .crumbs b{color:#e8eeff}
+body.cc-navy #view-drill h2{color:#fff}
+body.cc-navy #view-drill .muted{color:#b7c4e2}
+/* the rail is a fixed white strip — keep the whole page navy on these lists */
+body.cc-navy .rail{background:#16223f; border-right-color:rgba(255,255,255,.10); box-shadow:none}
+body.cc-navy .rail[data-open="1"]{box-shadow:14px 0 34px -26px rgba(0,0,0,.65)}
+body.cc-navy .rail__top{color:#e8eeff}
+body.cc-navy .rail__i{color:#c3cfe9}
+body.cc-navy .rail__i:hover{background:rgba(255,255,255,.10); color:#fff}
+body.cc-navy .rail__i.on{background:rgba(255,255,255,.16); color:#fff}
