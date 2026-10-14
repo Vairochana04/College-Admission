@@ -1543,3 +1543,81 @@ body.cc-navy .rail__i.on{background:rgba(255,255,255,.16); color:#fff}
 /* the tiny build tag also lives bottom-right - move it left so the bubble
    never sits on top of it (it is the stale-build detector) */
 .buildtag{right:auto; left:10px; bottom:8px}
+
+/* ==========================================================================
+   v2.35 — typography + UI layer
+   Inter is now bundled with the app (app/public/fonts, latin subset, 124 KB
+   for five weights) instead of hoping the machine has it. Everything else in
+   this block is the student-flow polish: match score, travel advice, sort
+   control, placements section, and small rhythm/contrast fixes.
+   ========================================================================== */
+
+@font-face{font-family:'Inter'; font-style:normal; font-weight:400; font-display:swap;
+  src:url('/fonts/inter-latin-400-normal.woff2') format('woff2')}
+@font-face{font-family:'Inter'; font-style:normal; font-weight:500; font-display:swap;
+  src:url('/fonts/inter-latin-500-normal.woff2') format('woff2')}
+@font-face{font-family:'Inter'; font-style:normal; font-weight:600; font-display:swap;
+  src:url('/fonts/inter-latin-600-normal.woff2') format('woff2')}
+@font-face{font-family:'Inter'; font-style:normal; font-weight:700; font-display:swap;
+  src:url('/fonts/inter-latin-700-normal.woff2') format('woff2')}
+@font-face{font-family:'Inter'; font-style:normal; font-weight:800; font-display:swap;
+  src:url('/fonts/inter-latin-800-normal.woff2') format('woff2')}
+
+/* --- readability --- */
+body{letter-spacing:-.005em}
+h1,h2,h3,h4{letter-spacing:-.022em}
+.stu__stats b,.pstat b,.matchpill,.admkpi b,.prof__stat b,.hero__stats b{font-variant-numeric:tabular-nums}
+.sec{scroll-margin-top:78px}
+.sec-head .sec-title h2{font-size:24px}
+.sec-title p{color:var(--muted)}
+
+/* --- college card: match score + travel advice --- */
+.scard__pills{display:flex; gap:6px; flex-wrap:wrap; align-items:center}
+.matchpill{display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:999px;
+  background:linear-gradient(140deg,var(--navy-2),var(--navy)); color:#fff; font-size:11.6px; font-weight:800;
+  letter-spacing:.01em; box-shadow:0 8px 18px -12px rgba(18,29,56,.75)}
+.matchpill:before{content:""; width:6px; height:6px; border-radius:50%; background:var(--gold-2)}
+.travelpill{display:inline-flex; align-items:center; gap:5px; padding:5px 10px; border-radius:999px;
+  background:var(--line-2); border:1px solid var(--line); color:var(--body); font-size:11.4px; font-weight:700}
+.fac .near{display:inline-flex; align-items:center; gap:6px; padding:3px 9px; border-radius:999px;
+  background:var(--gold-soft); border:1px solid #f3e2b8; color:#7a5510; font-weight:600}
+.fac .near:before{content:"\2192"; font-weight:800}
+
+/* --- sort control next to the filter chips --- */
+.sortsel{display:inline-flex; align-items:center; gap:9px; margin-left:auto; padding:5px 12px;
+  background:#fff; border:1px solid var(--line); border-radius:999px}
+.sortsel span{font-size:10.6px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--muted)}
+.sortsel select{border:0; outline:0; background:none; font-size:12.8px; font-weight:700; color:var(--ink); padding:2px 0}
+
+/* --- placements & recruitment --- */
+.placecard{padding:22px}
+.pstats{display:grid; grid-template-columns:repeat(auto-fit,minmax(148px,1fr)); gap:12px}
+.pstat{background:linear-gradient(160deg,#f8faff,#eef2fb); border:1px solid var(--line);
+  border-radius:14px; padding:14px 16px}
+.pstat b{display:block; font-size:21px; color:var(--navy); line-height:1.2}
+.pstat span{display:block; margin-top:3px; font-size:12.1px; color:var(--muted); font-weight:600}
+.placecard .recband{margin-top:18px}
+.placecard .recband h4{margin-bottom:10px}
+
+/* --- section nav (10 sections now): easier to scan, still one row --- */
+.secnav a{font-size:12.4px}
+.secnav a.active{box-shadow:0 10px 22px -16px rgba(18,29,56,.9)}
+
+/* --- small-screen tuning for the new bits --- */
+@media (max-width:760px){
+  .sortsel{margin-left:0; width:100%; justify-content:space-between}
+  .pstats{grid-template-columns:1fr 1fr}
+  .sec-head .sec-title h2{font-size:21px}
+}
+
+/* --- v2.35b · match + travel pills on the college rows -----------------------
+   .slide__txt span styles every span in the row, so the pills need to state
+   their own display/size with a matching specificity. */
+.slide__txt .slide__pills{display:flex; gap:6px; flex-wrap:wrap; margin-top:7px; white-space:normal; overflow:visible}
+.slide__txt .slide__pills .matchpill,
+.slide__txt .slide__pills .travelpill{display:inline-flex; margin:0; white-space:nowrap; overflow:visible;
+  text-overflow:clip; line-height:1.2}
+.slide__txt .slide__pills .matchpill{font-size:11.3px; color:#fff}
+.slide__txt .slide__pills .travelpill{font-size:11.1px; color:var(--body)}
+@media (max-width:760px){ .slide__txt .slide__pills{margin-top:5px} .slide__txt .slide__pills .matchpill{font-size:11px} }
+.pill--match{background:linear-gradient(140deg,var(--gold-2),var(--gold)); color:#3a2606; font-weight:800}

@@ -5,7 +5,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { cc, set, toast, useCC } from '../store.js';
 import {
-  heroHTML, aboutHTML, coursesHTML, admissionsHTML, eventsHTML, contactHTML,
+  heroHTML, aboutHTML, placementsHTML, coursesHTML, admissionsHTML, eventsHTML, contactHTML,
   websiteHTML, deptListHTML, counselHTML, feesHTML, mapHTML, faqHTML,
   esc, portalProxyId, collegeById,
 BUILD_TAG,
@@ -35,10 +35,13 @@ export default function CollegeBody({ college, studentMode, onBack }) {
     api.track('website_click', c.id);
   }
   const wrap = useRef(null);
-  const ids = ['sec-about', 'sec-courses', 'sec-admissions', 'sec-fees', 'sec-events', 'sec-location', 'sec-contact', 'sec-website'];
+  /* section order = the student flow: about -> placements -> branches & UG/PG
+     -> admission -> management quota -> counselling -> events -> location */
+  const ids = ['sec-about', 'sec-placements', 'sec-courses', 'sec-admissions', 'sec-fees', 'sec-counsel', 'sec-events', 'sec-location', 'sec-contact', 'sec-website'];
   const labels = {
-    'sec-about': 'Overview', 'sec-courses': 'Branches & seats', 'sec-admissions': 'Admission & counselling',
-    'sec-fees': 'Quota & fees', 'sec-events': 'Events', 'sec-location': 'Location & map',
+    'sec-about': 'About the college', 'sec-placements': 'Placements & recruiters', 'sec-courses': 'Branches, UG & PG',
+    'sec-admissions': 'Admission & dates', 'sec-fees': 'Management quota & fees', 'sec-counsel': 'Counselling',
+    'sec-events': 'Events', 'sec-location': 'Location & map',
     'sec-contact': 'Help & contact', 'sec-website': 'Official website',
   };
 
@@ -48,9 +51,11 @@ export default function CollegeBody({ college, studentMode, onBack }) {
   const sections = useMemo(() => ({
     hero: heroHTML(c),
     about: aboutHTML(c),
+    placements: placementsHTML(c),
     courses: coursesHTML(c),
-    admissions: admissionsHTML(c) + counselHTML(c),
+    admissions: admissionsHTML(c),
     fees: feesHTML(c),
+    counsel: counselHTML(c),
     events: eventsHTML(c),
     location: mapHTML(c),
     contact: contactHTML(c) + faqHTML(c),
@@ -174,9 +179,11 @@ export default function CollegeBody({ college, studentMode, onBack }) {
           ))}
         </div>
         <div id="sec-about" dangerouslySetInnerHTML={{ __html: sections.about }} />
+        <div dangerouslySetInnerHTML={{ __html: sections.placements }} />
         <div dangerouslySetInnerHTML={{ __html: sections.courses }} />
         <div dangerouslySetInnerHTML={{ __html: sections.admissions }} />
         <div dangerouslySetInnerHTML={{ __html: sections.fees }} />
+        <div dangerouslySetInnerHTML={{ __html: sections.counsel }} />
         <div dangerouslySetInnerHTML={{ __html: sections.events }} />
         <div dangerouslySetInnerHTML={{ __html: sections.location }} />
         <div dangerouslySetInnerHTML={{ __html: sections.contact }} />

@@ -74,7 +74,7 @@ export const GROUP_MARK = "media/psg-group.png";
 
 export const cc = {
   role: 'college', view: 'login', collegeId: 'psg', authMode: 'signin',
-  user: null, marks: null, stuStream: 'Science – Maths', stuWant: 'Not sure yet',
+  user: null, marks: null, marks10: null, stuStream: 'Science – Maths', stuWant: 'Not sure yet',
   stuDegree: null, stuStay: 'Hostel needed', stuHostelType: 'Any hostel',
   stuTravel: 'College bus', stuTown: '', saved: [], stuQuery: '', stuFilter: 'all',
   onboarding: false,
@@ -104,7 +104,7 @@ var ICONS = {
 
 
 /* ---- data: COLLEGES ---- */
-var BUILD_TAG = '2026-10-10 r3';
+var BUILD_TAG = '2026-10-14 r5';
 var COLLEGES = [
   /* ===================================================================
      PSG GROUP — PSG & Sons' Charities, Coimbatore
@@ -1715,7 +1715,72 @@ function fitScore(c){
   var s = eligFor(c, cc.marks, cc.stuStream).rank;
   if (courseMatches(c, cc.stuWant)) s -= 0.5;
   if (degreeMatches(c)) s -= 0.25;
+  /* Class 10 marks are a tie-breaker, never a gate: a strong 10th nudges a
+     college up, a weak one only softens it. */
+  if (cc.marks10 !== null && cc.marks10 !== undefined && cc.marks10 !== '') {
+    var m10 = Number(cc.marks10);
+    if (!isNaN(m10)) s -= (m10 - 75) / 100;                 /* ±0.25 */
+  }
+  var n = nearYou(c);
+  if (n) s -= n.tier === 0 ? 0.35 : (n.tier === 1 ? 0.15 : 0);
   return s;
+}
+
+/* ---------------------------------------------------------------------------
+   Location: how far is the campus from the student's town?
+   Every campus in this demo is in Coimbatore, so what matters to a student is
+   the journey from their own town - the advisory below feeds the card labels
+   ("45 km away · hostel or bus advised"), the match score and the sort order.
+   --------------------------------------------------------------------------- */
+var DIST_KM = {
+  'coimbatore': 0, 'mettupalayam': 35, 'pollachi': 40, 'palladam': 40, 'tiruppur': 50,
+  'palakkad': 55, 'udumalaipettai': 70, 'dharapuram': 85, 'erode': 100, 'ooty': 90,
+  'karur': 120, 'namakkal': 110, 'salem': 160, 'dindigul': 150, 'theni': 190,
+  'madurai': 215, 'tiruchirappalli': 215, 'trichy': 215, 'thanjavur': 260,
+  'hosur': 200, 'krishnagiri': 220, 'dharmapuri': 180, 'vellore': 300,
+  'tiruvannamalai': 290, 'kanchipuram': 340, 'chennai': 510, 'chengalpattu': 460,
+  'cuddalore': 330, 'villupuram': 330, 'tirunelveli': 380, 'kanyakumari': 420,
+  'nagercoil': 420, 'virudhunagar': 250, 'sivaganga': 260, 'ramanathapuram': 300,
+  'pudukkottai': 240, 'ariyalur': 270, 'perambalur': 250, 'nagapattinam': 320,
+  'mayiladuthurai': 300, 'tiruvarur': 310, 'tenkasi': 350, 'ranipet': 320,
+  'tirupattur': 260, 'kallakurichi': 300, 'nilgiris': 90, 'udhagamandalam': 90,
+};
+
+function distFromTown(town){
+  var t = String(town || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  if (!t) return null;
+  if (DIST_KM[t] !== undefined) return DIST_KM[t];
+  var keys = Object.keys(DIST_KM);
+  for (var i = 0; i < keys.length; i++) {
+    if (t.indexOf(keys[i]) >= 0 || keys[i].indexOf(t) >= 0) return DIST_KM[keys[i]];
+  }
+  return null;                                   /* town not in the table */
+}
+
+/* travel advisory for one campus, from the student's own town */
+function nearYou(c){
+  var d = distFromTown(cc.stuTown);
+  if (d === null) return null;
+  if (d === 0)   return { km:0,  tier:0, label:'In your city',     note:'no travel needed — live at home' };
+  if (d <= 60)   return { km:d,  tier:0, label:d + ' km away',     note:'easy daily commute' };
+  if (d <= 130)  return { km:d,  tier:1, label:d + ' km away',     note:'hostel or college bus advised' };
+  return           { km:d,  tier:2, label:d + ' km away',     note:'hostel strongly advised' };
+}
+
+/* one number a student can read at a glance: eligibility + their course choice
+   + Class 10 and 12 marks + how far the campus is from home */
+function matchPct(c){
+  var el = eligFor(c, cc.marks, cc.stuStream);
+  var base = el.rank === 0 ? 90 : el.rank === 1 ? 74 : el.rank === 2 ? 60 : 48;
+  if (courseMatches(c, cc.stuWant)) base += 4;
+  if (degreeMatches(c)) base += 3;
+  if (cc.marks10 !== null && cc.marks10 !== undefined && cc.marks10 !== '') {
+    var m10 = Number(cc.marks10);
+    if (!isNaN(m10)) base += Math.round((m10 - 75) / 8);       /* ±3 */
+  }
+  var n = nearYou(c);
+  if (n) base += n.tier === 0 ? 2 : (n.tier === 1 ? 1 : 0);
+  return Math.max(35, Math.min(99, base));
 }
 
 
@@ -2148,10 +2213,15 @@ function stuCardHTML(c){
         '<div><h3>' + esc(c.name) + '</h3>' +
           '<span>' + esc(cityOf(c)) + ' · Estd. ' + esc(c.estd) + ' · ' + esc(categoryOf(c)) + '</span></div>' +
       '</div>' +
+      '<div class="scard__pills">' +
+        '<span class="matchpill" title="Eligibility + your course choice + Class 10 & 12 marks + distance from ' + esc(cc.stuTown || 'your town') + '">' + matchPct(c) + '% match</span>' +
+        (nearYou(c) ? '<span class="travelpill">' + esc(nearYou(c).label) + '</span>' : '') +
+      '</div>' +
       '<span class="badge badge--' + el.cls + '">' + (el.cls === 'ok' ? ICONS.check : '') + esc(el.text) + '</span>' +
       faciNote(c) +
       (degreeMatches(c) ? '<div class="fac"><span class="yes">Runs ' + esc(cc.stuDegree) + '</span></div>'
         : courseMatches(c, cc.stuWant) ? '<div class="fac"><span class="yes">Teaches ' + esc(cc.stuWant) + '</span></div>' : '') +
+      (nearYou(c) ? '<div class="fac"><span class="near">' + esc(nearYou(c).note) + '</span></div>' : '') +
       '<div class="scard__facts">' +
         '<span>Next: <b>' + esc(next.label) + '</b> · ' + esc(fmtShort(next.date)) + ' <em>(' + esc(countdownText(next.date)) + ')</em></span>' +
         (prog ? '<span>Programmes: <b>' + esc(prog) + '</b> · ' + esc(c.naac) + '</span>' : '<span>' + esc(c.naac) + '</span>') +
@@ -2178,6 +2248,13 @@ function heroHTML(c){
     '<span class="pill pill--ghost">Estd. ' + esc(c.estd) + '</span>'
   ];
   if (c.nirfBadge) badges.push('<span class="pill pill--ghost">' + esc(c.nirfBadge) + '</span>');
+
+  /* a signed-in student sees how this college fits them, right in the hero */
+  if (cc.user && cc.marks !== null && cc.marks !== undefined) {
+    badges.unshift('<span class="pill pill--match">' + matchPct(c) + '% match for you</span>');
+    var ny = nearYou(c);
+    if (ny) badges.push('<span class="pill pill--ghost">' + esc(ny.label) + ' from ' + esc(cc.stuTown) + '</span>');
+  }
 
   var statHTML = c.stats.map(function(s){
     return '<div><b>' + esc(s.v) + '</b><span>' + esc(s.k) + '</span></div>';
@@ -2266,7 +2343,6 @@ function aboutHTML(c){
     '</div>';
   }).join('');
 
-  var recruiters = recruitersHTML(c);
   var facilities = c.facilities.map(function(r){ return '<span class="chip">' + esc(r) + '</span>'; }).join('');
 
   return '' +
@@ -2279,9 +2355,41 @@ function aboutHTML(c){
     '</div>' +
     '<div class="hl">' + hl + '</div>' +
   '</div>' +
-  /* recruiters as a FULL-WIDTH band right after the about grid:
-     no column-height mismatch can ever leave a blank pocket under it */
-  '<div class="block recband"><h4>Top recruiters</h4>' + recruiters + '</div>';
+  /* the recruiter band lives in the Placements & recruitment section now
+     (the student flow reads: about -> placements -> branches -> admission) */
+  '';
+}
+
+
+/* Placements & recruitment — a first-class section: what the placement cell
+   reports, who recruits, and what that means for the branch you pick. */
+function placementsHTML(c){
+  var st = c.stats || [];
+  var cards = st.map(function(x){
+    return '<div class="pstat"><b>' + esc(x.v) + '</b><span>' + esc(x.k) + '</span></div>';
+  }).join('');
+  var hl = (c.highlights || []).filter(function(h){
+    return /placement|recruit|industry|internship|training/i.test(h.title + ' ' + h.text);
+  });
+  var hlHTML = hl.map(function(h){
+    return '<div class="hl__item"><span class="hl__ico">' + (ICONS[h.icon] || ICONS.check) + '</span>' +
+      '<div><h4>' + esc(h.title) + '</h4><p>' + esc(h.text) + '</p></div></div>';
+  }).join('');
+  var n = (c.recruiters || []).length;
+  return '' +
+  '<section class="sec" id="sec-placements">' +
+    '<div class="sec-head">' +
+      '<div class="sec-title"><span class="kicker">Placements &amp; recruitment</span>' +
+        '<h2>Who hires from ' + esc(c.shortName) + '</h2>' +
+        '<p>Placement figures and recruiters are as published by the college — confirm the current season with the placement cell.</p></div>' +
+    '</div>' +
+    '<div class="card placecard">' +
+      '<div class="pstats">' + cards + '</div>' +
+      (hlHTML ? '<div class="hl" style="margin-top:16px">' + hlHTML + '</div>' : '') +
+      '<div class="block recband"><h4>Top recruiters' + (n ? ' · ' + n + ' companies' : '') + '</h4>' + recruitersHTML(c) + '</div>' +
+      '<p class="muted" style="margin:14px 2px 0;font-size:13px">Campus placement drives usually run in the final year; internships start earlier. Ask the department you are applying to for its own placement record.</p>' +
+    '</div>' +
+  '</section>';
 }
 
 
@@ -2915,12 +3023,19 @@ function counselHTML(c) {
       'Allotment follows rank + preferences; pay the fee and report with originals.'
     ];
   }
-  return '<div class="card" style="margin-top:16px"><div class="block"><h4>Counselling — how your seat is decided</h4>' +
-    '<div class="steps">' + steps.map(function (s, i) {
-      return '<div class="step"><p>' + esc(s) + '</p></div>';
-    }).join('') + '</div>' +
-    '<p class="muted" style="margin:12px 0 0;font-size:13px">Counselling route for this college: ' + esc(c.admission.mode) + '.</p>' +
-    '</div></div>';
+  return '' +
+  '<section class="sec" id="sec-counsel">' +
+    '<div class="sec-head"><div class="sec-title"><span class="kicker">Counselling</span>' +
+      '<h2>How your seat is decided</h2>' +
+      '<p>' + esc(c.admission.mode) + ' — step by step.</p>' +
+    '</div></div>' +
+    '<div class="card" style="padding:22px">' +
+      '<div class="steps">' + steps.map(function (s) {
+        return '<div class="step"><p>' + esc(s) + '</p></div>';
+      }).join('') + '</div>' +
+      '<p class="muted" style="margin:14px 2px 0;font-size:13px">Keep your certificates ready before the round opens; allotment order and original documents are checked at reporting.</p>' +
+    '</div>' +
+  '</section>';
 }
 
 function feesHTML(c) {
@@ -2991,5 +3106,5 @@ function faqHTML(c) {
 }
 
 export { BUILD_TAG,
-  ICONS, COLLEGES, USERS, DEMO_CREDENTIALS, DEGREES, FACIL, MATCH, CATEGORY_OF, ITEM_NOTE, GROUP_ORDER, PROXY_ID, ROLE_COPY, NOT_SURE, ANY_DEGREE, STREAMS, WANT, STAY, HOSTELTYPE, TRAVEL, degreesFor, degreeRe, degreeMatches, courseMatches, fitScore, eligFor, storeGet, storeSet, storeDel, studentAccounts, studentLookup, isSeeded, saveStudentDetails, restoreStudentSession, saveStudentList, startStudentSession, studentColleges, studentVisible, stuPrefsLine, faciNote, subLineOf, hayMatches, collegesInGroup, categoryOf, isPSG, groupLabelOfCategory, proxyIdFor, portalProxyId, fmtLong, fmtShort, dayParts, countdownText, initials, collegeById, groupLabelOf, cityOf, nextAdmissionDate, upcomingEvents, esc, countCourses, selectionMode, qrSVG, pathFromUrl, logoOrMono, groupMarkHTML, mediaOf, stuCardHTML, heroHTML, aboutHTML, coursesHTML, admissionsHTML, eventsHTML, contactHTML, websiteHTML, deptListHTML, pickerHTML, FEES, QUOTA, counselHTML, feesHTML, mapHTML, faqHTML
+  ICONS, COLLEGES, USERS, DEMO_CREDENTIALS, DEGREES, FACIL, MATCH, CATEGORY_OF, ITEM_NOTE, GROUP_ORDER, PROXY_ID, ROLE_COPY, NOT_SURE, ANY_DEGREE, STREAMS, WANT, STAY, HOSTELTYPE, TRAVEL, degreesFor, degreeRe, degreeMatches, courseMatches, fitScore, matchPct, nearYou, distFromTown, eligFor, storeGet, storeSet, storeDel, studentAccounts, studentLookup, isSeeded, saveStudentDetails, restoreStudentSession, saveStudentList, startStudentSession, studentColleges, studentVisible, stuPrefsLine, faciNote, subLineOf, hayMatches, collegesInGroup, categoryOf, isPSG, groupLabelOfCategory, proxyIdFor, portalProxyId, fmtLong, fmtShort, dayParts, countdownText, initials, collegeById, groupLabelOf, cityOf, nextAdmissionDate, upcomingEvents, esc, countCourses, selectionMode, qrSVG, pathFromUrl, logoOrMono, groupMarkHTML, mediaOf, stuCardHTML, heroHTML, aboutHTML, coursesHTML, admissionsHTML, placementsHTML, eventsHTML, contactHTML, websiteHTML, deptListHTML, pickerHTML, FEES, QUOTA, counselHTML, feesHTML, mapHTML, faqHTML
 };

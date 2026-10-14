@@ -8,7 +8,7 @@ import {
   studentColleges, eligFor, fitScore, stuCardHTML, stuPrefsLine, initials,
   nextAdmissionDate, fmtShort, hayMatches, categoryOf, cityOf, esc,
   degreesFor, NOT_SURE, ANY_DEGREE, STREAMS, WANT, STAY, HOSTELTYPE, TRAVEL,
-  collegeById, saveStudentDetails, logoOrMono, COLLEGES,
+  collegeById, saveStudentDetails, logoOrMono, COLLEGES, matchPct, nearYou,
 } from '../core.js';
 import CollegeBody, { CcFoot } from './CollegeBody.jsx';
 import ChatBot from './ChatBot.jsx';
@@ -57,6 +57,7 @@ export default function StudentView({ onLogout }) {
   const [profileId, setProfileId] = useState(null);
   const [page, setPage] = useState('colleges');
   const [drill, setDrill] = useState(null);
+  const [sortBy, setSortBy] = useState('match');   /* match | closing | marks */
   const [railOpen, setRailOpen] = useState(() => { try { return localStorage.getItem('cc_rail_open') === '1'; } catch (e) { return false; } });
   function setRail(v) { setRailOpen(v); try { localStorage.setItem('cc_rail_open', v ? '1' : '0'); } catch (e) {} }
   function go(v) { setProfileId(null); setDrill(null); setPage(v); }   /* 'psg-group' or a college id → its branches */
@@ -96,11 +97,21 @@ export default function StudentView({ onLogout }) {
         return hayMatches(hay.replace(/\./g, ''), q.replace(/\./g, ''));
       });
     }
-    if (cc.stuFilter === 'all' && cc.marks !== null && cc.marks !== undefined) {
-      list = list.slice().sort((a, b) => fitScore(a) - fitScore(b));
-    }
+    /* the student's marks + location decide the order they see colleges in */
+    list = list.slice().sort((a, b) => {
+      if (sortBy === 'closing') {
+        const na = nextAdmissionDate(a.admission); const nb = nextAdmissionDate(b.admission);
+        const da = na ? String(na.date) : '9999-99-99'; const db = nb ? String(nb.date) : '9999-99-99';
+        if (da !== db) return da < db ? -1 : 1;
+      }
+      if (sortBy === 'marks') {
+        const ra = eligFor(a, cc.marks, cc.stuStream).rank; const rb = eligFor(b, cc.marks, cc.stuStream).rank;
+        if (ra !== rb) return ra - rb;
+      }
+      return matchPct(b) - matchPct(a);
+    });
     return list;
-  }, [all, cc.stuFilter, cc.stuQuery, cc.marks, cc.stuStream, cc.stuWant, cc.stuDegree, cc.saved]);
+  }, [all, cc.stuFilter, cc.stuQuery, cc.marks, cc.marks10, cc.stuTown, cc.stuStream, cc.stuWant, cc.stuDegree, cc.saved, sortBy]);
 
   const eligCount = all.filter((c) => eligFor(c, cc.marks, cc.stuStream).rank === 0).length;
 
@@ -232,16 +243,26 @@ export default function StudentView({ onLogout }) {
       <span className="slide__go">Open ›</span>
     </button>
   );
-  const collegeRow = (c) => (
-    <button key={c.id} type="button" className="slide" onClick={() => setProfileId(c.id)}>
-      <span className="slide__logo" dangerouslySetInnerHTML={{ __html: logoOrMono(c, 'slide__mark', '') }} />
-      <span className="slide__txt">
-        <b>{c.name}</b>
-        <span>{c.city} · {c.type}</span>
-      </span>
-      <span className="slide__go">Open ›</span>
-    </button>
-  );
+  /* every college row answers the two questions a student actually has:
+     "can I get in?" (match %) and "how far is it?" (travel from their town) */
+  const collegeRow = (c) => {
+    const n = nearYou(c);
+    const next = nextAdmissionDate(c.admission);
+    return (
+      <button key={c.id} type="button" className="slide" onClick={() => setProfileId(c.id)}>
+        <span className="slide__logo" dangerouslySetInnerHTML={{ __html: logoOrMono(c, 'slide__mark', '') }} />
+        <span className="slide__txt">
+          <b>{c.name}</b>
+          <span>{c.city} · {c.type}{next ? ' · next ' + fmtShort(next.date) : ''}</span>
+          <span className="slide__pills">
+            <span className="matchpill">{matchPct(c)}% match</span>
+            {n ? <span className="travelpill" title={n.note}>{n.label}</span> : null}
+          </span>
+        </span>
+        <span className="slide__go">{cc.saved.includes(c.id) ? '★ Saved' : 'Open ›'}</span>
+      </button>
+    );
+  };
 
   /* front page shows names only: the search / filter chips narrow this linear list */
   const q = (cc.stuQuery || '').trim().toLowerCase();
@@ -348,6 +369,8 @@ export default function StudentView({ onLogout }) {
               <p className="stu__welcome">CampusConnect welcomes you — choose your college and shine your future.</p>
               <p className="stu__mail">
                 {cc.user?.mobile ? cc.user.mobile + ' · ' : ''}Class 12: {cc.marks === null || cc.marks === undefined ? '—' : cc.marks + '%'}
+                {cc.marks10 !== null && cc.marks10 !== undefined ? ' · Class 10: ' + cc.marks10 + '%' : ''}
+                {cc.stuTown ? ' · ' + cc.stuTown : ''}
                 {cc.user?.savedServer ? ' · all done ✓ saved on server' : ''}
               </p>
             </div>
@@ -370,6 +393,14 @@ export default function StudentView({ onLogout }) {
             <Chip on={cc.stuFilter === 'all'} onClick={() => set({ stuFilter: 'all' })}>All colleges <span className="cnt">{frontRows}</span></Chip>
             <Chip on={cc.stuFilter === 'eligible'} onClick={() => set({ stuFilter: 'eligible' })}>Eligible for me <span className="cnt">{eligCount}</span></Chip>
             <Chip on={cc.stuFilter === 'saved'} onClick={() => set({ stuFilter: 'saved' })}>Saved <span className="cnt">{cc.saved.length}</span></Chip>
+            <label className="sortsel">
+              <span>Sort</span>
+              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} aria-label="Sort colleges">
+                <option value="match">Best match</option>
+                <option value="closing">Closing soon</option>
+                <option value="marks">Best marks fit</option>
+              </select>
+            </label>
           </div>
         </div>
 
@@ -397,7 +428,11 @@ export default function StudentView({ onLogout }) {
                     <span className="slide__logo" dangerouslySetInnerHTML={{ __html: logoOrMono(c, 'slide__mark', '') }} />
                     <span className="slide__txt">
                       <b>{c.name}</b>
-                      <span>{c.city} · {c.type}</span>
+                      <span>{c.city} · {c.type}{nextAdmissionDate(c.admission) ? ' · next ' + fmtShort(nextAdmissionDate(c.admission).date) : ''}</span>
+                      <span className="slide__pills">
+                        <span className="matchpill">{matchPct(c)}% match</span>
+                        {nearYou(c) ? <span className="travelpill" title={nearYou(c).note}>{nearYou(c).label}</span> : null}
+                      </span>
                     </span>
                     <span className="slide__go">Branches ›</span>
                   </button>
@@ -408,6 +443,9 @@ export default function StudentView({ onLogout }) {
         </div>
 
         <p className="stu__gridline" id="stuGridLine">
+          {sortBy === 'match' && cc.marks !== null && cc.marks !== undefined
+            ? 'Ordered by match — your ' + cc.marks + '%' + (cc.marks10 ? ' + Class 10 ' + cc.marks10 + '%' : '')
+              + (cc.stuTown ? ', from ' + cc.stuTown : '') + '. ' : ''}
           {filtering
             ? 'Showing ' + visible.length + ' college' + (visible.length === 1 ? '' : 's') +
               (cc.marks !== null && cc.marks !== undefined ? ' · sorted for your ' + cc.marks + '% · ' + cc.stuStream : '') +

@@ -55,7 +55,7 @@ public class Server {
     static final Path EVENTS_FILE   = DATA.resolve("student-events.jsonl");
     static final Map<String, String[]> TOKENS = new ConcurrentHashMap<>();   /* token -> {email, role} */
     static final Object WRITE_LOCK = new Object();
-    static final String[] STUDENT_FIELDS = {"name", "email", "mobile", "marks", "stream", "want",
+    static final String[] STUDENT_FIELDS = {"name", "email", "mobile", "marks", "marks10", "stream", "want",
             "degree", "stay", "hostelType", "travel", "town", "consent", "photo"};
     static final String[] EVENT_TYPES = {"register", "login", "profile_view", "save", "unsave",
             "website_click", "apply_click", "update"};
@@ -517,7 +517,7 @@ public class Server {
             if (v == null) v = "";
             if (!first) sb.append(",");
             first = false;
-            if (k.equals("marks") && v.matches("-?\\d+(\\.\\d+)?")) sb.append("\"marks\":").append(v);
+            if ((k.equals("marks") || k.equals("marks10")) && v.matches("-?\\d+(\\.\\d+)?")) sb.append("\"").append(k).append("\":").append(v);
             else sb.append("\"").append(k).append("\":\"").append(jesc(v)).append("\"");
         }
         for (String k : new String[]{"created", "updated"}) {
@@ -630,6 +630,14 @@ public class Server {
             rec.put("name", name.isEmpty() ? email.split("@")[0] : name);
             rec.put("mobile", mobile);
             rec.put("marks", marks == Math.floor(marks) ? String.valueOf((long) marks) : String.valueOf(marks));
+            String m10raw = Optional.ofNullable(in.get("marks10")).orElse("").trim();
+            if (!m10raw.isEmpty()) {
+                try {
+                    double m10 = Double.parseDouble(m10raw);
+                    if (m10 >= 30 && m10 <= 100)
+                        rec.put("marks10", m10 == Math.floor(m10) ? String.valueOf((long) m10) : String.valueOf(m10));
+                } catch (NumberFormatException ignored) { }
+            }
             for (String f : new String[]{"stream", "want", "degree", "stay", "hostelType", "travel", "town"})
                 rec.put(f, Optional.ofNullable(in.get(f)).orElse("").trim());
             String c = Optional.ofNullable(in.get("consent")).orElse("");
@@ -671,6 +679,17 @@ public class Server {
                     if (m < 30 || m > 100) error = "Class 12 percentage should be between 30 and 100.";
                     else rec.put("marks", m == Math.floor(m) ? String.valueOf((long) m) : String.valueOf(m));
                 } catch (NumberFormatException e) { error = "Class 12 percentage should be a number."; }
+            }
+            if (error == null && in.containsKey("marks10")) {
+                String raw = Optional.ofNullable(in.get("marks10")).orElse("").trim();
+                if (raw.isEmpty()) rec.put("marks10", "");
+                else {
+                    try {
+                        double m10 = Double.parseDouble(raw);
+                        if (m10 < 30 || m10 > 100) error = "Class 10 percentage should be between 30 and 100.";
+                        else rec.put("marks10", m10 == Math.floor(m10) ? String.valueOf((long) m10) : String.valueOf(m10));
+                    } catch (NumberFormatException e) { error = "Class 10 percentage should be a number."; }
+                }
             }
             if (error == null) {
                 for (String f : new String[]{"name", "stream", "want", "degree", "stay",
@@ -814,7 +833,7 @@ public class Server {
     static void apiStudentsCsv(HttpExchange ex) throws IOException {
         String[] auth = tokenOf(ex);
         if (auth == null || !"admin".equals(auth[1])) { sendJson(ex, 401, ERR_ADMIN); return; }
-        String[] cols = {"email", "name", "mobile", "marks", "stream", "want", "degree",
+        String[] cols = {"email", "name", "mobile", "marks", "marks10", "stream", "want", "degree",
                          "stay", "hostelType", "travel", "town", "consent", "created", "updated"};
         StringBuilder sb = new StringBuilder(String.join(",", cols)).append("\n");
         for (Map<String, String> r : readStudents().values()) {

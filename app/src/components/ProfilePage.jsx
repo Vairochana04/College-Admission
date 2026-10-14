@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { cc, set, toast, useCC } from '../store.js';
 import {
   studentColleges, eligFor, fitScore, initials, fmtLong, nextAdmissionDate, collegeById, ANY_DEGREE,
+  nearYou, matchPct,
 } from '../core.js';
 import { api } from '../api.js';
 import ProfileForm from './ProfileForm.jsx';
@@ -16,6 +17,7 @@ const pctOf = (s) => Math.max(35, Math.min(98, Math.round(96 - s * 18)));
 const snap = () => ({
   name: cc.user?.name || '', mobile: cc.user?.mobile || '',
   marks: cc.marks === null || cc.marks === undefined ? '' : String(cc.marks),
+  marks10: cc.marks10 === null || cc.marks10 === undefined ? '' : String(cc.marks10),
   stream: cc.stuStream, want: cc.stuWant, degree: cc.stuDegree || ANY_DEGREE,
   stay: cc.stuStay, hostelType: cc.stuHostelType, travel: cc.stuTravel,
   town: cc.stuTown || '', consent: true,
@@ -24,7 +26,8 @@ const snap = () => ({
 function applyToStore(f) {
   Object.assign(cc, {
     user: { ...cc.user, name: f.name, mobile: f.mobile, savedServer: true },
-    marks: f.marks, stuStream: f.stream, stuWant: f.want, stuDegree: f.degree,
+    marks: f.marks, marks10: (f.marks10 === '' || f.marks10 === null || f.marks10 === undefined) ? null : Number(f.marks10),
+    stuStream: f.stream, stuWant: f.want, stuDegree: f.degree,
     stuStay: f.stay, stuHostelType: f.hostelType, stuTravel: f.travel, stuTown: f.town,
   });
   set({});
@@ -63,10 +66,12 @@ export default function ProfilePage() {
       ['Name', v(u.name)],
       ['Email id (login)', v(u.email)],
       ['Mobile', u.mobile ? '+91 ' + u.mobile : '—'],
-      ['Town', v(cc.stuTown)],
+      ['Location', v(cc.stuTown)],
+      ['Travel to campus', nearYou(all[0]) ? nearYou(all[0]).label + ' — ' + nearYou(all[0]).note : 'Add your town to see this'],
     ]],
     ['Academic', [
       ['Class 12 %', cc.marks === null || cc.marks === undefined ? '—' : cc.marks + '%'],
+      ['Class 10 %', cc.marks10 === null || cc.marks10 === undefined ? 'Not added' : cc.marks10 + '%'],
       ['Stream', v(cc.stuStream)],
       ['Course wanted', v(cc.stuWant)],
       ['Degree', v(cc.stuDegree)],

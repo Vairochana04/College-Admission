@@ -55,7 +55,7 @@ DATA = ROOT / "server" / "data"
 STUDENTS_FILE = DATA / "students.json"
 EVENTS_FILE = DATA / "student-events.jsonl"
 
-STUDENT_FIELDS = ["name", "email", "mobile", "marks", "stream", "want", "degree",
+STUDENT_FIELDS = ["name", "email", "mobile", "marks", "marks10", "stream", "want", "degree",
                   "stay", "hostelType", "travel", "town", "consent", "photo"]
 EVENT_TYPES = {"register", "login", "profile_view", "save", "unsave",
                "website_click", "apply_click", "update"}
@@ -207,7 +207,7 @@ def student_json(rec, with_photo=True):
         if key == "photo" and not with_photo:
             continue
         value = rec.get(key, "") or ""
-        if key == "marks" and re.fullmatch(r"-?\d+(\.\d+)?", str(value)):
+        if key in ("marks", "marks10") and re.fullmatch(r"-?\d+(\.\d+)?", str(value)):
             out[key] = int(value) if re.fullmatch(r"-?\d+", str(value)) else float(value)
         else:
             out[key] = value
@@ -405,6 +405,15 @@ class Handler(BaseHTTPRequestHandler):
                 raise ValueError
         except (TypeError, ValueError):
             return self.json_error(400, "Class 12 percentage should be between 30 and 100.")
+        marks10 = None
+        raw10 = body.get("marks10")
+        if raw10 not in (None, ""):
+            try:
+                marks10 = float(raw10)
+                if marks10 < 30 or marks10 > 100:
+                    raise ValueError
+            except (TypeError, ValueError):
+                return self.json_error(400, "Class 10 percentage should be between 30 and 100 (or leave it blank).")
 
         students = read_students()
         if email in students:
@@ -413,6 +422,8 @@ class Handler(BaseHTTPRequestHandler):
         rec = {
             "name": name or email.split("@")[0], "email": email, "mobile": mobile,
             "marks": str(int(marks)) if marks == int(marks) else str(marks),
+            "marks10": ("" if marks10 is None else
+                        (str(int(marks10)) if marks10 == int(marks10) else str(marks10))),
             "password": pwhash(pw),
         }
         for field in ("stream", "want", "degree", "stay", "hostelType", "travel", "town"):
@@ -454,6 +465,19 @@ class Handler(BaseHTTPRequestHandler):
                     rec["marks"] = str(int(marks)) if marks == int(marks) else str(marks)
             except (TypeError, ValueError):
                 error = "Class 12 percentage should be a number."
+        if error is None and "marks10" in body:
+            raw10 = body.get("marks10")
+            if raw10 in (None, ""):
+                rec["marks10"] = ""
+            else:
+                try:
+                    m10 = float(raw10)
+                    if m10 < 30 or m10 > 100:
+                        error = "Class 10 percentage should be between 30 and 100."
+                    else:
+                        rec["marks10"] = str(int(m10)) if m10 == int(m10) else str(m10)
+                except (TypeError, ValueError):
+                    error = "Class 10 percentage should be a number."
         if error is None:
             for field in ("name", "stream", "want", "degree", "stay", "hostelType",
                           "travel", "town", "photo"):
@@ -604,7 +628,7 @@ class Handler(BaseHTTPRequestHandler):
         auth = token_of(self.headers, urlsplit(self.path).query)
         if not auth or auth[1] != "admin":
             return self.json_error(401, "Admin sign-in required.")
-        cols = ["email", "name", "mobile", "marks", "stream", "want", "degree",
+        cols = ["email", "name", "mobile", "marks", "marks10", "stream", "want", "degree",
                 "stay", "hostelType", "travel", "town", "consent", "created", "updated"]
         lines = [",".join(cols)]
         for rec in read_students().values():

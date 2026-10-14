@@ -45,11 +45,16 @@ export default function ProfileForm({ initial, mode, saveLabel, onSave, onCancel
     if (f.mobile.replace(/\D/g, '').length !== 10) e.mobile = 'Mobile number should be 10 digits.';
     const m = Number(f.marks);
     if (!f.marks || isNaN(m) || m < 30 || m > 100) e.marks = 'Class 12 % should be between 30 and 100.';
+    if (f.marks10 !== '' && f.marks10 !== null && f.marks10 !== undefined) {
+      const m10 = Number(f.marks10);
+      if (isNaN(m10) || m10 < 30 || m10 > 100) e.marks10 = 'Class 10 % should be between 30 and 100 (or leave it blank).';
+    }
     setErr(e);
-    if (e.name || e.mobile || e.marks) return;
+    if (e.name || e.mobile || e.marks || e.marks10) return;
     setBusy(true);
+    const m10 = (f.marks10 === '' || f.marks10 === null || f.marks10 === undefined) ? null : Number(f.marks10);
     Promise.resolve(onSave({
-      ...f, name: f.name.trim(), mobile: f.mobile.replace(/\D/g, ''), marks: m, town: f.town.trim(),
+      ...f, name: f.name.trim(), mobile: f.mobile.replace(/\D/g, ''), marks: m, marks10: m10, town: f.town.trim(),
     })).finally(() => setBusy(false));
   }
 
@@ -69,16 +74,20 @@ export default function ProfileForm({ initial, mode, saveLabel, onSave, onCancel
             <input id="pfname" type="text" autoComplete="name" value={f.name} onChange={(e) => upd('name', e.target.value)} />)}
           {field('mobile', 'Mobile number',
             <span className="pf__pre"><b>+91</b><input id="pfmobile" type="tel" inputMode="numeric" maxLength={10} value={f.mobile} onChange={(e) => upd('mobile', e.target.value.replace(/\D/g, '').slice(0, 10))} /></span>)}
-          {field('town', 'Home town',
-            <input id="pftown" type="text" placeholder="e.g. Tiruppur" value={f.town} onChange={(e) => upd('town', e.target.value)} />,
-            'Used to suggest nearby colleges')}
+          {field('town', 'Your location — town / city',
+            <input id="pftown" type="text" placeholder="e.g. Tiruppur, Coimbatore, Salem" value={f.town} onChange={(e) => upd('town', e.target.value)} />,
+            'Used to show how far each campus is from home, and to sort colleges for you')}
         </div>
       </Sec>
 
       <Sec icon={I.cap} title="Academic">
         <div className="pf">
           {field('marks', 'Class 12 percentage',
-            <span className="pf__pre"><input id="pfmarks" type="number" min="30" max="100" step="0.1" inputMode="decimal" value={f.marks} onChange={(e) => upd('marks', e.target.value)} /><b>%</b></span>)}
+            <span className="pf__pre"><input id="pfmarks" type="number" min="30" max="100" step="0.1" inputMode="decimal" value={f.marks} onChange={(e) => upd('marks', e.target.value)} /><b>%</b></span>,
+            'Decides your eligibility and cut-off match')}
+          {field('marks10', 'Class 10 percentage (optional)',
+            <span className="pf__pre"><input id="pfmarks10" type="number" min="30" max="100" step="0.1" inputMode="decimal" value={f.marks10 || ''} onChange={(e) => upd('marks10', e.target.value)} /><b>%</b></span>,
+            'Used only to break ties between close colleges')}
         </div>
         <div className={'pf__row' + chg('stream')}>
           <span className="pf__lab">Stream</span>

@@ -27,7 +27,10 @@ export function snapshot() {
 }
 
 export function useCC() {
-  useSyncExternalStore(subscribe, snapshot);
+  /* the third argument (getServerSnapshot) is only read while rendering on the
+     server - it keeps the render smoke test (app/ssr-check.jsx) able to render
+     these views in Node; in the browser it is ignored */
+  useSyncExternalStore(subscribe, snapshot, snapshot);
   return cc;
 }
 
