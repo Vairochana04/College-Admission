@@ -70,10 +70,12 @@ export default function StudentView({ onLogout }) {
      the brand navy: the body class paints the whole page — including the rail
      gutter and the space below the last card — while that list is open. */
   useEffect(() => {
-    const navy = !!drill && !profileId;
+    /* the home list and the branch lists share the navy surface; a college
+       profile paints its own (cc-college) and My Profile stays light */
+    const navy = !profileId && (!!drill || page !== 'profile');
     document.body.classList.toggle('cc-navy', navy);
     return () => document.body.classList.remove('cc-navy');
-  }, [drill, profileId]);
+  }, [drill, profileId, page]);
 
   const all = COLLEGES;   /* count = every college shown on this page */
   const nextAll = useMemo(() => {
@@ -253,10 +255,11 @@ export default function StudentView({ onLogout }) {
         <span className="slide__logo" dangerouslySetInnerHTML={{ __html: logoOrMono(c, 'slide__mark', '') }} />
         <span className="slide__txt">
           <b>{c.name}</b>
-          <span>{c.city} · {c.type}{next ? ' · next ' + fmtShort(next.date) : ''}</span>
+          <span>{c.city} · {c.type}</span>
           <span className="slide__pills">
             <span className="matchpill">{matchPct(c)}% match</span>
             {n ? <span className="travelpill" title={n.note}>{n.label}</span> : null}
+            {next ? <span className="datepill" title={next.label}>next {fmtShort(next.date)}</span> : null}
           </span>
         </span>
         <span className="slide__go">{cc.saved.includes(c.id) ? '★ Saved' : 'Open ›'}</span>
@@ -379,7 +382,8 @@ export default function StudentView({ onLogout }) {
           <div className="stu__stats">
             <div><b>{filtering ? visible.length : frontRows}</b><span>Colleges for you</span></div>
             <div><b>{cc.saved.length}</b><span>Saved</span></div>
-            <div><b>{nextAll ? fmtShort(nextAll.date) : '—'}</b><span>{nextAll ? nextAll.label : 'next date'}</span></div>
+            <div className="stu__stat--next"><b>{nextAll ? fmtShort(nextAll.date) : '—'}</b>
+              <span>{nextAll ? nextAll.label : 'next date'}</span></div>
           </div>
         </div>
 
@@ -428,10 +432,13 @@ export default function StudentView({ onLogout }) {
                     <span className="slide__logo" dangerouslySetInnerHTML={{ __html: logoOrMono(c, 'slide__mark', '') }} />
                     <span className="slide__txt">
                       <b>{c.name}</b>
-                      <span>{c.city} · {c.type}{nextAdmissionDate(c.admission) ? ' · next ' + fmtShort(nextAdmissionDate(c.admission).date) : ''}</span>
+                      <span>{c.city} · {c.type}</span>
                       <span className="slide__pills">
                         <span className="matchpill">{matchPct(c)}% match</span>
                         {nearYou(c) ? <span className="travelpill" title={nearYou(c).note}>{nearYou(c).label}</span> : null}
+                        {nextAdmissionDate(c.admission)
+                          ? <span className="datepill" title={nextAdmissionDate(c.admission).label}>next {fmtShort(nextAdmissionDate(c.admission).date)}</span>
+                          : null}
                       </span>
                     </span>
                     <span className="slide__go">Branches ›</span>

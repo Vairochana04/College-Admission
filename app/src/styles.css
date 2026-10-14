@@ -1733,3 +1733,92 @@ body.cc-college .secnav a.active{background:var(--gold); color:#3a2606}
   #collegeContent .sec, #collegeContent #sec-about > .about{padding:18px 16px 20px; border-radius:16px}
   #collegeContent .sec-head .sec-title h2{font-size:21px}
 }
+
+/* ==========================================================================
+   v2.39 — the student home page on navy + one size up for the small type
+   ========================================================================== */
+
+/* ---- surface: top bar, search, chips, sort, footer all go navy ---- */
+body.cc-navy .topbar{background:rgba(15,23,43,.78); border-bottom-color:rgba(255,255,255,.12)}
+body.cc-navy .topbar .brand{color:#fff}
+body.cc-navy .topbar .brand small{color:#a9b6d4}
+body.cc-navy .topbar .userchip{background:rgba(255,255,255,.10); border-color:rgba(255,255,255,.20)}
+body.cc-navy .topbar .userchip b{color:#fff}
+body.cc-navy .topbar .userchip span{color:#b7c4e2}
+body.cc-navy .topbar .btn--ghost{background:rgba(255,255,255,.10); color:#fff; border-color:rgba(255,255,255,.26)}
+body.cc-navy .topbar .btn--ghost:hover{background:rgba(255,255,255,.18); border-color:rgba(255,255,255,.4)}
+
+body.cc-navy .searchbox{background:rgba(255,255,255,.10); border-color:rgba(255,255,255,.20); color:#c3cfe9}
+body.cc-navy .searchbox input{color:#fff; font-size:14.6px}
+body.cc-navy .searchbox input::placeholder{color:#9fb0d4}
+body.cc-navy .searchbox:focus-within{border-color:rgba(240,182,74,.7); box-shadow:0 0 0 3px rgba(240,182,74,.18)}
+
+body.cc-navy .chips--filter .chip{background:rgba(255,255,255,.10); border-color:rgba(255,255,255,.20); color:#dbe4f7}
+body.cc-navy .chips--filter .chip:hover{border-color:rgba(255,255,255,.38)}
+body.cc-navy .chips--filter .chip.chip--on,
+body.cc-navy .chips--filter .chip[aria-pressed="true"]{
+  background:linear-gradient(140deg,var(--gold-2),var(--gold)); border-color:transparent; color:#3a2606}
+body.cc-navy .chips--filter .chip .cnt{color:inherit; opacity:.75}
+
+body.cc-navy .sortsel{background:rgba(255,255,255,.10); border-color:rgba(255,255,255,.20)}
+body.cc-navy .sortsel span{color:#9fb0d4}
+body.cc-navy .sortsel select{color:#fff}
+body.cc-navy .sortsel select option{color:#0d1626; background:#fff}
+
+body.cc-navy .stu__gridline{color:#b7c4e2}
+body.cc-navy .ccfoot{border-top-color:rgba(255,255,255,.14); color:#a9b6d4}
+body.cc-navy .empty{background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.22); color:#c3cfe9}
+body.cc-navy .empty b{color:#fff}
+
+/* rows stay white cards on navy — the pills inside keep their light look */
+.slide__txt .slide__pills .datepill{display:inline-flex; margin:0; white-space:nowrap}
+
+/* ---- the deadline, as a deadline ---- */
+.datepill{display:inline-flex; align-items:center; gap:5px; padding:5px 11px; border-radius:999px;
+  background:var(--navy); color:#fff; font-size:12.2px; font-weight:700; font-variant-numeric:tabular-nums}
+.datepill:before{content:""; width:6px; height:6px; border-radius:50%; background:var(--gold-2)}
+.stu__stat--next{padding:8px 14px; border-radius:14px; background:rgba(240,182,74,.14);
+  border:1px solid rgba(240,182,74,.34)}
+.stu__stat--next b{color:var(--gold-2) !important}
+
+/* ---- one size up: list rows, hero line, chips, footer ---- */
+.stu__mail{font-size:13.4px}
+.stu__welcome{font-size:14.6px}
+.stu__stats b{font-size:26px}
+.stu__stats span{font-size:12.8px}
+.slide__txt b{font-size:15.2px}
+.slide__txt span{font-size:12.9px}
+.slide__go{font-size:12.9px}
+.slide__txt .slide__pills .matchpill{font-size:12.3px}
+.slide__txt .slide__pills .travelpill{font-size:12.1px}
+.chip{font-size:13.4px}
+.chips--filter .chip{font-size:13.2px}
+.sortsel span{font-size:11.2px}
+.sortsel select{font-size:13.6px}
+.stu__gridline{font-size:13.4px}
+.searchbox input{font-size:14.6px}
+.ccfoot{font-size:12.8px}
+
+/* ---- college page: the timeline and its type, a touch larger ---- */
+.tl__date{width:52px}
+.tl{grid-template-columns:52px minmax(0,1fr)}
+.tl__date b{font-size:19.5px}
+.tl__date span{font-size:10.4px}
+.tl__date em{font-size:10.8px}
+.tl__head b{font-size:15.4px}
+.tl__body p{font-size:13.8px}
+.tl__full{font-size:12.4px}
+.tl__head .tl__pill{font-size:11.8px}
+.tl__head .tl__done{font-size:11.6px}
+.timeline:before{left:25px}
+
+@media (max-width:600px){
+  .tl__date{width:46px}
+  .tl{grid-template-columns:46px minmax(0,1fr)}
+  .tl__date b{font-size:17.4px}
+  .tl__head b{font-size:14.4px}
+  .tl__body p{font-size:13px}
+  .stu__mail{font-size:12.8px}
+  .slide__txt b{font-size:14.4px}
+  .slide__txt span{font-size:12.4px}
+}

@@ -105,5 +105,20 @@ check('next row is highlighted', (body.match(/tl--next/g) || []).length === 1);
 check('every row repeats the full date', (body.match(/class="tl__full"/g) || []).length === isoDates.length);
 check('notes keep their own line', (body.match(/tl__body"><div class="tl__head">|<\/div><p>/g) || []).length >= 5);
 
+
+/* ------------------------------------------- 6. home page: navy + deadlines */
+console.log('\nstudent home — navy surface & deadlines:');
+import fs from 'node:fs';
+const css = fs.readFileSync('src/styles.css', 'utf8');
+const rowCount = (student.match(/class="slide"/g) || []).length;
+check('every college row carries a next-deadline pill', rowCount >= 5
+  && (student.match(/class="datepill"/g) || []).length === rowCount);
+check('rows no longer trail the date as plain text', !/· next \d/.test(student));
+check('hero deadline stat is highlighted', student.includes('stu__stat--next'));
+check('navy surface covers the home page', css.includes('body.cc-navy .topbar') && css.includes('body.cc-navy .searchbox')
+  && css.includes('body.cc-navy .chips--filter .chip') && css.includes('body.cc-navy .sortsel'));
+check('topbar + list type nudged up', css.includes('.slide__txt b{font-size:15.2px}') && css.includes('.stu__mail{font-size:13.4px}'));
+check('college timeline type nudged up', css.includes('.tl__head b{font-size:15.4px}') && css.includes('.tl__body p{font-size:13.8px}'));
+
 console.log(bad === 0 ? '\nALL CHECKS PASS' : `\n${bad} CHECK(S) FAILED`);
 process.exitCode = bad === 0 ? 0 : 1;
