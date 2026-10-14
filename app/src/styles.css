@@ -1629,16 +1629,38 @@ h1,h2,h3,h4{letter-spacing:-.022em}
    ========================================================================== */
 
 body.cc-college{
-  background-color:#e8effc;
-  background-image:linear-gradient(180deg,#dde8fb 0%,#eef3fe 38%,#e4edfc 100%);
-  background-attachment:fixed;
+  background-color:var(--navy);
+  background-image:
+    radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
+    radial-gradient(120% 120% at 15% 0%, #26385f 0%, var(--navy) 55%, #0d1730 100%);
+  background-size:22px 22px, 100% 100%;
+  background-repeat:repeat, no-repeat;
+  background-attachment:fixed, fixed;
 }
+/* the fixed left rail is a white strip: keep it navy on the college page too */
+body.cc-college .rail{background:#16223f; border-right-color:rgba(255,255,255,.10); box-shadow:none}
+body.cc-college .rail[data-open="1"]{box-shadow:14px 0 34px -26px rgba(0,0,0,.65)}
+body.cc-college .rail__top{color:#e8eeff}
+body.cc-college .rail__i{color:#c3cfe9}
+body.cc-college .rail__i:hover{background:rgba(255,255,255,.10); color:#fff}
+body.cc-college .rail__i.on{background:rgba(255,255,255,.16); color:#fff}
+/* the back / breadcrumb row sits on the navy too */
+body.cc-college .ctop .crumbs{color:#9fb0d4}
+body.cc-college .ctop .crumbs b{color:#e8eeff}
+body.cc-college .ctop .btn--ghost{background:rgba(255,255,255,.10); color:#fff; border-color:rgba(255,255,255,.28)}
+body.cc-college .ctop .btn--ghost:hover{background:rgba(255,255,255,.18); border-color:rgba(255,255,255,.4)}
+/* the sticky section nav: white pill chips read as holes on navy */
+body.cc-college .secnav{background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16);
+  backdrop-filter:blur(8px); box-shadow:none}
+body.cc-college .secnav a{color:#c3cfe9}
+body.cc-college .secnav a:hover{background:rgba(255,255,255,.12); color:#fff}
+body.cc-college .secnav a.active{background:var(--gold); color:#3a2606}
 
 /* the hero (#sec-profile) keeps its own navy gradient — every other section
-   becomes one tidy white card on the blue page */
+   becomes one tidy white card on the navy page */
 #collegeContent .sec:not(#sec-profile), #collegeContent #sec-about > .about{
-  background:#fff; border:1px solid var(--line); border-radius:20px;
-  padding:26px 26px 28px; box-shadow:0 1px 2px rgba(13,22,38,.05);
+  background:#fff; border:1px solid rgba(255,255,255,.10); border-radius:20px;
+  padding:26px 26px 28px; box-shadow:0 24px 50px -34px rgba(0,0,0,.75);
 }
 #collegeContent .sec, #collegeContent #sec-about > .about{margin-top:18px}
 #collegeContent .sec-head{margin-bottom:18px}
