@@ -1635,7 +1635,6 @@ h1,h2,h3,h4{letter-spacing:-.022em}
 
 /* --- small-screen tuning for the new bits --- */
 @media (max-width:760px){
-  .sortsel{margin-left:0; width:100%; justify-content:space-between}
   .pstats{grid-template-columns:1fr 1fr}
   .sec-head .sec-title h2{font-size:21px}
 }
@@ -2044,3 +2043,95 @@ body.cc-navy .empty b{color:#fff}
 .prof__card .cutcard__kick{display:none}
 .prof__card .cutcard p{margin-top:0}
 .prof__card .cutcard--mini{margin-top:2px}
+
+/* ==========================================================================
+   v2.43 · alignment pass — everything on the student side lines up
+   One control height, one baseline per row, equal-height tiles, and the
+   sort control is compact instead of stretching across the page.
+   ========================================================================== */
+
+/* ---- the tools row: search, chips, sort ---- */
+.stu__tools{align-items:center; gap:10px}
+.stu__tools .searchbox{min-height:42px}
+.chips--filter{display:flex; align-items:center; gap:8px; flex-wrap:wrap}
+.chips--filter .chip{display:inline-flex; align-items:center; gap:7px; min-height:38px; line-height:1}
+.chips--filter .chip .cnt{margin-left:1px}
+.sortsel{display:inline-flex; align-items:center; gap:9px; min-height:38px; padding:0 13px; margin-left:8px}
+.sortsel select{padding:9px 0; line-height:1}
+
+/* the sort control never stretches: on a narrow screen it drops to its own
+   line, still right-aligned, and stays the same size as the chips */
+@media (max-width:760px){
+  .sortsel{width:auto; margin-left:0; justify-content:flex-start}
+  .chips--filter{width:100%}
+}
+
+/* ---- the hero: one baseline for the three stats ---- */
+.stu__stats{align-items:baseline; gap:26px}
+.stu__stats b{line-height:1.08}
+.stu__stats span{line-height:1.3}
+.stu__stat--next{align-self:baseline; padding:6px 13px 7px; border-radius:12px}
+.stu__stat--next b{line-height:1.08}
+/* .stu__head is a column: children keep full width (its own rule applies) */
+.stu__head > *{min-width:0}
+
+/* ---- the college list: one left edge, pills on one line ---- */
+.slide{align-items:center; padding:13px 15px}
+.slide__txt b{line-height:1.32}
+.slide__txt span{margin-top:4px; line-height:1.35}
+.slide__pills{display:flex; align-items:center; gap:7px; flex-wrap:wrap; margin-top:8px}
+.slide__go{align-self:center; line-height:1; white-space:nowrap}
+.stu__gridline{margin:10px 2px 12px}
+
+/* ---- college page ---- */
+.hero__stats{align-items:baseline}
+.hero__stats b{line-height:1.1}
+.hero__meta{align-items:center}
+.secnav{align-items:center; padding-top:10px; padding-bottom:10px}
+.secnav a{display:inline-flex; align-items:center; min-height:32px; line-height:1}
+
+/* facts / stats tiles: the value sits on the same line in every tile */
+.facts{align-items:stretch}
+.fact{display:flex; flex-direction:column; gap:6px}
+.fact b{margin-top:auto}
+.pstats{align-items:stretch}
+.pstat{display:flex; flex-direction:column; gap:6px}
+.pstat span{margin-top:auto}
+.pstat b{font-size:22px; line-height:1.15}
+
+.course{align-items:start}
+.course b{line-height:1.35}
+.course__meta{align-items:center; row-gap:6px}
+.course__meta .chance{line-height:1.2}
+.course__el{line-height:1.5}
+.step p{line-height:1.5}
+.hl__item{align-items:flex-start}
+.hl__item h4{line-height:1.3}
+
+/* the admissions block: the button lines up with the heading, the cards with
+   each other */
+.sec-head{align-items:flex-end}
+.sec-head .btn{align-self:flex-end}
+.adm{align-items:start}
+.adm__status{gap:12px}
+
+/* ---- the profile page keeps the same rhythm ---- */
+.pgrid dd{min-height:21px}
+.prof__stat{align-items:flex-start}
+
+/* ---- My Colleges ---- */
+.cmpt thead th, .cmpt tbody th, .cmpt tbody td{vertical-align:middle}
+.cmpt thead th:first-child, .cmpt tbody th:first-child{width:186px}
+.cmpt tbody td{white-space:nowrap}
+.cmpt__open{display:inline-flex; align-items:center; min-height:22px}
+.track__steps .stp{min-height:34px}
+.track__top{align-items:center}
+.track__act{align-items:center}
+.tick label{align-items:center}
+.tick__box{margin-top:0}
+.remlist li{align-items:center}
+.remlist__what b{line-height:1.3}
+.remlist__what em{line-height:1.35}
+
+/* the footer line and the list note share the same gutter */
+.ccfoot{padding:16px 2px 22px}

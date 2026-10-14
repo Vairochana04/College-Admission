@@ -169,5 +169,20 @@ check('sections are grouped', profileHTML.includes('About you') && profileHTML.i
   && profileHTML.includes('Stay &amp; travel'));
 check('cutoff block sits on the profile', profileHTML.includes('cutcard') && profileHTML.includes('TNEA cutoff'));
 
+
+/* ------------------------------------------------ 10. alignment pass (v2.43) */
+console.log('\nalignment:');
+check('toolbar controls share one height',
+  css.includes('.chips--filter .chip{display:inline-flex; align-items:center; gap:7px; min-height:38px')
+  && css.includes('.sortsel{display:inline-flex; align-items:center; gap:9px; min-height:38px'));
+check('the sort control never stretches across the page', !/sortsel\{[^}]*width:100%/.test(css)
+  && css.includes('.sortsel{width:auto; margin-left:0; justify-content:flex-start}'));
+check('hero stats sit on one baseline', css.includes('.stu__stats{align-items:baseline'));
+check('tile values land on the same line', css.includes('.fact b{margin-top:auto}')
+  && css.includes('.pstat span{margin-top:auto}'));
+check('list rows keep one left edge + pills row', css.includes('.slide__pills{display:flex; align-items:center; gap:7px'));
+check('compare table rows are vertically centred with a fixed first column',
+  css.includes('.cmpt thead th:first-child, .cmpt tbody th:first-child{width:186px}'));
+
 console.log(bad === 0 ? '\nALL CHECKS PASS' : `\n${bad} CHECK(S) FAILED`);
 process.exitCode = bad === 0 ? 0 : 1;
