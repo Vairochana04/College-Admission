@@ -212,7 +212,7 @@ export default function Login() {
   const hint = create
     ? 'Sign up with your name, email, mobile and Class 12 marks — plus a few taps for the course & degree you want, and whether you need hostel or bus. Colleges that fit you show up right away.'
     : role === 'student'
-      ? 'Your email and password. New here? Create an account in a few seconds.'
+      ? 'Your email and password. First sign-in asks your details once \u2014 after that the same email + password lands straight on your colleges.'
       : 'Admin sign-in — the dashboard shows every student, their details and the colleges they explored.';
 
   return (
@@ -395,6 +395,10 @@ export default function Login() {
                   Use demo login
                 </button>
               </div>
+              <p className="legal" style={{ margin: '8px 2px 0' }}>
+                Student demo: the first sign-in asks your details once (name, mobile, 10th &amp; 12th %,
+                hostel or bus) &mdash; after that the same email + password lands straight on the colleges.
+              </p>
             </div>
 
             <p className="legal">Demo accounts only · Data shown is sample data for illustration. Always confirm details on the college's official website.</p>

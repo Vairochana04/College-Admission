@@ -107,7 +107,7 @@ var ICONS = {
 
 
 /* ---- data: COLLEGES ---- */
-var BUILD_TAG = '2026-10-14 r5';
+var BUILD_TAG = '2026-10-14 r6';
 var COLLEGES = [
   /* ===================================================================
      PSG GROUP — PSG & Sons' Charities, Coimbatore

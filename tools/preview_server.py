@@ -232,15 +232,16 @@ def college_name(cid):
 
 
 def seed_demo_student():
-    """Java seeds server/data/students.json on first run — same record here."""
+    """Java seeds server/data/students.json on first run - same record here.
+
+    The demo student starts EMPTY on purpose (the PSG Campus Compass flow): the
+    first sign-in walks through the details form once, and after that the same
+    email + password lands straight on the colleges - no re-registering.
+    """
     if STUDENTS_FILE.exists():
         return
     rec = {
-        "name": "Aarav S.", "email": "student@demo.edu", "mobile": "9876543210", "marks": "98",
-        "stream": "Science \u2013 Maths", "want": "Engineering",
-        "degree": "B.E. Electronics & Communication", "stay": "Hostel needed",
-        "hostelType": "Boys hostel", "travel": "College bus", "town": "Coimbatore",
-        "consent": "true", "password": pwhash("student123"),
+        "email": "student@demo.edu", "password": pwhash("student123"),
         "created": now_iso(), "updated": now_iso(),
     }
     write_students({"student@demo.edu": rec})

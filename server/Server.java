@@ -908,18 +908,10 @@ public class Server {
             if (Files.exists(STUDENTS_FILE)) return;
             Map<String, Map<String, String>> students = new LinkedHashMap<>();
             Map<String, String> rec = new LinkedHashMap<>();
+            /* the demo student starts empty (the PSG Campus Compass flow):
+               first sign-in asks the details once, then the same email +
+               password lands straight on the colleges */
             rec.put("email", "student@demo.edu");
-            rec.put("name", "Aarav S.");
-            rec.put("mobile", "9876543210");
-            rec.put("marks", "98");
-            rec.put("stream", "Science \u2013 Maths");
-            rec.put("want", "Engineering");
-            rec.put("degree", "B.E. Electronics & Communication");
-            rec.put("stay", "Hostel needed");
-            rec.put("hostelType", "Boys hostel");
-            rec.put("travel", "College bus");
-            rec.put("town", "Coimbatore");
-            rec.put("consent", "true");
             rec.put("password", pwhash("student123"));
             rec.put("created", nowIso());
             rec.put("updated", nowIso());
