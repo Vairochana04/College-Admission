@@ -281,16 +281,46 @@ section.sec{scroll-margin-top:96px}
 .fact{padding:14px 15px; border:1px solid var(--line); border-radius:var(--radius-sm); background:#fff}
 .fact span{font-size:11.6px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
 .fact b{display:block; font-size:14.6px; color:var(--ink); margin-top:5px; font-weight:650}
-.timeline{position:relative; margin-top:22px; padding-left:26px}
-.timeline:before{content:""; position:absolute; left:7px; top:8px; bottom:10px; width:2px; background:var(--line)}
-.tl{position:relative; padding:0 0 20px}
-.tl:last-child{padding-bottom:0}
-.tl:before{content:""; position:absolute; left:-26px; top:5px; width:16px; height:16px; border-radius:50%;
-  background:#fff; border:2px solid #cfd7e6}
-.tl--next:before{border-color:var(--gold); background:var(--gold-2); box-shadow:0 0 0 4px var(--gold-soft)}
-.tl__date{font-size:12.5px; font-weight:700; color:var(--gold); letter-spacing:.02em}
-.tl b{display:block; color:var(--ink); font-size:14.6px; margin-top:2px}
-.tl span{font-size:13px; color:var(--muted)}
+/* ---------- v2.38 · admission timeline: sorted, roomy, readable ---------- */
+.timeline{position:relative; margin-top:22px; display:flex; flex-direction:column; gap:12px}
+/* the connector runs between the date tiles */
+.timeline:before{content:""; position:absolute; left:23px; top:14px; bottom:14px; width:2px;
+  background:var(--line); border-radius:2px; z-index:0}
+.tl{position:relative; z-index:1; display:grid; grid-template-columns:48px minmax(0,1fr); gap:14px; align-items:start}
+.tl__date{width:48px; padding:8px 4px 7px; border-radius:12px; text-align:center; background:var(--navy);
+  color:#fff; box-shadow:0 10px 20px -14px rgba(18,29,56,.7)}
+.tl__date b{display:block; font-size:18px; line-height:1.05; color:#fff}
+.tl__date span{display:block; margin-top:2px; font-size:9.6px; font-weight:800; letter-spacing:.11em; color:var(--gold-2)}
+.tl__date em{display:block; margin-top:1px; font-style:normal; font-size:10px; color:rgba(255,255,255,.62)}
+.tl__body{background:var(--bg); border:1px solid var(--line); border-radius:14px; padding:12px 15px 13px}
+.tl__head{display:flex; align-items:center; gap:9px; flex-wrap:wrap}
+.tl__head b{font-size:14.4px; color:var(--ink); line-height:1.35}
+.tl__body p{margin-top:5px; font-size:13px; color:var(--muted); line-height:1.55}
+.tl__full{display:block; margin-top:7px; font-size:11.6px; font-weight:600; letter-spacing:.02em; color:var(--muted)}
+.tl__head .tl__pill{display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:999px;
+  background:linear-gradient(140deg,var(--gold-2),var(--gold)); color:#3a2606; font-size:11.2px; font-weight:800}
+.tl__head .tl__pill:before{content:""; width:6px; height:6px; border-radius:50%; background:#3a2606; opacity:.75}
+.tl__head .tl__done{display:inline-flex; align-items:center; padding:3px 9px; border-radius:999px;
+  background:var(--green-soft); color:var(--green); font-size:11px; font-weight:700}
+.tl--next .tl__date{background:linear-gradient(140deg,var(--gold-2),var(--gold)); color:#3a2606;
+  box-shadow:0 12px 24px -14px rgba(199,143,34,.85)}
+.tl--next .tl__date b{color:#3a2606}
+.tl--next .tl__date span{color:#5a3c07}
+.tl--next .tl__date em{color:rgba(58,38,6,.72)}
+.tl--next .tl__body{border-color:#f0dfb6; background:var(--gold-soft)}
+.tl--done{opacity:.72}
+.tl--done .tl__date{background:#e7ecf6; color:var(--body); box-shadow:none}
+.tl--done .tl__date b{color:var(--body)}
+.tl--done .tl__date span{color:#7d8aa6}
+.tl--done .tl__date em{color:#9aa6bf}
+@media (max-width:600px){
+  .tl{grid-template-columns:44px minmax(0,1fr); gap:11px}
+  .tl__date{width:44px; padding:7px 3px 6px}
+  .tl__date b{font-size:16.4px}
+  .tl__body{padding:11px 13px 12px}
+  .tl__head b{font-size:13.8px}
+  .tl__body p{font-size:12.6px}
+}
 .steps{counter-reset:s; display:grid; gap:11px; margin-top:14px}
 .step{counter-increment:s; display:grid; grid-template-columns:auto 1fr; gap:13px; align-items:start;
   padding:14px 16px; border:1px solid var(--line); border-radius:var(--radius-sm); background:#fff; box-shadow:var(--shadow-1)}

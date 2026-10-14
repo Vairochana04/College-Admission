@@ -89,5 +89,21 @@ check('contact section uses both columns (FAQ inside the same grid)',
 check('Vision and Mission are split out', body.includes('vm__c') && body.includes('>Vision<') && body.includes('>Mission<'));
 check('blue page class is applied by the college page', body.length > 0);
 
+
+/* ------------------------------------------- 5. admission timeline neatness */
+console.log('\nadmission timeline:');
+const tlStart = body.indexOf('class="timeline"');
+const tlSlice = body.slice(tlStart, body.indexOf('</article>', body.lastIndexOf('class="tl')));
+const isoDates = [...body.matchAll(/class="tl__date" datetime="(\d{4}-\d{2}-\d{2})"/g)].map((m) => m[1]);
+const sorted = isoDates.slice().sort();
+check('renders one row per deadline', isoDates.length >= 5);
+check('deadlines are in date order', JSON.stringify(isoDates) === JSON.stringify(sorted));
+check('each row has a day/month/year tile', (body.match(/class="tl__date"/g) || []).length === isoDates.length
+  && /<b>\d{2}<\/b><span>[A-Z]{3}<\/span><em>\d{4}<\/em>/.test(body));
+check('exactly one "Next up" deadline', (body.match(/Next up · /g) || []).length === 1);
+check('next row is highlighted', (body.match(/tl--next/g) || []).length === 1);
+check('every row repeats the full date', (body.match(/class="tl__full"/g) || []).length === isoDates.length);
+check('notes keep their own line', (body.match(/tl__body"><div class="tl__head">|<\/div><p>/g) || []).length >= 5);
+
 console.log(bad === 0 ? '\nALL CHECKS PASS' : `\n${bad} CHECK(S) FAILED`);
 process.exitCode = bad === 0 ? 0 : 1;

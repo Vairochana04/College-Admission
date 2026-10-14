@@ -2452,19 +2452,34 @@ function coursesHTML(c){
 function admissionsHTML(c){
   var a = c.admission;
   var today = startOfToday();
+  /* always show the deadlines in date order — the data is not written sorted */
+  var dates = (a.dates || []).slice().sort(function (x, y) {
+    return String(x.date) < String(y.date) ? -1 : (String(x.date) > String(y.date) ? 1 : 0);
+  });
   var nextIdx = -1;
-  for (var i = 0; i < a.dates.length; i++){
-    if (parseDay(a.dates[i].date) >= today){ nextIdx = i; break; }
+  for (var i = 0; i < dates.length; i++){
+    if (parseDay(dates[i].date) >= today){ nextIdx = i; break; }
   }
   var tone = a.tone === 'open' ? 'green' : (a.tone === 'closed' ? '' : 'amber');
 
-  var timeline = a.dates.map(function(d, i){
+  var timeline = dates.map(function (d, i) {
     var isNext = (i === nextIdx);
-    return '<div class="tl' + (isNext ? ' tl--next' : '') + '">' +
-      '<div class="tl__date">' + esc(fmtLong(d.date)) + (isNext ? ' · ' + esc(countdownText(d.date)) : '') + '</div>' +
-      '<b>' + esc(d.label) + '</b>' +
-      '<span>' + esc(d.note || '') + '</span>' +
-    '</div>';
+    var done = nextIdx === -1 ? true : i < nextIdx;      /* already past */
+    var p = dayParts(d.date);
+    return '<article class="tl' + (isNext ? ' tl--next' : '') + (done ? ' tl--done' : '') + '">' +
+      '<time class="tl__date" datetime="' + esc(d.date) + '">' +
+        '<b>' + esc(p.day) + '</b><span>' + esc(p.mon) + '</span><em>' + esc(p.yr) + '</em>' +
+      '</time>' +
+      '<div class="tl__body">' +
+        '<div class="tl__head">' +
+          '<b>' + esc(d.label) + '</b>' +
+          (isNext ? '<span class="tl__pill">Next up · ' + esc(String(countdownText(d.date)).toLowerCase()) + '</span>' : '') +
+          (done ? '<span class="tl__done" title="This date has passed">✓ done</span>' : '') +
+        '</div>' +
+        (d.note ? '<p>' + esc(d.note) + '</p>' : '') +
+        '<span class="tl__full">' + esc(fmtLong(d.date)) + '</span>' +
+      '</div>' +
+    '</article>';
   }).join('');
 
   var steps = a.steps.map(function(s){ return '<div class="step"><p>' + esc(s) + '</p></div>'; }).join('');
