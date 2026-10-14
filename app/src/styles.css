@@ -1527,3 +1527,17 @@ body.cc-navy .rail__top{color:#e8eeff}
 body.cc-navy .rail__i{color:#c3cfe9}
 body.cc-navy .rail__i:hover{background:rgba(255,255,255,.10); color:#fff}
 body.cc-navy .rail__i.on{background:rgba(255,255,255,.16); color:#fff}
+
+/* ---------- v2.32 · chatbot bubble clears the left rail ---------- */
+/* .rail is a fixed 58px strip at z-index 80 with a solid background; .botfab
+   (z-index 76) and .botpanel (77) sat at left:16px, so on every rail page 42px
+   of the 50px bubble - and the first 42px of the open panel - were hidden
+   behind the rail. Offset both clear of the rail on the rail pages only; the
+   login page has no rail, so its bubble stays in the corner. */
+#view-student .botfab, #view-drill .botfab, .viewfade .botfab{left:74px}
+#view-student .botpanel, #view-drill .botpanel, .viewfade .botpanel{left:74px}
+@media (max-width:720px){
+  /* rail narrows to 48px on small screens */
+  #view-student .botfab, #view-drill .botfab, .viewfade .botfab{left:60px}
+  #view-student .botpanel, #view-drill .botpanel, .viewfade .botpanel{left:60px}
+}
