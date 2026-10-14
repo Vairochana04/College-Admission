@@ -12,6 +12,7 @@ import {
 } from '../core.js';
 import CollegeBody, { CcFoot } from './CollegeBody.jsx';
 import ChatBot from './ChatBot.jsx';
+import CutoffCard from './CutoffCard.jsx';
 import ProfilePage, { ProfileSetup } from './ProfilePage.jsx';
 import { api, session } from '../api.js';
 
@@ -157,7 +158,19 @@ export default function StudentView({ onLogout }) {
     if (!session.token()) return;
     api.me().then((d) => {
       if (d && d.student) {
-        Object.assign(cc, { user: { ...cc.user, savedServer: true, mobile: d.student.mobile || cc.user?.mobile } });
+        const st = d.student;
+        const n = (x) => (x === null || x === undefined || x === '' ? null : Number(x));
+        Object.assign(cc, {
+          user: { ...cc.user, savedServer: true, mobile: st.mobile || cc.user?.mobile },
+          stuPhy: n(st.phy), stuChem: n(st.chem), stuMath: n(st.math),
+        });
+        /* the cutoff can also have been left on this device from an offline save */
+        if (cc.stuPhy === null) {
+          try {
+            const c = JSON.parse(localStorage.getItem('cc_cutoff_v1:' + (cc.user?.email || '')) || 'null');
+            if (c) Object.assign(cc, { stuPhy: c.p, stuChem: c.c, stuMath: c.m });
+          } catch (e) {}
+        }
         set({});
       }
     }).catch(() => {});
@@ -407,6 +420,8 @@ export default function StudentView({ onLogout }) {
             </label>
           </div>
         </div>
+
+        <CutoffCard />
 
         <div className="slidehub" aria-label="Colleges — linear list">
           <div className="slidehub__track">

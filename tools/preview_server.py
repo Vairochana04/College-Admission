@@ -55,8 +55,9 @@ DATA = ROOT / "server" / "data"
 STUDENTS_FILE = DATA / "students.json"
 EVENTS_FILE = DATA / "student-events.jsonl"
 
-STUDENT_FIELDS = ["name", "email", "mobile", "marks", "marks10", "stream", "want", "degree",
-                  "stay", "hostelType", "travel", "town", "consent", "photo"]
+STUDENT_FIELDS = ["name", "email", "mobile", "marks", "marks10", "phy", "chem", "math",
+                  "stream", "want", "degree", "stay", "hostelType", "travel", "town",
+                  "track", "checklist", "remind", "consent", "photo"]
 EVENT_TYPES = {"register", "login", "profile_view", "save", "unsave",
                "website_click", "apply_click", "update"}
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -207,7 +208,7 @@ def student_json(rec, with_photo=True):
         if key == "photo" and not with_photo:
             continue
         value = rec.get(key, "") or ""
-        if key in ("marks", "marks10") and re.fullmatch(r"-?\d+(\.\d+)?", str(value)):
+        if key in ("marks", "marks10", "phy", "chem", "math") and re.fullmatch(r"-?\d+(\.\d+)?", str(value)):
             out[key] = int(value) if re.fullmatch(r"-?\d+", str(value)) else float(value)
         else:
             out[key] = value
@@ -415,6 +416,20 @@ class Handler(BaseHTTPRequestHandler):
             except (TypeError, ValueError):
                 return self.json_error(400, "Class 10 percentage should be between 30 and 100 (or leave it blank).")
 
+        subjects = {}
+        for key in ("phy", "chem", "math"):
+            raw = body.get(key)
+            subjects[key] = ""
+            if raw in (None, ""):
+                continue
+            try:
+                val = float(raw)
+                if val < 0 or val > 100:
+                    raise ValueError
+            except (TypeError, ValueError):
+                return self.json_error(400, "Maths, Physics and Chemistry marks should be between 0 and 100.")
+            subjects[key] = str(int(val)) if val == int(val) else str(val)
+
         students = read_students()
         if email in students:
             return self.json_error(400, "An account with this email already exists.")
@@ -424,6 +439,7 @@ class Handler(BaseHTTPRequestHandler):
             "marks": str(int(marks)) if marks == int(marks) else str(marks),
             "marks10": ("" if marks10 is None else
                         (str(int(marks10)) if marks10 == int(marks10) else str(marks10))),
+            "phy": subjects["phy"], "chem": subjects["chem"], "math": subjects["math"],
             "password": pwhash(pw),
         }
         for field in ("stream", "want", "degree", "stay", "hostelType", "travel", "town"):
@@ -479,10 +495,29 @@ class Handler(BaseHTTPRequestHandler):
                 except (TypeError, ValueError):
                     error = "Class 10 percentage should be a number."
         if error is None:
+            for key, label in (("phy", "Physics"), ("chem", "Chemistry"), ("math", "Maths")):
+                if key in body:
+                    raw = body.get(key)
+                    if raw in (None, ""):
+                        rec[key] = ""
+                    else:
+                        try:
+                            val = float(raw)
+                            if val < 0 or val > 100:
+                                raise ValueError
+                            rec[key] = str(int(val)) if val == int(val) else str(val)
+                        except (TypeError, ValueError):
+                            error = label + " mark should be between 0 and 100."
+                            break
+        if error is None:
             for field in ("name", "stream", "want", "degree", "stay", "hostelType",
                           "travel", "town", "photo"):
                 if field in body:
                     rec[field] = (body.get(field) or "").strip()
+            # the checklist / tracker / reminders: short id lists only
+            for field in ("track", "checklist", "remind"):
+                if field in body:
+                    rec[field] = re.sub(r"[^A-Za-z0-9,:{}_'\"-]", "", str(body.get(field) or ""))[:1200]
             if "consent" in body:
                 consent = body.get("consent") or ""
                 rec["consent"] = "true" if consent in ("true", "1", "yes") else "false"
@@ -628,8 +663,9 @@ class Handler(BaseHTTPRequestHandler):
         auth = token_of(self.headers, urlsplit(self.path).query)
         if not auth or auth[1] != "admin":
             return self.json_error(401, "Admin sign-in required.")
-        cols = ["email", "name", "mobile", "marks", "marks10", "stream", "want", "degree",
-                "stay", "hostelType", "travel", "town", "consent", "created", "updated"]
+        cols = ["email", "name", "mobile", "marks", "marks10", "phy", "chem", "math", "stream",
+                "want", "degree", "stay", "hostelType", "travel", "town", "consent",
+                "created", "updated"]
         lines = [",".join(cols)]
         for rec in read_students().values():
             lines.append(",".join(csv_cell(rec.get(col, "")) for col in cols))

@@ -55,8 +55,9 @@ public class Server {
     static final Path EVENTS_FILE   = DATA.resolve("student-events.jsonl");
     static final Map<String, String[]> TOKENS = new ConcurrentHashMap<>();   /* token -> {email, role} */
     static final Object WRITE_LOCK = new Object();
-    static final String[] STUDENT_FIELDS = {"name", "email", "mobile", "marks", "marks10", "stream", "want",
-            "degree", "stay", "hostelType", "travel", "town", "consent", "photo"};
+    static final String[] STUDENT_FIELDS = {"name", "email", "mobile", "marks", "marks10", "phy", "chem",
+            "math", "stream", "want", "degree", "stay", "hostelType", "travel", "town",
+            "track", "checklist", "remind", "consent", "photo"};
     static final String[] EVENT_TYPES = {"register", "login", "profile_view", "save", "unsave",
             "website_click", "apply_click", "update"};
     static final String ERR_AUTH = "{\"ok\":false,\"error\":\"Please sign in again.\"}";
@@ -517,7 +518,8 @@ public class Server {
             if (v == null) v = "";
             if (!first) sb.append(",");
             first = false;
-            if ((k.equals("marks") || k.equals("marks10")) && v.matches("-?\\d+(\\.\\d+)?")) sb.append("\"").append(k).append("\":").append(v);
+            if ((k.equals("marks") || k.equals("marks10") || k.equals("phy") || k.equals("chem")
+                    || k.equals("math")) && v.matches("-?\\d+(\\.\\d+)?")) sb.append("\"").append(k).append("\":").append(v);
             else sb.append("\"").append(k).append("\":\"").append(jesc(v)).append("\"");
         }
         for (String k : new String[]{"created", "updated"}) {
@@ -640,6 +642,16 @@ public class Server {
             }
             for (String f : new String[]{"stream", "want", "degree", "stay", "hostelType", "travel", "town"})
                 rec.put(f, Optional.ofNullable(in.get(f)).orElse("").trim());
+            for (String f : new String[]{"phy", "chem", "math"}) {
+                String raw = Optional.ofNullable(in.get(f)).orElse("").trim();
+                rec.put(f, "");
+                if (raw.isEmpty()) continue;
+                try {
+                    double v = Double.parseDouble(raw);
+                    if (v >= 0 && v <= 100)
+                        rec.put(f, v == Math.floor(v) ? String.valueOf((long) v) : String.valueOf(v));
+                } catch (NumberFormatException ignored) { }
+            }
             String c = Optional.ofNullable(in.get("consent")).orElse("");
             rec.put("consent", c.equals("true") || c.equals("1") || c.equals("yes") ? "true" : "false");
             rec.put("created", nowIso());
@@ -692,9 +704,30 @@ public class Server {
                 }
             }
             if (error == null) {
+                String[] subjects = {"phy", "chem", "math"};
+                String[] labels = {"Physics", "Chemistry", "Maths"};
+                for (int i = 0; i < subjects.length; i++) {
+                    if (!in.containsKey(subjects[i])) continue;
+                    String raw = Optional.ofNullable(in.get(subjects[i])).orElse("").trim();
+                    if (raw.isEmpty()) { rec.put(subjects[i], ""); continue; }
+                    try {
+                        double v = Double.parseDouble(raw);
+                        if (v < 0 || v > 100) error = labels[i] + " mark should be between 0 and 100.";
+                        else rec.put(subjects[i], v == Math.floor(v) ? String.valueOf((long) v) : String.valueOf(v));
+                    } catch (NumberFormatException e) { error = labels[i] + " mark should be a number."; }
+                    if (error != null) break;
+                }
+            }
+            if (error == null) {
                 for (String f : new String[]{"name", "stream", "want", "degree", "stay",
                                              "hostelType", "travel", "town", "photo"})
                     if (in.containsKey(f)) rec.put(f, Optional.ofNullable(in.get(f)).orElse("").trim());
+                /* the checklist / tracker / reminders: short id lists only */
+                for (String f : new String[]{"track", "checklist", "remind"})
+                    if (in.containsKey(f)) {
+                        String v = Optional.ofNullable(in.get(f)).orElse("").replaceAll("[^A-Za-z0-9,:{}_'\"-]", "");
+                        rec.put(f, v.length() > 1200 ? v.substring(0, 1200) : v);
+                    }
                 if (in.containsKey("consent")) {
                     String c = in.get("consent");
                     rec.put("consent", c.equals("true") || c.equals("1") || c.equals("yes") ? "true" : "false");
@@ -833,7 +866,8 @@ public class Server {
     static void apiStudentsCsv(HttpExchange ex) throws IOException {
         String[] auth = tokenOf(ex);
         if (auth == null || !"admin".equals(auth[1])) { sendJson(ex, 401, ERR_ADMIN); return; }
-        String[] cols = {"email", "name", "mobile", "marks", "marks10", "stream", "want", "degree",
+        String[] cols = {"email", "name", "mobile", "marks", "marks10", "phy", "chem", "math", "stream",
+                "want", "degree",
                          "stay", "hostelType", "travel", "town", "consent", "created", "updated"};
         StringBuilder sb = new StringBuilder(String.join(",", cols)).append("\n");
         for (Map<String, String> r : readStudents().values()) {

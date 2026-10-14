@@ -39,7 +39,7 @@ check('no create-account wizard', !login.includes('wiz__seg') && !login.includes
 /* ------------------------------------------- 2. student list (marks + town) */
 Object.assign(cc, {
   user: { name: 'Test Student', email: 'test@demo.edu', mobile: '9876543210' },
-  marks: 88, marks10: 92, stuTown: 'Tiruppur',
+  marks: 88, marks10: 92, stuPhy: 92, stuChem: 95, stuMath: 98, stuTown: 'Tiruppur',
   stuStream: 'Science – Maths', stuWant: 'Engineering', stuDegree: 'B.E. Computer Science',
   saved: ['psg'], view: 'student', role: 'student', onboarding: false,
 });
@@ -55,6 +55,8 @@ check('every listed college has a match score', (student.match(/matchpill/g) || 
 check('row shows the next admission date', /next \d{1,2} \w{3}/.test(student));
 
 /* --------------------------------------------- 3. college page sections */
+import ProfilePage from './src/components/ProfilePage.jsx';
+const profileHTML = clean(renderToString(React.createElement(ProfilePage)));
 const college = collegeById('psg');
 const body = clean(renderToString(React.createElement(CollegeBody, { college, studentMode: true, onBack: () => {} })));
 console.log('\ncollege page — the flow the client asked for:');
@@ -119,6 +121,20 @@ check('navy surface covers the home page', css.includes('body.cc-navy .topbar') 
   && css.includes('body.cc-navy .chips--filter .chip') && css.includes('body.cc-navy .sortsel'));
 check('topbar + list type nudged up', css.includes('.slide__txt b{font-size:15.2px}') && css.includes('.stu__mail{font-size:13.4px}'));
 check('college timeline type nudged up', css.includes('.tl__head b{font-size:15.4px}') && css.includes('.tl__body p{font-size:13.8px}'));
+
+
+/* ---------------------------------------------- 7. TNEA cutoff calculator */
+console.log('\nTNEA cutoff:');
+check('home page asks for / shows the cutoff', student.includes('cutcard') && student.includes('Your TNEA cutoff'));
+check('cutoff maths is right (98 + 92/2 + 95/2 = 191.5)', student.includes('191.5'));
+check('the worked-out sum is shown', student.includes('Maths 98 + Physics 92/2 + Chemistry 95/2'));
+check('college branch list gets the cutoff line', body.includes('cutline') && body.includes('191.5 / 200'));
+const ugCount = college.departments.reduce((n, d) => n + d.courses.filter((x) => x.level === 'UG').length, 0);
+check('every UG branch carries a chance badge (' + ugCount + ' programmes)',
+  ugCount >= 5 && (body.match(/class="chance chance--/g) || []).length === ugCount);
+check('chances use all three tones', body.includes('chance--high') && body.includes('chance--mid'));
+check('badge explains itself on hover', /title="Last year this branch closed around \d/.test(body));
+check('profile page carries the cutoff card', profileHTML.includes('Your TNEA cutoff'));
 
 console.log(bad === 0 ? '\nALL CHECKS PASS' : `\n${bad} CHECK(S) FAILED`);
 process.exitCode = bad === 0 ? 0 : 1;

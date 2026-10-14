@@ -7,8 +7,9 @@ import { useEffect, useState } from 'react';
 import { cc, set, toast, useCC } from '../store.js';
 import {
   studentColleges, eligFor, fitScore, initials, fmtLong, nextAdmissionDate, collegeById, ANY_DEGREE,
-  nearYou, matchPct,
+  nearYou, matchPct, cutoffOf,
 } from '../core.js';
+import CutoffCard from './CutoffCard.jsx';
 import { api } from '../api.js';
 import ProfileForm from './ProfileForm.jsx';
 
@@ -72,6 +73,12 @@ export default function ProfilePage() {
     ['Academic', [
       ['Class 12 %', cc.marks === null || cc.marks === undefined ? '—' : cc.marks + '%'],
       ['Class 10 %', cc.marks10 === null || cc.marks10 === undefined ? 'Not added' : cc.marks10 + '%'],
+      ['Maths / Physics / Chemistry',
+        (cc.stuMath === null || cc.stuMath === undefined) ? 'Not added'
+          : cc.stuMath + ' / ' + cc.stuPhy + ' / ' + cc.stuChem],
+      ['TNEA cutoff', cutoffOf(cc.stuPhy, cc.stuChem, cc.stuMath) === null
+        ? 'Add your subject marks'
+        : cutoffOf(cc.stuPhy, cc.stuChem, cc.stuMath).toFixed(1) + ' / 200'],
       ['Stream', v(cc.stuStream)],
       ['Course wanted', v(cc.stuWant)],
       ['Degree', v(cc.stuDegree)],
@@ -152,6 +159,11 @@ export default function ProfilePage() {
                 </div>
               ))}
             </div>
+          </section>
+
+          <section className="card prof__card">
+            <h3><span className="dot" />Your TNEA cutoff</h3>
+            <CutoffCard compact />
           </section>
 
           <section className="card prof__card">

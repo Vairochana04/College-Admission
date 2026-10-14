@@ -74,7 +74,8 @@ export const GROUP_MARK = "media/psg-group.png";
 
 export const cc = {
   role: 'college', view: 'login', collegeId: 'psg', authMode: 'signin',
-  user: null, marks: null, marks10: null, stuStream: 'Science – Maths', stuWant: 'Not sure yet',
+  user: null, marks: null, marks10: null, stuPhy: null, stuChem: null, stuMath: null,
+  stuStream: 'Science – Maths', stuWant: 'Not sure yet',
   stuDegree: null, stuStay: 'Hostel needed', stuHostelType: 'Any hostel',
   stuTravel: 'College bus', stuTown: '', saved: [], stuQuery: '', stuFilter: 'all',
   onboarding: false,
@@ -84,6 +85,7 @@ export const cc = {
 
 /* ---- data: ICONS ---- */
 var ICONS = {
+  spark:'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 auto"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6.3 6.3l2.8 2.8M14.9 14.9l2.8 2.8M17.7 6.3l-2.8 2.8M9.1 14.9l-2.8 2.8"/></svg>',
   check:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>',
   pin:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>',
   clock:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7.5V12l3 2"/></svg>',
@@ -2444,6 +2446,7 @@ function coursesHTML(c){
       '</div>' +
     '</div>' +
 
+    cutoffLineHTML(c) +
     '<div id="deptList">' + deptListHTML(c) + '</div>' +
   '</section>';
 }
@@ -2654,6 +2657,106 @@ function websiteHTML(c){
   '</section>';
 }
 
+/* ===========================================================================
+   TNEA cutoff — the number Tamil Nadu parents actually ask about.
+   cutoff (out of 200) = Maths + Physics/2 + Chemistry/2  (each subject out of 100)
+   Each branch carries an indicative previous-year cutoff band; the badge on the
+   branch row says what that band means for THIS student's cutoff. The bands are
+   sample values for the demo, the same way fees and dates are.
+   =========================================================================== */
+var CUTOFF_BANDS = [
+  [/computer science|information technology|software|data science|artificial|machine learning|cyber|ai\b/i, 194.0],
+  [/electronics|electrical|instrumentation|robotics|mechatronic|vlsi|embedded/i, 189.5],
+  [/mechanical|automobile|automotive|manufacturing|aeronautic|production|industrial/i, 186.5],
+  [/civil|construction|architecture|interior|structural/i, 181.0],
+  [/biotech|biomedical|chemical|textile|fashion|informatics|food|agricultur|pharma/i, 177.0],
+  [/management|business|commerce|b\.?b\.?a|mba|hr\b|finance/i, 170.0]
+];
+
+function cutoffOf(phy, chem, math){
+  if (phy === null || phy === undefined || phy === '' ||
+      chem === null || chem === undefined || chem === '' ||
+      math === null || math === undefined || math === '') return null;
+  var p = Number(phy), c = Number(chem), m = Number(math);
+  if (isNaN(p) || isNaN(c) || isNaN(m)) return null;
+  return Math.round((m + p / 2 + c / 2) * 10) / 10;
+}
+
+/* the student's own cutoff (null until all three subject marks are in) */
+function cutoffState(){
+  var v = cutoffOf(cc.stuPhy, cc.stuChem, cc.stuMath);
+  return { value: v, ready: v !== null };
+}
+
+function cutoffBandOf(name){
+  for (var i = 0; i < CUTOFF_BANDS.length; i++){
+    if (CUTOFF_BANDS[i][0].test(String(name))) return CUTOFF_BANDS[i][1];
+  }
+  return 184.0;   /* an unnamed branch sits in the middle of the pack */
+}
+
+/* does a cutoff even apply here? TNEA / TN DOTE pick on marks; NEET, DME,
+   CAT/TANCET and entrance-test colleges pick on something else. */
+function modeKind(c){
+  var m = String((c.admission && c.admission.mode) || '');
+  if (/NEET/i.test(m)) return 'neet';
+  if (/DME|DOTE/i.test(m)) return 'marks';
+  if (/CAT |MAT|CMAT|TANCET|GD & interview|Research entrance/i.test(m)) return 'entrance';
+  if (/AEEE|JEE|entrance/i.test(m)) return 'entrance';
+  if (/TNEA|Class 12 marks|Merit-based/i.test(m)) return 'tnea';
+  return 'other';
+}
+
+/* the badge for one branch row: null when nothing useful can be said */
+function chanceFor(c, cr){
+  if (!cr || cr.level !== 'UG') return null;
+  var kind = modeKind(c);
+  if (kind === 'neet') return { code: 'other', label: 'NEET based', note: 'Admission through NEET-UG, not a TNEA cutoff.' };
+  if (kind === 'entrance') return { code: 'other', label: 'Entrance test', note: 'Admission through the college entrance test / national score.' };
+  if (kind === 'other') return null;
+  var band = cutoffBandOf(cr.name);
+  var cut = cutoffState().value;
+  if (cut === null) return null;
+  var diff = cut - band;
+  if (diff >= 3) return { code: 'high', label: 'High chance', band: band,
+    note: 'Last year this branch closed around ' + band.toFixed(1) + '; your cutoff is ' + cut.toFixed(1) + '.' };
+  if (diff >= -5) return { code: 'mid', label: 'Borderline', band: band,
+    note: 'Last year this branch closed around ' + band.toFixed(1) + '; your cutoff is ' + cut.toFixed(1) + ' — keep a backup ready.' };
+  return { code: 'low', label: 'Tough', band: band,
+    note: 'Last year this branch closed around ' + band.toFixed(1) + '; your cutoff is ' + cut.toFixed(1) + ' — add a safer branch too.' };
+}
+
+/* how many UG programmes in this college this student's cutoff clears */
+function cutoffClear(c){
+  var cut = cutoffState().value;
+  if (cut === null) return null;
+  var total = 0, good = 0;
+  c.departments.forEach(function (d) {
+    d.courses.forEach(function (cr) {
+      if (cr.level !== 'UG') return;
+      total++;
+      if (cut - cutoffBandOf(cr.name) >= -5) good++;
+    });
+  });
+  return { good: good, total: total };
+}
+
+/* the line above a college's branch list */
+function cutoffLineHTML(c){
+  if (!c || modeKind(c) === 'neet' || modeKind(c) === 'entrance') return '';
+  var st = cutoffState();
+  if (!st.ready) {
+    return '<div class="cutline cutline--ask">' +
+      ICONS.spark + '<span><b>Add your Maths, Physics and Chemistry marks</b> (Your TNEA cutoff, on the home page) ' +
+      'to see your chance against last year\u2019s closing cutoff for every branch here.</span></div>';
+  }
+  var cl = cutoffClear(c);
+  return '<div class="cutline">' + ICONS.spark + '<span>Your TNEA cutoff is <b>' + st.value.toFixed(1) + ' / 200</b> — ' +
+    'it clears <b>' + (cl ? cl.good : 0) + ' of ' + (cl ? cl.total : 0) + '</b> UG programme' +
+    ((cl && cl.total === 1) ? '' : 's') + ' here (indicative, ' +
+    'based on last year\u2019s closing cutoffs).</span></div>';
+}
+
 function deptListHTML(c){
   var q = cc.courseQuery.trim().toLowerCase();
   var level = cc.courseLevel;
@@ -2675,10 +2778,14 @@ function deptListHTML(c){
   return matches.map(function(m, i){
     var openAttr = (matches.length <= 2 || (q !== '' && matches.length <= 3)) ? ' open' : (i === 0 && !q && level === 'All' ? ' open' : '');
     var rows = m.courses.map(function(cr){
+      var ch = chanceFor(c, cr);
       return '<div class="course">' +
         '<b>' + esc(cr.name) + '</b>' +
         '<span class="pill pill--blue">' + esc(cr.level) + '</span>' +
         '<div class="course__meta">' +
+          (ch ? '<span class="chance chance--' + ch.code + '" title="' + esc(ch.note) + '">' +
+            (ch.code === 'high' || ch.code === 'low' || ch.code === 'mid' ? ICONS.check : '') +
+            esc(ch.label) + '</span>' : '') +
           '<span>' + ICONS.clock + esc(cr.duration) + '</span>' +
           '<span>' + ICONS.users + esc(cr.seats) + '</span>' +
         '</div>' +
@@ -3155,5 +3262,6 @@ function faqBody(c) {
 }
 
 export { BUILD_TAG,
-  ICONS, COLLEGES, USERS, DEMO_CREDENTIALS, DEGREES, FACIL, MATCH, CATEGORY_OF, ITEM_NOTE, GROUP_ORDER, PROXY_ID, ROLE_COPY, NOT_SURE, ANY_DEGREE, STREAMS, WANT, STAY, HOSTELTYPE, TRAVEL, degreesFor, degreeRe, degreeMatches, courseMatches, fitScore, matchPct, nearYou, distFromTown, eligFor, storeGet, storeSet, storeDel, studentAccounts, studentLookup, isSeeded, saveStudentDetails, restoreStudentSession, saveStudentList, startStudentSession, studentColleges, studentVisible, stuPrefsLine, faciNote, subLineOf, hayMatches, collegesInGroup, categoryOf, isPSG, groupLabelOfCategory, proxyIdFor, portalProxyId, fmtLong, fmtShort, dayParts, countdownText, initials, collegeById, groupLabelOf, cityOf, nextAdmissionDate, upcomingEvents, esc, countCourses, selectionMode, qrSVG, pathFromUrl, logoOrMono, groupMarkHTML, mediaOf, stuCardHTML, heroHTML, aboutHTML, coursesHTML, admissionsHTML, placementsHTML, eventsHTML, contactHTML, websiteHTML, deptListHTML, pickerHTML, FEES, QUOTA, counselHTML, feesHTML, mapHTML, faqHTML
+  ICONS, COLLEGES, USERS, DEMO_CREDENTIALS, DEGREES, FACIL, MATCH, CATEGORY_OF, ITEM_NOTE, GROUP_ORDER, PROXY_ID, ROLE_COPY, NOT_SURE, ANY_DEGREE, STREAMS, WANT, STAY, HOSTELTYPE, TRAVEL, degreesFor, degreeRe, degreeMatches, courseMatches, fitScore, matchPct, cutoffOf, cutoffState, cutoffBandOf, chanceFor,
+  cutoffClear, cutoffLineHTML, modeKind, nearYou, distFromTown, eligFor, storeGet, storeSet, storeDel, studentAccounts, studentLookup, isSeeded, saveStudentDetails, restoreStudentSession, saveStudentList, startStudentSession, studentColleges, studentVisible, stuPrefsLine, faciNote, subLineOf, hayMatches, collegesInGroup, categoryOf, isPSG, groupLabelOfCategory, proxyIdFor, portalProxyId, fmtLong, fmtShort, dayParts, countdownText, initials, collegeById, groupLabelOf, cityOf, nextAdmissionDate, upcomingEvents, esc, countCourses, selectionMode, qrSVG, pathFromUrl, logoOrMono, groupMarkHTML, mediaOf, stuCardHTML, heroHTML, aboutHTML, coursesHTML, admissionsHTML, placementsHTML, eventsHTML, contactHTML, websiteHTML, deptListHTML, pickerHTML, FEES, QUOTA, counselHTML, feesHTML, mapHTML, faqHTML
 };
