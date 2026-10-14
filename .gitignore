@@ -7,3 +7,6 @@ server/data/student-events.jsonl
 # Python bytecode from the legacy helper server
 __pycache__/
 *.pyc
+
+# SSR render-smoke-test output (app/ssr-check.jsx)
+app/.ssrcheck/
