@@ -9,7 +9,10 @@ import {
   nextAdmissionDate, fmtShort, hayMatches, categoryOf, cityOf, esc,
   degreesFor, NOT_SURE, ANY_DEGREE, STREAMS, WANT, STAY, HOSTELTYPE, TRAVEL,
   collegeById, saveStudentDetails, logoOrMono, COLLEGES, matchPct, nearYou,
+  planDeadlines, checklistPct, DOC_ITEMS, stageOf, stageLabel,
 } from '../core.js';
+import { hydratePlan, toggleRemind } from '../plan.js';
+import MyColleges from './MyColleges.jsx';
 import CollegeBody, { CcFoot } from './CollegeBody.jsx';
 import ChatBot from './ChatBot.jsx';
 import CutoffCard from './CutoffCard.jsx';
@@ -21,7 +24,7 @@ const Chip = ({ on, children, ...rest }) => (
 );
 
 /* left rail: hamburger on top, then My Profile -> Colleges (order the user asked) */
-function Rail({ page, go, open, setOpen, onLogout }) {
+function Rail({ page, go, open, setOpen, onLogout, savedCount }) {
   return (
     <nav className="rail" data-open={open ? '1' : '0'} aria-label="Sections">
       <button type="button" className="rail__top" onClick={() => setOpen(!open)} aria-label="Toggle menu" title="Menu">
@@ -36,6 +39,10 @@ function Rail({ page, go, open, setOpen, onLogout }) {
           <button type="button" className={'rail__i' + (page === 'colleges' ? ' on' : '')} onClick={() => go('colleges')} title="Colleges">
             <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.6" /><rect x="13" y="4" width="7" height="7" rx="1.6" /><rect x="4" y="13" width="7" height="7" rx="1.6" /><rect x="13" y="13" width="7" height="7" rx="1.6" /></svg>
             <span>Colleges</span>
+          </button>
+          <button type="button" className={'rail__i' + (page === 'mycolleges' ? ' on' : '')} onClick={() => go('mycolleges')} title="My Colleges">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20.5 4.6 13A4.6 4.6 0 0 1 11 5.6l1 1 1-1A4.6 4.6 0 0 1 19.4 13Z" /></svg>
+            <span>My Colleges{savedCount ? ' · ' + savedCount : ''}</span>
           </button>
         </>
       )}
@@ -164,6 +171,7 @@ export default function StudentView({ onLogout }) {
           user: { ...cc.user, savedServer: true, mobile: st.mobile || cc.user?.mobile },
           stuPhy: n(st.phy), stuChem: n(st.chem), stuMath: n(st.math),
         });
+        hydratePlan(st);
         /* the cutoff can also have been left on this device from an offline save */
         if (cc.stuPhy === null) {
           try {
@@ -303,7 +311,7 @@ export default function StudentView({ onLogout }) {
     const dc = isGroup ? null : collegeById(drill);
     return (
       <section id="view-drill" className="view active viewfade" key={'d' + drill}>
-        <Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} /><ChatBot />
+        <Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} savedCount={cc.saved.length} /><ChatBot />
         <div className="wrap" style={{ paddingTop: 18, paddingBottom: 46 }}>
           <button className="btn btn--onDark btn--sm" onClick={() => setDrill(null)}>← All colleges</button>
           <div className="crumbs">Colleges › <b>{isGroup ? 'PSG Institutions' : dc.shortName}</b></div>
@@ -316,6 +324,18 @@ export default function StudentView({ onLogout }) {
           <div className="slidehub"><div className="slidehub__track">
             {isGroup ? psgGroup.map(collegeRow) : dc.departments.map((d) => deptRow(dc, d))}
           </div></div>
+        </div>
+      </section>
+    );
+  }
+
+  if (page === 'mycolleges') {
+    return (
+      <section id="view-plan" className="view active viewfade" key="mycolleges">
+        <Rail page={page} go={go} open={railOpen} setOpen={setRail} onLogout={onLogout} savedCount={cc.saved.length} />
+        <ChatBot />
+        <div className="wrap" style={{ paddingTop: 18, paddingBottom: 46 }}>
+          <MyColleges onOpen={(id) => setProfileId(id)} onBrowse={() => go('colleges')} />
         </div>
       </section>
     );
@@ -394,7 +414,9 @@ export default function StudentView({ onLogout }) {
 
           <div className="stu__stats">
             <div><b>{filtering ? visible.length : frontRows}</b><span>Colleges for you</span></div>
-            <div><b>{cc.saved.length}</b><span>Saved</span></div>
+            <button type="button" className="stu__statlink" onClick={() => go('mycolleges')}>
+              <b>{cc.saved.length}</b><span>Saved</span>
+            </button>
             <div className="stu__stat--next"><b>{nextAll ? fmtShort(nextAll.date) : '—'}</b>
               <span>{nextAll ? nextAll.label : 'next date'}</span></div>
           </div>
@@ -422,6 +444,7 @@ export default function StudentView({ onLogout }) {
         </div>
 
         <CutoffCard />
+        <PlanStrip go={go} onOpen={setProfileId} />
 
         <div className="slidehub" aria-label="Colleges — linear list">
           <div className="slidehub__track">
@@ -485,6 +508,47 @@ export default function StudentView({ onLogout }) {
             <ProfilePage />
           )}
     </section>
+  );
+}
+
+/* the shortlist strip on the home page: what is due, what is still missing */
+function PlanStrip({ go, onOpen }) {
+  useCC();
+  const savedCount = cc.saved.length;
+  const docs = cc.checklist.length;
+  const due = planDeadlines(true).filter((d) => cc.remind.includes(d.cid) || d.saved);
+  const next = due[0];
+  return (
+    <div className="planstrip">
+      <div className="planstrip__cell">
+        <span className="planstrip__k">My Colleges</span>
+        <b>{savedCount ? savedCount + ' saved' : 'Nothing saved yet'}</b>
+        <em>{savedCount ? 'compare · track · apply' : 'tap Save college on any profile'}</em>
+      </div>
+      <div className="planstrip__cell">
+        <span className="planstrip__k">Documents</span>
+        <b>{docs}/{DOC_ITEMS.length} ready</b>
+        <span className="planbar planbar--mini"><i style={{ width: checklistPct() + '%' }} /></span>
+      </div>
+      <div className="planstrip__cell">
+        <span className="planstrip__k">Next deadline</span>
+        {next ? (
+          <>
+            <b>{next.days === 0 ? 'Today' : next.days === 1 ? 'Tomorrow' : 'In ' + next.days + ' days'}</b>
+            <em>{next.name} · {next.label}</em>
+          </>
+        ) : <b>Nothing listed</b>}
+      </div>
+      <div className="planstrip__act">
+        {next && (
+          <button type="button" className={'btn btn--ghost btn--sm' + (cc.remind.includes(next.cid) ? ' on' : '')}
+            onClick={() => toggleRemind(next.cid)}>
+            {cc.remind.includes(next.cid) ? '🔔 Reminder on' : '🔕 Remind me'}
+          </button>
+        )}
+        <button type="button" className="btn btn--gold btn--sm" onClick={() => go('mycolleges')}>Open My Colleges</button>
+      </div>
+    </div>
   );
 }
 

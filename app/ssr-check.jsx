@@ -41,7 +41,8 @@ Object.assign(cc, {
   user: { name: 'Test Student', email: 'test@demo.edu', mobile: '9876543210' },
   marks: 88, marks10: 92, stuPhy: 92, stuChem: 95, stuMath: 98, stuTown: 'Tiruppur',
   stuStream: 'Science – Maths', stuWant: 'Engineering', stuDegree: 'B.E. Computer Science',
-  saved: ['psg'], view: 'student', role: 'student', onboarding: false,
+  saved: ['psg', 'gct', 'psgr'], view: 'student', role: 'student', onboarding: false,
+  track: { psg: 'applied', gct: 'docs' }, checklist: ['marks12', 'marks10', 'tc'], remind: ['psg'],
 });
 const student = clean(renderToString(React.createElement(StudentView, { onLogout: () => {} })));
 console.log('\nstudent college list:');
@@ -56,6 +57,7 @@ check('row shows the next admission date', /next \d{1,2} \w{3}/.test(student));
 
 /* --------------------------------------------- 3. college page sections */
 import ProfilePage from './src/components/ProfilePage.jsx';
+import MyColleges from './src/components/MyColleges.jsx';
 const profileHTML = clean(renderToString(React.createElement(ProfilePage)));
 const college = collegeById('psg');
 const body = clean(renderToString(React.createElement(CollegeBody, { college, studentMode: true, onBack: () => {} })));
@@ -135,6 +137,36 @@ check('every UG branch carries a chance badge (' + ugCount + ' programmes)',
 check('chances use all three tones', body.includes('chance--high') && body.includes('chance--mid'));
 check('badge explains itself on hover', /title="Last year this branch closed around \d/.test(body));
 check('profile page carries the cutoff card', profileHTML.includes('Your TNEA cutoff'));
+
+
+/* ------------------------------------ 8. My Colleges: compare, track, checklist */
+console.log('\nMy Colleges page:');
+const plan = clean(renderToString(React.createElement(MyColleges, { onOpen: () => {}, onBrowse: () => {} })));
+check('a column per saved college in the compare table',
+  (plan.match(/class="cmpt__open"/g) || []).length === 3);
+check('compare rows cover fees, distance, match, seats, placement',
+  ['Your match', 'Distance from home', 'Tuition · govt quota', 'Tuition · management', 'UG seats',
+   'Placement rate', 'Hostel', 'Women only', 'Next deadline', 'Stage']
+    .every((r) => plan.includes('>' + r + '</th>')));
+check('every college gets the five-stage tracker',
+  (plan.match(/class="stp(?: [a-z]+)?"/g) || []).length === 15 && plan.includes('Interested') && plan.includes('Joined'));
+check('the current stage is marked', (plan.match(/stp on/g) || []).length === 2);
+check('the document checklist shows all seven items', (plan.match(/class="tick__box"/g) || []).length === 7);
+check('ticked documents are highlighted', (plan.match(/label class="on"|class="on"/g) || []).length >= 3);
+check('upcoming deadlines are listed with a countdown', /In \d+ days|Today|Tomorrow/.test(plan));
+check('each deadline can be toggled as a reminder', plan.includes('🔔 On') && (plan.match(/🔕 Off/g) || []).length >= 1);
+check('fees are shown per college', plan.includes('₹') && plan.includes('/ year'));
+check('women-only is answered per college', plan.includes('Women only') && /Yes|No/.test(plan));
+
+/* ------------------------------------------- 9. profile page: tidy + aligned */
+console.log('\nprofile page:');
+check('every value cell carries a label and a value',
+  (profileHTML.match(/<dt>/g) || []).length === (profileHTML.match(/<dd>/g) || []).length
+  && (profileHTML.match(/<dd>/g) || []).length >= 12);
+check('no empty value cells', !/<dd><\/dd>/.test(profileHTML));
+check('sections are grouped', profileHTML.includes('About you') && profileHTML.includes('Academic')
+  && profileHTML.includes('Stay &amp; travel'));
+check('cutoff block sits on the profile', profileHTML.includes('cutcard') && profileHTML.includes('TNEA cutoff'));
 
 console.log(bad === 0 ? '\nALL CHECKS PASS' : `\n${bad} CHECK(S) FAILED`);
 process.exitCode = bad === 0 ? 0 : 1;

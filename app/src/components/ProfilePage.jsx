@@ -86,7 +86,8 @@ export default function ProfilePage() {
     ['Stay & travel', [
       ['Stay', (cc.stuStay || '—') + (cc.stuStay === 'Hostel needed' && cc.stuHostelType ? ' · ' + cc.stuHostelType : '')],
       ['Travel', v(cc.stuTravel)],
-      ['Consent', rec ? (rec.consent === 'true' ? 'Given (DPDP) ✓' : 'Not given') : '…'],
+      ['Consent', rec ? (rec.consent === 'true' ? 'Given (DPDP) ✓' : 'Not given')
+        : (cc.user?.savedServer ? 'Given (DPDP) ✓' : '—')],
     ]],
   ];
 

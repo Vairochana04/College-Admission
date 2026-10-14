@@ -75,6 +75,7 @@ export const GROUP_MARK = "media/psg-group.png";
 export const cc = {
   role: 'college', view: 'login', collegeId: 'psg', authMode: 'signin',
   user: null, marks: null, marks10: null, stuPhy: null, stuChem: null, stuMath: null,
+  track: {}, checklist: [], remind: [],
   stuStream: 'Science – Maths', stuWant: 'Not sure yet',
   stuDegree: null, stuStay: 'Hostel needed', stuHostelType: 'Any hostel',
   stuTravel: 'College bus', stuTown: '', saved: [], stuQuery: '', stuFilter: 'all',
@@ -2757,6 +2758,84 @@ function cutoffLineHTML(c){
     'based on last year\u2019s closing cutoffs).</span></div>';
 }
 
+/* ===========================================================================
+   The shortlist plan — used by My Colleges (compare + tracker), the document
+   checklist and the deadline reminders. The bookkeeping lives on the student
+   record (track / checklist / remind) so it follows the student to any device.
+   =========================================================================== */
+var APP_STAGES = [
+  {id:'interested', label:'Interested',   hint:'keeping an eye on it'},
+  {id:'applied',    label:'Applied',      hint:'application form is in'},
+  {id:'docs',       label:'Docs ready',   hint:'certificates collected'},
+  {id:'allotted',   label:'Allotted',     hint:'seat allotted — pay the fee'},
+  {id:'joined',     label:'Joined',       hint:'reported to the college'}
+];
+
+var DOC_ITEMS = [
+  {id:'marks12',   label:'Class 12 marksheet & passing certificate'},
+  {id:'marks10',   label:'Class 10 marksheet & passing certificate'},
+  {id:'tc',        label:'Transfer certificate (TC)'},
+  {id:'community', label:'Community / nativity certificate (if applicable)'},
+  {id:'entrance',  label:'Entrance test scorecard (if applicable)'},
+  {id:'photos',    label:'4 passport-size photographs'},
+  {id:'aadhaar',   label:'Aadhaar / photo ID'}
+];
+
+function stageOf(cid){
+  return (cc.track && cc.track[cid]) || '';
+}
+function stageLabel(id){
+  for (var i = 0; i < APP_STAGES.length; i++) if (APP_STAGES[i].id === id) return APP_STAGES[i].label;
+  return 'Not started';
+}
+/* UG seats across the college — the number a parent asks about */
+function seatsOf(c){
+  var n = 0, found = false;
+  (c.departments || []).forEach(function (d) {
+    (d.courses || []).forEach(function (cr) {
+      if (cr.level !== 'UG') return;
+      var m = String(cr.seats || '').match(/\d+/);
+      if (m) { n += parseInt(m[0], 10); found = true; }
+    });
+  });
+  return found ? n : null;
+}
+function feeRow(c, i){
+  var f = FEES[c.id];
+  return (f && f[i]) ? f[i][1] : '—';
+}
+function placementOf(c){
+  var out = '—';
+  (c.stats || []).forEach(function (x) { if (/placement/i.test(x.k)) out = x.v; });
+  return out;
+}
+function hostelOf(c){
+  return (c.facilities || []).some(function (f) { return /hostel/i.test(f); });
+}
+function womenOnly(c){
+  return /women/i.test(String(c.type || ''));
+}
+/* every upcoming deadline the student cares about (saved colleges win) */
+function planDeadlines(onlySaved){
+  var list = cc.saved.map(collegeById).filter(Boolean);
+  if (!list.length || !onlySaved) list = studentColleges();
+  var rows = [];
+  list.forEach(function (c) {
+    var a = c.admission || {};
+    (a.dates || []).forEach(function (d) {
+      var days = daysUntil(d.date);
+      if (days < 0) return;
+      rows.push({ cid:c.id, name:c.shortName || c.name, label:d.label, date:d.date, days:days,
+                  saved: cc.saved.indexOf(c.id) >= 0 });
+    });
+  });
+  rows.sort(function (x, y) { return x.days - y.days; });
+  return rows;
+}
+function checklistPct(){
+  return Math.round((cc.checklist.length / DOC_ITEMS.length) * 100);
+}
+
 function deptListHTML(c){
   var q = cc.courseQuery.trim().toLowerCase();
   var level = cc.courseLevel;
@@ -3263,5 +3342,7 @@ function faqBody(c) {
 
 export { BUILD_TAG,
   ICONS, COLLEGES, USERS, DEMO_CREDENTIALS, DEGREES, FACIL, MATCH, CATEGORY_OF, ITEM_NOTE, GROUP_ORDER, PROXY_ID, ROLE_COPY, NOT_SURE, ANY_DEGREE, STREAMS, WANT, STAY, HOSTELTYPE, TRAVEL, degreesFor, degreeRe, degreeMatches, courseMatches, fitScore, matchPct, cutoffOf, cutoffState, cutoffBandOf, chanceFor,
-  cutoffClear, cutoffLineHTML, modeKind, nearYou, distFromTown, eligFor, storeGet, storeSet, storeDel, studentAccounts, studentLookup, isSeeded, saveStudentDetails, restoreStudentSession, saveStudentList, startStudentSession, studentColleges, studentVisible, stuPrefsLine, faciNote, subLineOf, hayMatches, collegesInGroup, categoryOf, isPSG, groupLabelOfCategory, proxyIdFor, portalProxyId, fmtLong, fmtShort, dayParts, countdownText, initials, collegeById, groupLabelOf, cityOf, nextAdmissionDate, upcomingEvents, esc, countCourses, selectionMode, qrSVG, pathFromUrl, logoOrMono, groupMarkHTML, mediaOf, stuCardHTML, heroHTML, aboutHTML, coursesHTML, admissionsHTML, placementsHTML, eventsHTML, contactHTML, websiteHTML, deptListHTML, pickerHTML, FEES, QUOTA, counselHTML, feesHTML, mapHTML, faqHTML
+  cutoffClear, cutoffLineHTML, modeKind, APP_STAGES, DOC_ITEMS, stageOf, stageLabel, seatsOf,
+  feeRow, placementOf, hostelOf, womenOnly, planDeadlines, checklistPct,
+  nearYou, distFromTown, eligFor, storeGet, storeSet, storeDel, studentAccounts, studentLookup, isSeeded, saveStudentDetails, restoreStudentSession, saveStudentList, startStudentSession, studentColleges, studentVisible, stuPrefsLine, faciNote, subLineOf, hayMatches, collegesInGroup, categoryOf, isPSG, groupLabelOfCategory, proxyIdFor, portalProxyId, fmtLong, fmtShort, dayParts, countdownText, initials, collegeById, groupLabelOf, cityOf, nextAdmissionDate, upcomingEvents, esc, countCourses, selectionMode, qrSVG, pathFromUrl, logoOrMono, groupMarkHTML, mediaOf, stuCardHTML, heroHTML, aboutHTML, coursesHTML, admissionsHTML, placementsHTML, eventsHTML, contactHTML, websiteHTML, deptListHTML, pickerHTML, FEES, QUOTA, counselHTML, feesHTML, mapHTML, faqHTML
 };
