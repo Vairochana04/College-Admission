@@ -402,7 +402,7 @@ export default function Login() {
           </form>
         </main>
       </div>
-    <ChatBot />
+    <ChatBot autoOpen />
     <span className="buildtag">build {BUILD_TAG}</span>
     </section>  );
 }

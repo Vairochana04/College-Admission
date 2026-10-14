@@ -63,19 +63,30 @@ function botReply(raw) {
   }
 
   if (has('contact', 'phone', 'call', 'email', 'office'))
-    return 'Contact ☎️: each college page → "Help & contact" section-la admissions phone, email, office hours + Google map irukku. Bottom-right 🌐 FAB official site-ku koopittum.';
+    return 'Contact ☎️: each college page → "Help & contact" section-la admissions phone, email, office hours + Google map irukku. College page top-la "Official website" button official site-ku koopittum.';
 
   if (has('save', 'shortlist'))
-    return 'Save pannalam ❤️: college page-la bottom-right ♥ FAB tap pannunga; home-la "Saved" chip-la list irukum.';
+    return 'Save pannalam ❤️: college page-la "Save college" button tap pannunga; home-la "Saved" chip-la list irukum.';
 
   return 'Puriyala 🙏 — colleges / cutoff / hostel / fees / apply / documents / events pathi kekalam. Chips-ah tap pannunga; illa college page → Help & contact / official website try pannunga.';
 }
 
-export default function ChatBot() {
+export default function ChatBot({ autoOpen = false }) {
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState([{ who: 'bot', text: 'Hi! Naan CampusConnect guide bot 🤖 — college selection, cutoff, hostel, fees, apply steps… edhu venum?' }]);
   const [val, setVal] = useState('');
   const box = useRef(null);
+  const auto = useRef(false);
+
+  /* the login page passes autoOpen: the panel slides in once, shortly after the
+     page settles, so a first-time visitor notices the bot exists. Closing it
+     keeps it closed - the guard makes sure it never reopens on this mount. */
+  useEffect(() => {
+    if (!autoOpen || auto.current) return undefined;
+    auto.current = true;
+    const t = setTimeout(() => setOpen(true), 900);
+    return () => clearTimeout(t);
+  }, [autoOpen]);
 
   useEffect(() => { if (box.current) box.current.scrollTop = box.current.scrollHeight; }, [msgs, open]);
 

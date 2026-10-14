@@ -1528,16 +1528,18 @@ body.cc-navy .rail__i{color:#c3cfe9}
 body.cc-navy .rail__i:hover{background:rgba(255,255,255,.10); color:#fff}
 body.cc-navy .rail__i.on{background:rgba(255,255,255,.16); color:#fff}
 
-/* ---------- v2.32 · chatbot bubble clears the left rail ---------- */
-/* .rail is a fixed 58px strip at z-index 80 with a solid background; .botfab
-   (z-index 76) and .botpanel (77) sat at left:16px, so on every rail page 42px
-   of the 50px bubble - and the first 42px of the open panel - were hidden
-   behind the rail. Offset both clear of the rail on the rail pages only; the
-   login page has no rail, so its bubble stays in the corner. */
-#view-student .botfab, #view-drill .botfab, .viewfade .botfab{left:74px}
-#view-student .botpanel, #view-drill .botpanel, .viewfade .botpanel{left:74px}
+/* ---------- v2.33 · chatbot sits bottom-right (and opens on the login page) ---------- */
+/* The bubble used to live at the bottom-left, where the fixed 58px .rail
+   (z-index 80 vs the bubble's 76) covered 42 of its 50 pixels on every student
+   page. The right-hand corner is clear - the old Save / Official-website FAB
+   stack was replaced by the hero action bar in v2.27 - so the bubble and the
+   panel now open from the bottom-right, away from the rail on every page. */
+.botfab{left:auto; right:16px; bottom:16px}
+.botpanel{left:auto; right:16px; bottom:16px}
 @media (max-width:720px){
-  /* rail narrows to 48px on small screens */
-  #view-student .botfab, #view-drill .botfab, .viewfade .botfab{left:60px}
-  #view-student .botpanel, #view-drill .botpanel, .viewfade .botpanel{left:60px}
+  .botfab{left:auto; right:12px; bottom:64px}
+  .botpanel{left:auto; right:12px; bottom:64px}
 }
+/* the tiny build tag also lives bottom-right - move it left so the bubble
+   never sits on top of it (it is the stale-build detector) */
+.buildtag{right:auto; left:10px; bottom:8px}
