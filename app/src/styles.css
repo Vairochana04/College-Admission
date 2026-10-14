@@ -1537,7 +1537,8 @@ body{line-height:1.55}
    list) sit on the brand navy, so the white cards read as a list on a dark
    backdrop. StudentView toggles .cc-navy on <body> while that list is open,
    which also paints the 58px rail gutter and the space under the last card. */
-body.cc-navy{
+/* navy retired (client asked for the white background) */
+/* body.cc-navy{
   background-color:var(--navy);
   background-image:
     radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
@@ -1545,18 +1546,28 @@ body.cc-navy{
   background-size:22px 22px, 100% 100%;
   background-repeat:repeat, no-repeat;
   background-attachment:fixed, fixed;
-}
-body.cc-navy .crumbs{color:#9fb0d4}
-body.cc-navy .crumbs b{color:#e8eeff}
-body.cc-navy #view-drill h2{color:#fff}
-body.cc-navy #view-drill .muted{color:#b7c4e2}
+} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .crumbs{color:#9fb0d4} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .crumbs b{color:#e8eeff} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy #view-drill h2{color:#fff} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy #view-drill .muted{color:#b7c4e2} */
 /* the rail is a fixed white strip — keep the whole page navy on these lists */
-body.cc-navy .rail{background:#16223f; border-right-color:rgba(255,255,255,.10); box-shadow:none}
-body.cc-navy .rail[data-open="1"]{box-shadow:14px 0 34px -26px rgba(0,0,0,.65)}
-body.cc-navy .rail__top{color:#e8eeff}
-body.cc-navy .rail__i{color:#c3cfe9}
-body.cc-navy .rail__i:hover{background:rgba(255,255,255,.10); color:#fff}
-body.cc-navy .rail__i.on{background:rgba(255,255,255,.16); color:#fff}
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .rail{background:#16223f; border-right-color:rgba(255,255,255,.10); box-shadow:none} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .rail[data-open="1"]{box-shadow:14px 0 34px -26px rgba(0,0,0,.65)} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .rail__top{color:#e8eeff} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .rail__i{color:#c3cfe9} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .rail__i:hover{background:rgba(255,255,255,.10); color:#fff} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .rail__i.on{background:rgba(255,255,255,.16); color:#fff} */
 
 /* ---------- v2.33 · chatbot sits bottom-right (and opens on the login page) ---------- */
 /* The bubble used to live at the bottom-left, where the fixed 58px .rail
@@ -1657,7 +1668,8 @@ h1,h2,h3,h4{letter-spacing:-.022em}
    frame (they become a light tint inside the card) so nothing is boxed twice.
    ========================================================================== */
 
-body.cc-college{
+/* navy retired (client asked for the white background) */
+/* body.cc-college{
   background-color:var(--navy);
   background-image:
     radial-gradient(rgba(255,255,255,.06) 1px, transparent 1px),
@@ -1665,31 +1677,45 @@ body.cc-college{
   background-size:22px 22px, 100% 100%;
   background-repeat:repeat, no-repeat;
   background-attachment:fixed, fixed;
-}
+} */
 /* the fixed left rail is a white strip: keep it navy on the college page too */
-body.cc-college .rail{background:#16223f; border-right-color:rgba(255,255,255,.10); box-shadow:none}
-body.cc-college .rail[data-open="1"]{box-shadow:14px 0 34px -26px rgba(0,0,0,.65)}
-body.cc-college .rail__top{color:#e8eeff}
-body.cc-college .rail__i{color:#c3cfe9}
-body.cc-college .rail__i:hover{background:rgba(255,255,255,.10); color:#fff}
-body.cc-college .rail__i.on{background:rgba(255,255,255,.16); color:#fff}
+/* navy retired (client asked for the white background) */
+/* body.cc-college .rail{background:#16223f; border-right-color:rgba(255,255,255,.10); box-shadow:none} */
+/* navy retired (client asked for the white background) */
+/* body.cc-college .rail[data-open="1"]{box-shadow:14px 0 34px -26px rgba(0,0,0,.65)} */
+/* navy retired (client asked for the white background) */
+/* body.cc-college .rail__top{color:#e8eeff} */
+/* navy retired (client asked for the white background) */
+/* body.cc-college .rail__i{color:#c3cfe9} */
+/* navy retired (client asked for the white background) */
+/* body.cc-college .rail__i:hover{background:rgba(255,255,255,.10); color:#fff} */
+/* navy retired (client asked for the white background) */
+/* body.cc-college .rail__i.on{background:rgba(255,255,255,.16); color:#fff} */
 /* the back / breadcrumb row sits on the navy too */
-body.cc-college .ctop .crumbs{color:#9fb0d4}
-body.cc-college .ctop .crumbs b{color:#e8eeff}
-body.cc-college .ctop .btn--ghost{background:rgba(255,255,255,.10); color:#fff; border-color:rgba(255,255,255,.28)}
-body.cc-college .ctop .btn--ghost:hover{background:rgba(255,255,255,.18); border-color:rgba(255,255,255,.4)}
+/* navy retired (client asked for the white background) */
+/* body.cc-college .ctop .crumbs{color:#9fb0d4} */
+/* navy retired (client asked for the white background) */
+/* body.cc-college .ctop .crumbs b{color:#e8eeff} */
+/* navy retired (client asked for the white background) */
+/* body.cc-college .ctop .btn--ghost{background:rgba(255,255,255,.10); color:#fff; border-color:rgba(255,255,255,.28)} */
+/* navy retired (client asked for the white background) */
+/* body.cc-college .ctop .btn--ghost:hover{background:rgba(255,255,255,.18); border-color:rgba(255,255,255,.4)} */
 /* the sticky section nav: white pill chips read as holes on navy */
-body.cc-college .secnav{background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16);
-  backdrop-filter:blur(8px); box-shadow:none}
-body.cc-college .secnav a{color:#c3cfe9}
-body.cc-college .secnav a:hover{background:rgba(255,255,255,.12); color:#fff}
-body.cc-college .secnav a.active{background:var(--gold); color:#3a2606}
+/* navy retired (client asked for the white background) */
+/* body.cc-college .secnav{background:rgba(255,255,255,.08); border-color:rgba(255,255,255,.16);
+  backdrop-filter:blur(8px); box-shadow:none} */
+/* navy retired (client asked for the white background) */
+/* body.cc-college .secnav a{color:#c3cfe9} */
+/* navy retired (client asked for the white background) */
+/* body.cc-college .secnav a:hover{background:rgba(255,255,255,.12); color:#fff} */
+/* navy retired (client asked for the white background) */
+/* body.cc-college .secnav a.active{background:var(--gold); color:#3a2606} */
 
 /* the hero (#sec-profile) keeps its own navy gradient — every other section
    becomes one tidy white card on the navy page */
 #collegeContent .sec:not(#sec-profile), #collegeContent #sec-about > .about{
-  background:#fff; border:1px solid rgba(255,255,255,.10); border-radius:20px;
-  padding:26px 26px 28px; box-shadow:0 24px 50px -34px rgba(0,0,0,.75);
+  background:#fff; border:1px solid var(--line); border-radius:20px;
+  padding:26px 26px 28px; box-shadow:0 1px 2px rgba(13,22,38,.05);
 }
 #collegeContent .sec, #collegeContent #sec-about > .about{margin-top:18px}
 #collegeContent .sec-head{margin-bottom:18px}
@@ -1738,36 +1764,59 @@ body.cc-college .secnav a.active{background:var(--gold); color:#3a2606}
    ========================================================================== */
 
 /* ---- surface: top bar, search, chips, sort, footer all go navy ---- */
-body.cc-navy .topbar{background:rgba(15,23,43,.78); border-bottom-color:rgba(255,255,255,.12)}
-body.cc-navy .topbar .brand{color:#fff}
-body.cc-navy .topbar .brand small{color:#a9b6d4}
-body.cc-navy .topbar .userchip{background:rgba(255,255,255,.10); border-color:rgba(255,255,255,.20)}
-body.cc-navy .topbar .userchip b{color:#fff}
-body.cc-navy .topbar .userchip span{color:#b7c4e2}
-body.cc-navy .topbar .btn--ghost{background:rgba(255,255,255,.10); color:#fff; border-color:rgba(255,255,255,.26)}
-body.cc-navy .topbar .btn--ghost:hover{background:rgba(255,255,255,.18); border-color:rgba(255,255,255,.4)}
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .topbar{background:rgba(15,23,43,.78); border-bottom-color:rgba(255,255,255,.12)} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .topbar .brand{color:#fff} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .topbar .brand small{color:#a9b6d4} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .topbar .userchip{background:rgba(255,255,255,.10); border-color:rgba(255,255,255,.20)} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .topbar .userchip b{color:#fff} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .topbar .userchip span{color:#b7c4e2} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .topbar .btn--ghost{background:rgba(255,255,255,.10); color:#fff; border-color:rgba(255,255,255,.26)} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .topbar .btn--ghost:hover{background:rgba(255,255,255,.18); border-color:rgba(255,255,255,.4)} */
 
-body.cc-navy .searchbox{background:rgba(255,255,255,.10); border-color:rgba(255,255,255,.20); color:#c3cfe9}
-body.cc-navy .searchbox input{color:#fff; font-size:14.6px}
-body.cc-navy .searchbox input::placeholder{color:#9fb0d4}
-body.cc-navy .searchbox:focus-within{border-color:rgba(240,182,74,.7); box-shadow:0 0 0 3px rgba(240,182,74,.18)}
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .searchbox{background:rgba(255,255,255,.10); border-color:rgba(255,255,255,.20); color:#c3cfe9} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .searchbox input{color:#fff; font-size:14.6px} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .searchbox input::placeholder{color:#9fb0d4} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .searchbox:focus-within{border-color:rgba(240,182,74,.7); box-shadow:0 0 0 3px rgba(240,182,74,.18)} */
 
-body.cc-navy .chips--filter .chip{background:rgba(255,255,255,.10); border-color:rgba(255,255,255,.20); color:#dbe4f7}
-body.cc-navy .chips--filter .chip:hover{border-color:rgba(255,255,255,.38)}
-body.cc-navy .chips--filter .chip.chip--on,
-body.cc-navy .chips--filter .chip[aria-pressed="true"]{
-  background:linear-gradient(140deg,var(--gold-2),var(--gold)); border-color:transparent; color:#3a2606}
-body.cc-navy .chips--filter .chip .cnt{color:inherit; opacity:.75}
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .chips--filter .chip{background:rgba(255,255,255,.10); border-color:rgba(255,255,255,.20); color:#dbe4f7} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .chips--filter .chip:hover{border-color:rgba(255,255,255,.38)} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .chips--filter .chip[aria-pressed="true"]{
+  background:linear-gradient(140deg,var(--gold-2),var(--gold)); border-color:transparent; color:#3a2606} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .chips--filter .chip .cnt{color:inherit; opacity:.75} */
 
-body.cc-navy .sortsel{background:rgba(255,255,255,.10); border-color:rgba(255,255,255,.20)}
-body.cc-navy .sortsel span{color:#9fb0d4}
-body.cc-navy .sortsel select{color:#fff}
-body.cc-navy .sortsel select option{color:#0d1626; background:#fff}
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .sortsel{background:rgba(255,255,255,.10); border-color:rgba(255,255,255,.20)} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .sortsel span{color:#9fb0d4} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .sortsel select{color:#fff} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .sortsel select option{color:#0d1626; background:#fff} */
 
-body.cc-navy .stu__gridline{color:#b7c4e2}
-body.cc-navy .ccfoot{border-top-color:rgba(255,255,255,.14); color:#a9b6d4}
-body.cc-navy .empty{background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.22); color:#c3cfe9}
-body.cc-navy .empty b{color:#fff}
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .stu__gridline{color:#b7c4e2} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .ccfoot{border-top-color:rgba(255,255,255,.14); color:#a9b6d4} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .empty{background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.22); color:#c3cfe9} */
+/* navy retired (client asked for the white background) */
+/* body.cc-navy .empty b{color:#fff} */
 
 /* rows stay white cards on navy — the pills inside keep their light look */
 .slide__txt .slide__pills .datepill{display:inline-flex; margin:0; white-space:nowrap}
@@ -1885,13 +1934,13 @@ body.cc-navy .empty b{color:#fff}
 /* ---- the page sits on navy: header text is light, cards are white ---- */
 .planhead{margin:6px 0 18px}
 .planhead .kicker{display:block; font-size:10.8px; font-weight:800; letter-spacing:.13em;
-  text-transform:uppercase; color:var(--gold-2)}
-.planhead h2{margin:8px 0 0; font-size:27px; letter-spacing:-.4px; color:#fff}
-.planhead p{margin-top:8px; font-size:14.4px; line-height:1.6; color:#c3cfe9; max-width:86ch}
-.planhead p b{color:#fff}
+  text-transform:uppercase; color:#8a6113}
+.planhead h2{margin:8px 0 0; font-size:27px; letter-spacing:-.4px; color:var(--ink)}
+.planhead p{margin-top:8px; font-size:14.4px; line-height:1.6; color:var(--muted); max-width:86ch}
+.planhead p b{color:var(--ink)}
 
-.plancard{margin-top:18px; background:#fff; border:1px solid rgba(255,255,255,.10);
-  border-radius:20px; padding:22px 24px 24px; box-shadow:0 24px 50px -34px rgba(0,0,0,.75)}
+.plancard{margin-top:18px; background:#fff; border:1px solid var(--line);
+  border-radius:20px; padding:22px 24px 24px; box-shadow:var(--shadow-1)}
 .plancard h3{display:flex; align-items:center; gap:10px; margin:0 0 14px; font-size:17px; color:var(--ink)}
 .plancount{margin-left:auto; font-size:12px; font-weight:800; letter-spacing:.04em; color:var(--navy);
   background:var(--line-2); border-radius:999px; padding:4px 11px; font-variant-numeric:tabular-nums}
@@ -2135,3 +2184,11 @@ body.cc-navy .empty b{color:#fff}
 
 /* the footer line and the list note share the same gutter */
 .ccfoot{padding:16px 2px 22px}
+
+/* ==========================================================================
+   v2.44 · back to the white background
+   The navy page surfaces are retired (the rules above are commented out); the
+   few bits that were styled light-on-navy are readable on white again.
+   ========================================================================== */
+#view-drill .btn--onDark{background:#fff; color:var(--ink); border-color:var(--line)}
+#view-drill .btn--onDark:hover{background:#fbfcfe; border-color:#cfd7e6}
