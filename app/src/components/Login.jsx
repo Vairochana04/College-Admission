@@ -26,6 +26,9 @@ const Chip = ({ on, children, ...rest }) => (
 const MOBILE_RE = /^[0-9]{10}$/;
 const MAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/* the three create-account steps (v2.34) */
+const WIZ_STEPS = ['You', 'Academics', 'Preferences'];
+
 export default function Login() {
   const [role, setRole] = useState('student');
   const [mode, setMode] = useState('signin');
@@ -43,6 +46,14 @@ export default function Login() {
     stay: 'Hostel needed', hostelType: 'Any hostel', travel: 'College bus',
   });
 
+  /* create-account wizard (v2.34): three short steps instead of one long form */
+  const [step, setStep] = useState(1);
+  const [stepErr, setStepErr] = useState('');
+  const [showPw, setShowPw] = useState(false);
+  const [pwFocused, setPwFocused] = useState(false);
+  const [capsOn, setCapsOn] = useState(false);
+  const [alertAct, setAlertAct] = useState(null);   /* optional action on the alert */
+
   const create = mode === 'create' && role === 'student';
   const setChip = (k, v) => setChips((c) => {
     const next = { ...c, [k]: v };
@@ -57,7 +68,7 @@ export default function Login() {
   }, []);
 
   function pickRole(r) {
-    setRole(r); setMode('signin'); setAlert('');
+    setRole(r); setMode('signin'); setAlert(''); setAlertAct(null); setStep(1); setStepErr('');
   }
 
   /* ------------------------------------------------ student: create account */
@@ -73,6 +84,34 @@ export default function Login() {
     if (!consent) return 'Please tick the consent box so colleges can see your interest.';
     return null;
   }
+
+  /* step-by-step validation: the wizard only lets you move on when the step is good */
+  function validateStep(n) {
+    const mail = email.trim().toLowerCase();
+    if (n === 1) {
+      if (name.trim().length < 2) return 'Please tell us your name — it shows on your workspace.';
+      if (!MAIL_RE.test(mail)) return 'That email address does not look complete. Try again?';
+      if (!MOBILE_RE.test(mobile.replace(/\D/g, '')))
+        return 'Mobile number should be 10 digits — admission teams use it to reach you.';
+      return null;
+    }
+    if (n === 2) {
+      const m = Number(marks);
+      if (!marks.trim() || isNaN(m) || m < 30 || m > 100)
+        return 'Please enter your Class 12 percentage (between 30 and 100).';
+      return null;
+    }
+    if (pw.length < 6) return 'Please use at least 6 characters for your password.';
+    if (!consent) return 'Please tick the consent box so colleges can see your interest.';
+    return null;
+  }
+  function nextStep() {
+    const bad = validateStep(step);
+    if (bad) return setStepErr(bad);
+    setStepErr(''); setStep(step + 1);
+  }
+  function backStep() { setStepErr(''); setStep(Math.max(1, step - 1)); }
+  function capsCheck(e) { if (e.getModifierState) setCapsOn(e.getModifierState('CapsLock')); }
 
   function enterStudent(account, accountEmail, fromServer) {
     Object.assign(cc, {
@@ -91,6 +130,7 @@ export default function Login() {
     if (bad) return setAlert(bad);
     if (studentLookup(mail)) {
       setAlert('An account with this email already exists — sign in instead.');
+      setAlertAct({ label: 'Sign in', run: () => setMode('signin') });
       setMode('signin');
       return;
     }
@@ -159,7 +199,8 @@ export default function Login() {
       if (!acc || acc.password !== pw) {
         setAlert(acc
           ? 'That password does not match. Try again, or tap "Forgot password?".'
-          : 'No student account with this email yet. Tap "Create an account" to make one in a few seconds.');
+          : 'No student account with this email yet. Create one in a few seconds.');
+        if (!acc) setAlertAct({ label: 'Create an account', run: () => { setMode('create'); setStep(1); } });
         return;
       }
       session.clear();
@@ -203,11 +244,42 @@ export default function Login() {
 
   function submit(e) {
     if (e && e.preventDefault) e.preventDefault();
-    setAlert('');
+    setAlert(''); setAlertAct(null);
     if (role === 'admin') return adminSignIn();
-    if (create) return createStudent();
+    if (create) {
+      if (step < 3) return nextStep();          /* wizard: Next walks the steps */
+      return createStudent();
+    }
     return studentSignIn();
   }
+
+  /* shared field markup — rendered in sign-in and inside the wizard's steps */
+  const emailField = (
+    <div className="field" style={{ marginTop: 16 }}>
+      <label htmlFor="email">Email address</label>
+      <div className="field__box">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="3" /><path d="m3 7 9 6 9-6" /></svg>
+        <input id="email" type="email" autoComplete="email" placeholder={role === 'admin' ? 'admin@yourplatform.com' : 'you@example.com'} value={email} onChange={(e) => setEmail(e.target.value)} />
+      </div>
+    </div>
+  );
+
+  const passwordField = (
+    <div className="field" style={{ marginTop: 14 }}>
+      <label htmlFor="password">Password</label>
+      <div className="field__box">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="10" width="16" height="10" rx="3" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
+        <input id="password" type={showPw ? 'text' : 'password'} autoComplete={create ? 'new-password' : 'current-password'} placeholder={create ? 'Choose a password (6+ characters)' : 'Your password'} value={pw}
+          onChange={(e) => setPw(e.target.value)}
+          onFocus={() => setPwFocused(true)} onBlur={() => setPwFocused(false)}
+          onKeyUp={capsCheck} onKeyDown={capsCheck} />
+        {(pwFocused || pw.length > 0) && (
+          <button type="button" className="pwtoggle" aria-label={showPw ? 'Hide password' : 'Show password'} onClick={() => setShowPw(!showPw)}>{showPw ? 'Hide' : 'Show'}</button>
+        )}
+      </div>
+      {(capsOn && (pwFocused || pw.length > 0)) ? <span className="field__hint pwcaps">Caps Lock is on — passwords are case-sensitive.</span> : null}
+    </div>
+  );
 
   const hint = create
     ? 'Sign up with your name, email, mobile and Class 12 marks — plus a few taps for the course & degree you want, and whether you need hostel or bus. Colleges that fit you show up right away.'
@@ -251,131 +323,172 @@ export default function Login() {
               <p className="auth__alert" id="authAlert" role="alert" style={{ marginTop: 14 }}>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16h.01" /></svg>
                 <span>{alert}</span>
+                {alertAct && (
+                  <button type="button" className="link" onClick={() => { const run = alertAct.run; setAlertAct(null); run(); }}>
+                    {alertAct.label}
+                  </button>
+                )}
               </p>
             )}
 
-            <div className="field" style={{ marginTop: 16 }}>
-              <label htmlFor="email">Email address</label>
-              <div className="field__box">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><rect x="2.5" y="5" width="19" height="14" rx="3" /><path d="m3 7 9 6 9-6" /></svg>
-                <input id="email" type="email" autoComplete="email" placeholder={role === 'admin' ? 'admin@yourplatform.com' : 'you@example.com'} value={email} onChange={(e) => setEmail(e.target.value)} />
-              </div>
-            </div>
+            {!create && (
+              <>
+                {emailField}
+                {passwordField}
+              </>
+            )}
 
             {create && (
               <>
-                <div className="field" style={{ marginTop: 14 }}>
-                  <label htmlFor="fullName">Your name</label>
-                  <div className="field__box">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" /></svg>
-                    <input id="fullName" type="text" autoComplete="name" placeholder="e.g. Aarav S." value={name} onChange={(e) => setName(e.target.value)} />
+                <div className="wiz">
+                  <div className="wiz__bar" aria-hidden="true">
+                    {[1, 2, 3].map((n) => <span key={n} className={'wiz__seg' + (n <= step ? ' on' : '')} />)}
                   </div>
+                  <div className="wiz__lbl"><b>Step {step} of 3</b><span>{WIZ_STEPS[step - 1]}</span></div>
                 </div>
 
-                <div className="field" style={{ marginTop: 14 }}>
-                  <label htmlFor="mobile">Mobile number</label>
-                  <div className="field__box">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5" /><path d="M11 18.5h2" /></svg>
-                    <input id="mobile" type="tel" inputMode="numeric" autoComplete="tel-national" maxLength={10} placeholder="10-digit mobile, e.g. 9876543210" value={mobile} onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))} />
-                  </div>
-                  <span className="field__hint">Admission teams call this number about seats — only shared with colleges you show interest in, and only with your consent below.</span>
-                </div>
-
-                <div className="field" style={{ marginTop: 14 }} id="marksField">
-                  <label htmlFor="marks">Class 12 percentage</label>
-                  <div className="field__box">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19h16M7 16V9M12 16V5M17 16v-4" /></svg>
-                    <input id="marks" type="number" min="30" max="100" step="0.1" inputMode="decimal" placeholder="e.g. 78" value={marks} onChange={(e) => setMarks(e.target.value)} />
-                  </div>
-                  <span className="field__hint">We use this only to show colleges that match your marks.</span>
-                </div>
-
-                <div className="field" style={{ marginTop: 14 }} id="streamField">
-                  <label>Class 12 stream</label>
-                  <div className="chips" role="radiogroup" aria-label="Class 12 stream">
-                    {STREAMS.map((s) => <Chip key={s} on={chips.stream === s} onClick={() => setChip('stream', s)}>{s}</Chip>)}
-                  </div>
-                </div>
-
-                <div className="field" style={{ marginTop: 14 }} id="wantField">
-                  <label>Which course do you want?</label>
-                  <div className="chips" role="radiogroup" aria-label="Course you want">
-                    {WANT.map((s) => <Chip key={s} on={chips.want === s} onClick={() => setChip('want', s)}>{s}</Chip>)}
-                  </div>
-                </div>
-
-                {chips.want !== NOT_SURE && (
-                  <div className="field" style={{ marginTop: 14 }} id="degreeField">
-                    <label>Which degree do you want?</label>
-                    <div className="chips" role="radiogroup" aria-label="Degree you want">
-                      {degrees.map((d) => <Chip key={d} on={chips.degree === d} onClick={() => setChip('degree', d)}>{d}</Chip>)}
+                {step === 1 && (
+                  <>
+                    <div className="field" style={{ marginTop: 16 }}>
+                      <label htmlFor="fullName">Your name</label>
+                      <div className="field__box">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" /></svg>
+                        <input id="fullName" type="text" autoComplete="name" placeholder="e.g. Aarav S." value={name} onChange={(e) => setName(e.target.value)} />
+                      </div>
                     </div>
-                    <span className="field__hint">We tick the colleges that actually run this degree.</span>
-                  </div>
+
+                    {emailField}
+
+                    <div className="field" style={{ marginTop: 14 }}>
+                      <label htmlFor="mobile">Mobile number</label>
+                      <div className="field__box">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5" /><path d="M11 18.5h2" /></svg>
+                        <input id="mobile" type="tel" inputMode="numeric" autoComplete="tel-national" maxLength={10} placeholder="10-digit mobile, e.g. 9876543210" value={mobile} onChange={(e) => setMobile(e.target.value.replace(/\D/g, '').slice(0, 10))} />
+                      </div>
+                      <span className="field__hint">Admission teams call this number about seats — only shared with colleges you show interest in, and only with your consent.</span>
+                    </div>
+                  </>
                 )}
 
-                <div className="field" style={{ marginTop: 14 }} id="stayField">
-                  <label>Stay &amp; travel</label>
-                  <div className="sublab">Hostel</div>
-                  <div className="chips" role="radiogroup" aria-label="Hostel">
-                    {STAY.map((s) => <Chip key={s} on={chips.stay === s} onClick={() => setChip('stay', s)}>{s}</Chip>)}
-                  </div>
-                  {chips.stay === 'Hostel needed' && (
-                    <div className="chips" style={{ marginTop: 8 }} role="radiogroup" aria-label="Hostel type">
-                      {HOSTELTYPE.map((s) => <Chip key={s} on={chips.hostelType === s} onClick={() => setChip('hostelType', s)}>{s}</Chip>)}
+                {step === 2 && (
+                  <>
+                    <div className="field" style={{ marginTop: 16 }} id="marksField">
+                      <label htmlFor="marks">Class 12 percentage</label>
+                      <div className="field__box">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19h16M7 16V9M12 16V5M17 16v-4" /></svg>
+                        <input id="marks" type="number" min="30" max="100" step="0.1" inputMode="decimal" placeholder="e.g. 78" value={marks} onChange={(e) => setMarks(e.target.value)} />
+                      </div>
+                      <span className="field__hint">We use this only to show colleges that match your marks.</span>
                     </div>
-                  )}
-                  <div className="sublab">Daily travel</div>
-                  <div className="chips" role="radiogroup" aria-label="Daily travel">
-                    {TRAVEL.map((s) => <Chip key={s} on={chips.travel === s} onClick={() => setChip('travel', s)}>{s}</Chip>)}
-                  </div>
-                </div>
 
-                <div className="field" style={{ marginTop: 14 }} id="townField">
-                  <label htmlFor="town">Your town / city <span style={{ fontWeight: 600, color: 'var(--muted)' }}>(optional)</span></label>
-                  <div className="field__box">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" /><circle cx="12" cy="10" r="2.6" /></svg>
-                    <input id="town" type="text" placeholder="e.g. Tiruppur — we use it for hostel &amp; bus tips" value={town} onChange={(e) => setTown(e.target.value)} />
-                  </div>
+                    <div className="field" style={{ marginTop: 14 }} id="streamField">
+                      <label>Class 12 stream</label>
+                      <div className="chips" role="radiogroup" aria-label="Class 12 stream">
+                        {STREAMS.map((s) => <Chip key={s} on={chips.stream === s} onClick={() => setChip('stream', s)}>{s}</Chip>)}
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {step === 3 && (
+                  <>
+                    <div className="field" style={{ marginTop: 16 }} id="wantField">
+                      <label>Which course do you want?</label>
+                      <div className="chips" role="radiogroup" aria-label="Course you want">
+                        {WANT.map((s) => <Chip key={s} on={chips.want === s} onClick={() => setChip('want', s)}>{s}</Chip>)}
+                      </div>
+                    </div>
+
+                    {chips.want !== NOT_SURE && (
+                      <div className="field" style={{ marginTop: 14 }} id="degreeField">
+                        <label>Which degree do you want?</label>
+                        <div className="chips" role="radiogroup" aria-label="Degree you want">
+                          {degrees.map((d) => <Chip key={d} on={chips.degree === d} onClick={() => setChip('degree', d)}>{d}</Chip>)}
+                        </div>
+                        <span className="field__hint">We tick the colleges that actually run this degree.</span>
+                      </div>
+                    )}
+
+                    <div className="field" style={{ marginTop: 14 }} id="stayField">
+                      <label>Stay &amp; travel</label>
+                      <div className="sublab">Hostel</div>
+                      <div className="chips" role="radiogroup" aria-label="Hostel">
+                        {STAY.map((s) => <Chip key={s} on={chips.stay === s} onClick={() => setChip('stay', s)}>{s}</Chip>)}
+                      </div>
+                      {chips.stay === 'Hostel needed' && (
+                        <div className="chips" style={{ marginTop: 8 }} role="radiogroup" aria-label="Hostel type">
+                          {HOSTELTYPE.map((s) => <Chip key={s} on={chips.hostelType === s} onClick={() => setChip('hostelType', s)}>{s}</Chip>)}
+                        </div>
+                      )}
+                      <div className="sublab">Daily travel</div>
+                      <div className="chips" role="radiogroup" aria-label="Daily travel">
+                        {TRAVEL.map((s) => <Chip key={s} on={chips.travel === s} onClick={() => setChip('travel', s)}>{s}</Chip>)}
+                      </div>
+                    </div>
+
+                    <div className="field" style={{ marginTop: 14 }} id="townField">
+                      <label htmlFor="town">Your town / city <span style={{ fontWeight: 600, color: 'var(--muted)' }}>(optional)</span></label>
+                      <div className="field__box">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M12 21s7-6.1 7-11a7 7 0 1 0-14 0c0 4.9 7 11 7 11Z" /><circle cx="12" cy="10" r="2.6" /></svg>
+                        <input id="town" type="text" placeholder="e.g. Tiruppur — we use it for hostel &amp; bus tips" value={town} onChange={(e) => setTown(e.target.value)} />
+                      </div>
+                    </div>
+
+                    {passwordField}
+
+                    <div className="field" style={{ marginTop: 14 }}>
+                      <label className="check" style={{ alignItems: 'flex-start', gap: 9 }}>
+                        <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} style={{ marginTop: 2 }} />
+                        <span style={{ fontSize: 13.4, color: 'var(--muted)', lineHeight: 1.5 }}>
+                          I agree that CampusConnect may store these details and show my interest
+                          (colleges I view, save or apply to) to those colleges, so their admission
+                          team can contact me. I can withdraw this any time from my workspace.
+                        </span>
+                      </label>
+                    </div>
+                  </>
+                )}
+
+                {stepErr && (
+                  <p className="auth__alert" role="alert" style={{ marginTop: 14 }}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 8v5M12 16h.01" /></svg>
+                    <span>{stepErr}</span>
+                  </p>
+                )}
+
+                <div className="wiz__nav">
+                  {step > 1 && (
+                    <button type="button" className="btn btn--ghost" onClick={backStep}>
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round"><path d="M19 12H6" /><path d="m12 19-7-7 7-7" /></svg>
+                      Back
+                    </button>
+                  )}
+                  <button type="button" className="btn btn--primary" disabled={busy} onClick={submit}>
+                    {step < 3 ? 'Next' : (busy ? 'One moment…' : 'Create my account')}
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h13" /><path d="m12 5 7 7-7 7" /></svg>
+                  </button>
                 </div>
               </>
             )}
 
-            <div className="field" style={{ marginTop: 14 }}>
-              <label htmlFor="password">Password</label>
-              <div className="field__box">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><rect x="4" y="10" width="16" height="10" rx="3" /><path d="M8 10V7a4 4 0 0 1 8 0v3" /></svg>
-                <input id="password" type="password" autoComplete={create ? 'new-password' : 'current-password'} placeholder={create ? 'Choose a password (6+ characters)' : 'Your password'} value={pw} onChange={(e) => setPw(e.target.value)} />
-              </div>
-            </div>
+            {!create && (
+              <>
+                <div className="row-between" style={{ marginTop: 14 }}>
+                  <label className="check"><input type="checkbox" defaultChecked /> Keep me signed in</label>
+                  <button type="button" className="link" onClick={() => setAlert('Demo app — use the demo credentials below, or create a new account in a few seconds.')}>Forgot password?</button>
+                </div>
 
-            {create && (
-              <div className="field" style={{ marginTop: 14 }}>
-                <label className="check" style={{ alignItems: 'flex-start', gap: 9 }}>
-                  <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} style={{ marginTop: 2 }} />
-                  <span style={{ fontSize: 13.4, color: 'var(--muted)', lineHeight: 1.5 }}>
-                    I agree that CampusConnect may store these details and show my interest
-                    (colleges I view, save or apply to) to those colleges, so their admission
-                    team can contact me. I can withdraw this any time from my workspace.
-                  </span>
-                </label>
-              </div>
+                <button type="button" className="btn btn--primary btn--block" id="signInBtn" style={{ marginTop: 16 }} disabled={busy} onClick={submit}>
+                  {busy ? 'One moment…' : role === 'admin' ? 'Sign in as Admin' : 'Sign in as Student'}
+                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h13" /><path d="m12 5 7 7-7 7" /></svg>
+                </button>
+              </>
             )}
-
-            <div className="row-between" style={{ marginTop: 14 }}>
-              <label className="check"><input type="checkbox" defaultChecked /> Keep me signed in</label>
-              <button type="button" className="link" onClick={() => setAlert('Demo app — use the demo credentials below, or create a new account in a few seconds.')}>Forgot password?</button>
-            </div>
-
-            <button type="button" className="btn btn--primary btn--block" id="signInBtn" style={{ marginTop: 16 }} disabled={busy} onClick={submit}>
-              {busy ? 'One moment…' : create ? 'Create my account' : role === 'admin' ? 'Sign in as Admin' : 'Sign in as Student'}
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h13" /><path d="m12 5 7 7-7 7" /></svg>
-            </button>
 
             {role === 'student' && (
               <p className="authswitch">
                 <span>{create ? 'Already have an account?' : 'New student?'}</span>
-                <button type="button" className="link" onClick={() => { setMode(create ? 'signin' : 'create'); setAlert(''); }}>
+                <button type="button" className="link" onClick={() => { setMode(create ? 'signin' : 'create'); setAlert(''); setAlertAct(null); setStep(1); setStepErr(''); }}>
                   {create ? 'Sign in instead' : 'Create an account'}
                 </button>
               </p>
